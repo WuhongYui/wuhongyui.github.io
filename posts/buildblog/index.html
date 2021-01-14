@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="How to build blog by Hugo">
+<meta itemprop="description" content="Hugo 简介 ​ Hugo是一个用Go语言编写的静态站点生成器，hugo的易操作性和其拥有大量的主题库使其备受技术博客博主喜爱。记录一些自己亲手搭建博客的经验之谈。本文操作基于macos 下
+如何安装Hugo 如果你是macOs 用户可以使用homebrew 来安装：
+brew install hugo 如果你是Ubuntu 或者其他linux 用户可以使用apt 来安装：
+sudo apt-get install hugo  如果是Windows 用户，使用scoop 快速安装：
+scoop install hugo  使用包管理工具，基本上可以实现一条代码快速安装，具体可以参考Hugo官网
+Hugo官网
+生成博客文件 自己选择合适的文件夹下使用终端输入命令：
+hugo new site myblog  此命令会在当前文件夹下建立一个名叫myblog的文件夹；
+接下来就是选择你喜爱的主题hugo主题可以随意挑一个自己喜爱的主题使用，也可以在github中搜索你想要的主题库，使用命令：
+cd themes git clone https://github.com/Track3/hermit.git themes/hermit  myblog/content文件夹是存放你博客文章的地方，在此新建.md文件
+hugo new posts/XXXX.md  可以在XXXX.md文件中使用markdown格式编写一些博客内容，使用命令：
+hugo server -t 主题名 -D  进行主题预览
+配置主题，打开myblog/config.toml每个主题有不同的配置：
+baseURL = &quot;https://wuhongyui.github.io&quot; languageCode = &quot;en-us&quot; defaultContentLanguage = &quot;en&quot; title = &quot;拿了橘子跑&quot; theme = &quot;hermit&quot; # enableGitInfo = true pygmentsCodefences = true pygmentsUseClasses = true # hasCJKLanguage = true # If Chinese/Japanese/Korean is your main content language, enable this to make wordCount works right.">
+
+
+<meta itemprop="datePublished" content="2019-12-21T16:17:36&#43;08:00" />
+<meta itemprop="dateModified" content="2019-12-21T16:17:36&#43;08:00" />
+<meta itemprop="wordCount" content="552">
+
+
+
+<meta itemprop="keywords" content="build blog," />
+<meta property="og:title" content="How to build blog by Hugo" />
+<meta property="og:description" content="Hugo 简介 ​ Hugo是一个用Go语言编写的静态站点生成器，hugo的易操作性和其拥有大量的主题库使其备受技术博客博主喜爱。记录一些自己亲手搭建博客的经验之谈。本文操作基于macos 下
+如何安装Hugo 如果你是macOs 用户可以使用homebrew 来安装：
+brew install hugo 如果你是Ubuntu 或者其他linux 用户可以使用apt 来安装：
+sudo apt-get install hugo  如果是Windows 用户，使用scoop 快速安装：
+scoop install hugo  使用包管理工具，基本上可以实现一条代码快速安装，具体可以参考Hugo官网
+Hugo官网
+生成博客文件 自己选择合适的文件夹下使用终端输入命令：
+hugo new site myblog  此命令会在当前文件夹下建立一个名叫myblog的文件夹；
+接下来就是选择你喜爱的主题hugo主题可以随意挑一个自己喜爱的主题使用，也可以在github中搜索你想要的主题库，使用命令：
+cd themes git clone https://github.com/Track3/hermit.git themes/hermit  myblog/content文件夹是存放你博客文章的地方，在此新建.md文件
+hugo new posts/XXXX.md  可以在XXXX.md文件中使用markdown格式编写一些博客内容，使用命令：
+hugo server -t 主题名 -D  进行主题预览
+配置主题，打开myblog/config.toml每个主题有不同的配置：
+baseURL = &quot;https://wuhongyui.github.io&quot; languageCode = &quot;en-us&quot; defaultContentLanguage = &quot;en&quot; title = &quot;拿了橘子跑&quot; theme = &quot;hermit&quot; # enableGitInfo = true pygmentsCodefences = true pygmentsUseClasses = true # hasCJKLanguage = true # If Chinese/Japanese/Korean is your main content language, enable this to make wordCount works right." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuhongyui.github.io/posts/buildblog/" />
+<meta property="article:published_time" content="2019-12-21T16:17:36+08:00" />
+<meta property="article:modified_time" content="2019-12-21T16:17:36+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="How to build blog by Hugo"/>
+<meta name="twitter:description" content="Hugo 简介 ​ Hugo是一个用Go语言编写的静态站点生成器，hugo的易操作性和其拥有大量的主题库使其备受技术博客博主喜爱。记录一些自己亲手搭建博客的经验之谈。本文操作基于macos 下
+如何安装Hugo 如果你是macOs 用户可以使用homebrew 来安装：
+brew install hugo 如果你是Ubuntu 或者其他linux 用户可以使用apt 来安装：
+sudo apt-get install hugo  如果是Windows 用户，使用scoop 快速安装：
+scoop install hugo  使用包管理工具，基本上可以实现一条代码快速安装，具体可以参考Hugo官网
+Hugo官网
+生成博客文件 自己选择合适的文件夹下使用终端输入命令：
+hugo new site myblog  此命令会在当前文件夹下建立一个名叫myblog的文件夹；
+接下来就是选择你喜爱的主题hugo主题可以随意挑一个自己喜爱的主题使用，也可以在github中搜索你想要的主题库，使用命令：
+cd themes git clone https://github.com/Track3/hermit.git themes/hermit  myblog/content文件夹是存放你博客文章的地方，在此新建.md文件
+hugo new posts/XXXX.md  可以在XXXX.md文件中使用markdown格式编写一些博客内容，使用命令：
+hugo server -t 主题名 -D  进行主题预览
+配置主题，打开myblog/config.toml每个主题有不同的配置：
+baseURL = &quot;https://wuhongyui.github.io&quot; languageCode = &quot;en-us&quot; defaultContentLanguage = &quot;en&quot; title = &quot;拿了橘子跑&quot; theme = &quot;hermit&quot; # enableGitInfo = true pygmentsCodefences = true pygmentsUseClasses = true # hasCJKLanguage = true # If Chinese/Japanese/Korean is your main content language, enable this to make wordCount works right."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>How to build blog by Hugo</title>
+	<link rel="stylesheet" href="https://wuhongyui.github.io/css/style.min.657bcb7af31123e4156b1a3d2ff60a636717e54ead74f882136b5114cf72b55e.css" integrity="sha256-ZXvLevMRI+QVaxo9L/YKY2cX5U6tdPiCE2tRFM9ytV4=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://wuhongyui.github.io/">拿了橘子跑</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://wuhongyui.github.io/posts/">Article</a>
+				<a href="https://wuhongyui.github.io/about-hugo/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://twitter.com/" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="https://instagram.com/" target="_blank" rel="noopener me" title="Instagram"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg></a><a href="https://github.com/wuhongyui" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://wuhongyui.github.io/posts/">Article</a></li>
+			<li><a href="https://wuhongyui.github.io/about-hugo/">About</a></li>
+		</ul>
+	</div>
+
+
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Dec 21, 2019</span></div>
+				<h1>How to build blog by Hugo</h1>
+			</header>
+			<div class="content">
+				<h2 id="hugo-简介">Hugo 简介<a href="#hugo-简介" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>​   Hugo是一个用Go语言编写的静态站点生成器，hugo的易操作性和其拥有大量的主题库使其备受技术博客博主喜爱。记录一些自己亲手搭建博客的经验之谈。本文操作基于<code>macos</code> 下</p>
+
+<h3 id="如何安装hugo">如何安装Hugo<a href="#如何安装hugo" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>如果你是<code>macOs</code> 用户可以使用<code>homebrew</code> 来安装：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">brew install hugo</code></pre></div>
+<p>如果你是<code>Ubuntu</code> 或者其他<code>linux</code> 用户可以使用<code>apt</code> 来安装：</p>
+
+<pre><code>sudo apt-get install hugo
+</code></pre>
+
+<p>如果是<code>Windows</code> 用户，使用<code>scoop</code> 快速安装：</p>
+
+<pre><code>scoop install hugo
+</code></pre>
+
+<p>使用包管理工具，基本上可以实现一条代码快速安装，具体可以参考Hugo官网</p>
+
+<p><a href="https://gohugo.io/getting-started/installing">Hugo官网</a></p>
+
+<h3 id="生成博客文件">生成博客文件<a href="#生成博客文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>自己选择合适的文件夹下使用终端输入命令：</p>
+
+<pre><code>hugo new site myblog
+</code></pre>
+
+<p>此命令会在当前文件夹下建立一个名叫<code>myblog</code>的文件夹；</p>
+
+<p>接下来就是选择你喜爱的主题<a href="https://themes.gohugo.io/">hugo主题</a>可以随意挑一个自己喜爱的主题使用，也可以在github中搜索你想要的主题库，使用命令：</p>
+
+<pre><code>cd themes
+git clone https://github.com/Track3/hermit.git themes/hermit
+</code></pre>
+
+<p><code>myblog/content</code>文件夹是存放你博客文章的地方，在此新建<code>.md</code>文件</p>
+
+<pre><code>hugo new posts/XXXX.md
+</code></pre>
+
+<p>可以在<code>XXXX.md</code>文件中使用<code>markdown</code>格式编写一些博客内容，使用命令：</p>
+
+<pre><code>hugo server -t 主题名 -D
+</code></pre>
+
+<p>进行主题预览</p>
+
+<p>配置主题，打开<code>myblog/config.toml</code>每个主题有不同的配置：</p>
+
+<pre><code>baseURL = &quot;https://wuhongyui.github.io&quot;
+languageCode = &quot;en-us&quot;
+defaultContentLanguage = &quot;en&quot;
+title = &quot;拿了橘子跑&quot;
+theme = &quot;hermit&quot;
+# enableGitInfo = true
+pygmentsCodefences  = true
+pygmentsUseClasses  = true
+# hasCJKLanguage = true  # If Chinese/Japanese/Korean is your main content language, enable this to make wordCount works right.
+rssLimit = 10  # Maximum number of items in the RSS feed.
+copyright = &quot;This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.&quot; # This message is only used by the RSS template.
+enableEmoji = true  # Shorthand emojis in content files - https://gohugo.io/functions/emojify/
+# googleAnalytics = &quot;UA-123-45&quot;
+# disqusShortname = &quot;yourdiscussshortname&quot;
+
+[author]
+  name = &quot;拿了橘子跑&quot;
+
+[blackfriday]
+  # hrefTargetBlank = true
+  # noreferrerLinks = true
+  # nofollowLinks = true
+
+[taxonomies]
+  tag = &quot;tags&quot;
+  # Categories are disabled by default.
+
+[params]
+  dateform        = &quot;Jan 2, 2006&quot;
+  dateformShort   = &quot;Jan 2&quot;
+  dateformNum     = &quot;2006-01-02&quot;
+  dateformNumTime = &quot;2006-01-02 15:04 -0700&quot;
+
+  # Metadata mostly used in document's head
+  # description = &quot;&quot;
+  # images = [&quot;&quot;]
+  themeColor = &quot;#494f5c&quot;
+
+  homeSubtitle = &quot;Stay hungry, Stay foolish!&quot;
+  footerCopyright = ' &amp;#183; &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;CC BY-NC 4.0&lt;/a&gt;'
+  # bgImg = &quot;&quot;  # Homepage background-image URL
+
+  # Prefix of link to the git commit detail page. GitInfo must be enabled.
+  # gitUrl = &quot;https://github.com/username/repository/commit/&quot;
+
+  # Toggling this option needs to rebuild SCSS, requires Hugo extended version
+  justifyContent = false  # Set &quot;text-align: justify&quot; to `.content`.
+
+  relatedPosts = false  # Add a related content section to all single posts page
+
+  code_copy_button = true # Turn on/off the code-copy-button for code-fields
+
+  # Add custom css
+  # customCSS = [&quot;css/foo.css&quot;, &quot;css/bar.css&quot;]
+
+  # Social Icons
+  # Check https://github.com/Track3/hermit#social-icons for more info.
+  [[params.social]]
+    name = &quot;twitter&quot;
+    url = &quot;https://twitter.com/&quot;
+
+  [[params.social]]
+    name = &quot;instagram&quot;
+    url = &quot;https://instagram.com/&quot;
+
+  [[params.social]]
+    name = &quot;github&quot;
+    url = &quot;https://github.com/wuhongyui&quot;
+
+[menu]
+
+  [[menu.main]]
+    name = &quot;Article&quot;
+    url = &quot;posts/&quot;
+    weight = 10
+
+  [[menu.main]]
+    name = &quot;About&quot;
+    url = &quot;about-hugo/&quot;
+    weight = 20
+
+</code></pre>
+
+<h3 id="博客文章内的配置">博客文章内的配置<a href="#博客文章内的配置" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>打开<code>myblog/archetypes/default.md</code>可添加以下默认选项：</p>
+
+<pre><code>title: &quot;{{ replace .Name &quot;-&quot; &quot; &quot; | title }}&quot;
+date: {{ .Date }}
+draft: true  #设置为false既可以编译成html，ture为本地修改
+comments: false
+images:
+markup: mmark
+</code></pre>
+
+<p>注意：许多博客上的配置语句是用等号，有可能会导致主题文件编译的时候出现错误，建议使用<code>:</code>来分隔</p>
+
+<h3 id="hugo上数学公式显示问题">Hugo上数学公式显示问题<a href="#hugo上数学公式显示问题" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>​   在markdown里编写的数学公式正常显示，到HTML网页中会出现不适配的现象，网上一般才用MathJax来进行渲染，但亲测配置起来麻烦，还不一定有效。建议在写包含数学公式的博文时使用 Mmark．只需要在 markdown 文件的 front matter 里加上一行：</p>
+
+<pre><code>markup: mmark
+</code></pre>
+
+<p>即可切换到 Mmark．推荐使用 Mmark 的原因只要是无需更多的配置就可以开始写数学公式了，数学公式全部用<strong>两个美元</strong>符号包围起来，就像这样 <code>$$ f(x) = \lim_{n \to \infty}x_n $$</code> 变可以在行内显示公式 <span  class="math">\( f(x) = \lim_{n \to \infty}x_n \)</span>  行间公式与行内公式是一样的，区别在于行间公式前后加上一个空行，这样就可以让 Mmark 自动判断你需要的是行内公式还是行间公式了，行间公式的例子：</p>
+
+<pre><code>$$
+f(x) = \lim_{n \to \infty}x_n
+$$
+</code></pre>
+
+<p>显示效果为：
+<span  class="math">\(
+f(x) = \lim_{n \to \infty}x_n
+\)</span></p>
+
+<h3 id="在hugo中设置">在Hugo中设置<a href="#在hugo中设置" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>这个很简单，只需要在 hugo 的主题目录里，加上一行代码到你的博文页面一定会包含的文件里即可．一般可以选择加入到 <code>themes/hermit/layouts/partials/footer.html</code> 里，这里的<code>hermit</code>是我使用的 hugo 主题名称．需要添加的一行代码为：</p>
+
+<pre><code>&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG&quot;&gt;&lt;/script&gt;
+
+</code></pre>
+
+<p>这样便可以顺利在hugo界面中愉快的输入数学公式啦！</p>
+
+<h3 id="将blog推送到github上">将Blog推送到GitHub上<a href="#将blog推送到github上" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>使用<code>hugo server -D</code>预览页面无误之后，可以正式发布网站供大家浏览，需要将blog文章里的<code>draft</code>改为<code>false</code>使用命令：</p>
+
+<pre><code>hugo --theme=hermit  --baseUrl=&quot;https://wuhongyui.github.io/&quot; --buildDrafts
+</code></pre>
+
+<p>可以在当前目录生成一个<code>/public</code>文件夹，只需要使用如下命令将<code>public</code>文件夹推送到GitHub上的<code>Repository</code>即可：</p>
+
+<pre><code>git init
+git add .
+git commit -m &quot;commit message&quot;
+git remote add origin https://github.com/ShaneTian/ShaneTian.github.io.git
+git push -u origin master
+</code></pre>
+
+<p>推送失败时使用<code>git push -u origin master -f</code>强制覆盖git仓库。</p>
+
+<h3 id="在博客中插入图片">在博客中插入图片<a href="#在博客中插入图片" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>使用markdown编写的博客文章中插入的图片并不能直接显示在博客网页里，因此需要在博客文件中手动新建文件夹<code>/myblog/static/images</code>来保存图片文件。</p>
+
+<p>在使用hugo命令生成博客网页时便会将图片文件添加到<code>public</code>文件夹下。</p>
+
+<pre><code>├── config.toml
+├── content
+│   ├── about
+│   ├── archives.md
+│   └── posts
+├── public
+│   ├── about
+│   ├── archives
+│   ├── categories
+│   ├── css
+│   ├── images # 这里就是static/imags目录下的文件
+│   ├── index.html
+│   ├── js
+│   ├── page
+│   ├── posts
+│   ├── tags
+│   └── true
+├── resources
+│   └── _gen
+├── static
+│   └── images  # 这个是新增的
+└── themes
+    └── hermit
+</code></pre>
+
+<p>线上怎么引入<code>pulic/images</code>中的图片，在你的博客文章中<code>content/posts/xxx.md</code>文章中使用路径<code>![](/images/xxx.jpg)</code>便可以在博客网站中显示引入的图片。</p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://wuhongyui.github.io/tags/build-blog">build blog</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>552 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2019-12-21 16:17 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://wuhongyui.github.io/posts/ubuntu18.04/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Ubuntu18.04 DeepLearning Environment Setup</span>
+			</a>
+			<a class="prev-post" href="https://wuhongyui.github.io/posts/tracking/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Tracking</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+</div>
+	</main>
+
+<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2021 <a href="https://wuhongyui.github.io/">拿了橘子跑</a> &#183; <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Wuen</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://wuhongyui.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+
+
+
+
+	<script src="https://wuhongyui.github.io/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js" integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>

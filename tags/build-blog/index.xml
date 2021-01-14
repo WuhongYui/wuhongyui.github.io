@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>build blog on 拿了橘子跑</title>
+    <link>https://wuhongyui.github.io/tags/build-blog/</link>
+    <description>Recent content in build blog on 拿了橘子跑</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Sat, 21 Dec 2019 16:17:36 +0800</lastBuildDate>
+    
+	<atom:link href="https://wuhongyui.github.io/tags/build-blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How to build blog by Hugo</title>
+      <link>https://wuhongyui.github.io/posts/buildblog/</link>
+      <pubDate>Sat, 21 Dec 2019 16:17:36 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/buildblog/</guid>
+      <description>Hugo 简介 ​ Hugo是一个用Go语言编写的静态站点生成器，hugo的易操作性和其拥有大量的主题库使其备受技术博客博主喜爱。记录一些自己亲手搭建博客的经验之谈。本文操作基于macos 下
+如何安装Hugo 如果你是macOs 用户可以使用homebrew 来安装：
+brew install hugo 如果你是Ubuntu 或者其他linux 用户可以使用apt 来安装：
+sudo apt-get install hugo  如果是Windows 用户，使用scoop 快速安装：
+scoop install hugo  使用包管理工具，基本上可以实现一条代码快速安装，具体可以参考Hugo官网
+Hugo官网
+生成博客文件 自己选择合适的文件夹下使用终端输入命令：
+hugo new site myblog  此命令会在当前文件夹下建立一个名叫myblog的文件夹；
+接下来就是选择你喜爱的主题hugo主题可以随意挑一个自己喜爱的主题使用，也可以在github中搜索你想要的主题库，使用命令：
+cd themes git clone https://github.com/Track3/hermit.git themes/hermit  myblog/content文件夹是存放你博客文章的地方，在此新建.md文件
+hugo new posts/XXXX.md  可以在XXXX.md文件中使用markdown格式编写一些博客内容，使用命令：
+hugo server -t 主题名 -D  进行主题预览
+配置主题，打开myblog/config.toml每个主题有不同的配置：
+baseURL = &amp;quot;https://wuhongyui.github.io&amp;quot; languageCode = &amp;quot;en-us&amp;quot; defaultContentLanguage = &amp;quot;en&amp;quot; title = &amp;quot;拿了橘子跑&amp;quot; theme = &amp;quot;hermit&amp;quot; # enableGitInfo = true pygmentsCodefences = true pygmentsUseClasses = true # hasCJKLanguage = true # If Chinese/Japanese/Korean is your main content language, enable this to make wordCount works right.</description>
+    </item>
+    
+  </channel>
+</rss>

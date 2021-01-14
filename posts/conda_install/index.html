@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Conda virtual env">
+<meta itemprop="description" content="在conda的指定虚拟环境中使用pip安装包的问题 比如，虚拟环境deep_Sort，一般先激活虚拟环境
+conda activate deep_sort  在 conda中安装包应该使用
+conda install package  我们来看下在目前有多少 pip 命令：
+(deep_sort) ➜ deep_sort_REID_pytorch-master where pip /Users/hongyi/anaconda3/bin/pip /Users/hongyi/anaconda3/envs/deep_sort/bin/pip /Users/hongyi/anaconda3/bin/pip /usr/local/bin/pip  我们要在deep_sort中安装 numpy包（随机举例用的包）的话，应该这样：
+(deep_sort) ➜ deep_sort_REID_pytorch-master /Users/hongyi/anaconda3/envs/deep_sort/bin/pip install numpy  这样每次在虚拟环境使用pip的时候都需要虚拟环境内部的pip命令路径：/Users/hongyi/anaconda3/envs/deep_sort/bin/pip，这样显得非常繁琐
+如果想在虚拟环境内部使用简单的pip install package调用虚拟环境内部的pip命令的话，只需要我们在创建虚拟环境的时候指定pip只对虚拟环境生效，而不影响全局库：
+conda create -n 虚拟环境名 pip pysocks   pip：是为了指定pip命令只对当前虚拟环境生效 pysocks：是pip命令的依赖，如果不写，在虚拟环境内使用 pip命令的时候会出现Missing dependencies for SOCKS support.的报错。  conda默认创建的虚拟环境是如果安装 python的话是默认安装 pip但是没有默认安装 pysocks的，所以在虚拟环境下直接使用 pip会报Missing dependencies for SOCKS support.
+解决方法：
+conda install pysocks  之后再使用 pip命令就会默认使用虚拟环境中的 pip命令（/Users/hongyi/anaconda3/envs/deep_sort/bin/pip）">
+
+
+<meta itemprop="datePublished" content="2020-04-29T21:29:14&#43;08:00" />
+<meta itemprop="dateModified" content="2020-04-29T21:29:14&#43;08:00" />
+<meta itemprop="wordCount" content="102">
+
+
+
+<meta itemprop="keywords" content="untagged," />
+<meta property="og:title" content="Conda virtual env" />
+<meta property="og:description" content="在conda的指定虚拟环境中使用pip安装包的问题 比如，虚拟环境deep_Sort，一般先激活虚拟环境
+conda activate deep_sort  在 conda中安装包应该使用
+conda install package  我们来看下在目前有多少 pip 命令：
+(deep_sort) ➜ deep_sort_REID_pytorch-master where pip /Users/hongyi/anaconda3/bin/pip /Users/hongyi/anaconda3/envs/deep_sort/bin/pip /Users/hongyi/anaconda3/bin/pip /usr/local/bin/pip  我们要在deep_sort中安装 numpy包（随机举例用的包）的话，应该这样：
+(deep_sort) ➜ deep_sort_REID_pytorch-master /Users/hongyi/anaconda3/envs/deep_sort/bin/pip install numpy  这样每次在虚拟环境使用pip的时候都需要虚拟环境内部的pip命令路径：/Users/hongyi/anaconda3/envs/deep_sort/bin/pip，这样显得非常繁琐
+如果想在虚拟环境内部使用简单的pip install package调用虚拟环境内部的pip命令的话，只需要我们在创建虚拟环境的时候指定pip只对虚拟环境生效，而不影响全局库：
+conda create -n 虚拟环境名 pip pysocks   pip：是为了指定pip命令只对当前虚拟环境生效 pysocks：是pip命令的依赖，如果不写，在虚拟环境内使用 pip命令的时候会出现Missing dependencies for SOCKS support.的报错。  conda默认创建的虚拟环境是如果安装 python的话是默认安装 pip但是没有默认安装 pysocks的，所以在虚拟环境下直接使用 pip会报Missing dependencies for SOCKS support.
+解决方法：
+conda install pysocks  之后再使用 pip命令就会默认使用虚拟环境中的 pip命令（/Users/hongyi/anaconda3/envs/deep_sort/bin/pip）" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuhongyui.github.io/posts/conda_install/" />
+<meta property="article:published_time" content="2020-04-29T21:29:14+08:00" />
+<meta property="article:modified_time" content="2020-04-29T21:29:14+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Conda virtual env"/>
+<meta name="twitter:description" content="在conda的指定虚拟环境中使用pip安装包的问题 比如，虚拟环境deep_Sort，一般先激活虚拟环境
+conda activate deep_sort  在 conda中安装包应该使用
+conda install package  我们来看下在目前有多少 pip 命令：
+(deep_sort) ➜ deep_sort_REID_pytorch-master where pip /Users/hongyi/anaconda3/bin/pip /Users/hongyi/anaconda3/envs/deep_sort/bin/pip /Users/hongyi/anaconda3/bin/pip /usr/local/bin/pip  我们要在deep_sort中安装 numpy包（随机举例用的包）的话，应该这样：
+(deep_sort) ➜ deep_sort_REID_pytorch-master /Users/hongyi/anaconda3/envs/deep_sort/bin/pip install numpy  这样每次在虚拟环境使用pip的时候都需要虚拟环境内部的pip命令路径：/Users/hongyi/anaconda3/envs/deep_sort/bin/pip，这样显得非常繁琐
+如果想在虚拟环境内部使用简单的pip install package调用虚拟环境内部的pip命令的话，只需要我们在创建虚拟环境的时候指定pip只对虚拟环境生效，而不影响全局库：
+conda create -n 虚拟环境名 pip pysocks   pip：是为了指定pip命令只对当前虚拟环境生效 pysocks：是pip命令的依赖，如果不写，在虚拟环境内使用 pip命令的时候会出现Missing dependencies for SOCKS support.的报错。  conda默认创建的虚拟环境是如果安装 python的话是默认安装 pip但是没有默认安装 pysocks的，所以在虚拟环境下直接使用 pip会报Missing dependencies for SOCKS support.
+解决方法：
+conda install pysocks  之后再使用 pip命令就会默认使用虚拟环境中的 pip命令（/Users/hongyi/anaconda3/envs/deep_sort/bin/pip）"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Conda virtual env</title>
+	<link rel="stylesheet" href="https://wuhongyui.github.io/css/style.min.657bcb7af31123e4156b1a3d2ff60a636717e54ead74f882136b5114cf72b55e.css" integrity="sha256-ZXvLevMRI+QVaxo9L/YKY2cX5U6tdPiCE2tRFM9ytV4=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://wuhongyui.github.io/">拿了橘子跑</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://wuhongyui.github.io/posts/">Article</a>
+				<a href="https://wuhongyui.github.io/about-hugo/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://twitter.com/" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="https://instagram.com/" target="_blank" rel="noopener me" title="Instagram"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg></a><a href="https://github.com/wuhongyui" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://wuhongyui.github.io/posts/">Article</a></li>
+			<li><a href="https://wuhongyui.github.io/about-hugo/">About</a></li>
+		</ul>
+	</div>
+
+
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 29, 2020</span></div>
+				<h1>Conda virtual env</h1>
+			</header>
+			<div class="content">
+				
+
+<h2 id="在conda的指定虚拟环境中使用pip安装包的问题">在conda的指定虚拟环境中使用pip安装包的问题<a href="#在conda的指定虚拟环境中使用pip安装包的问题" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>比如，虚拟环境<code>deep_Sort</code>，一般先激活虚拟环境</p>
+
+<pre><code>conda activate deep_sort
+</code></pre>
+
+<p>在 <code>conda</code>中安装包应该使用</p>
+
+<pre><code>conda install package
+</code></pre>
+
+<p>我们来看下在目前有多少 <code>pip</code> 命令：</p>
+
+<pre><code>(deep_sort) ➜  deep_sort_REID_pytorch-master where pip
+/Users/hongyi/anaconda3/bin/pip
+/Users/hongyi/anaconda3/envs/deep_sort/bin/pip
+/Users/hongyi/anaconda3/bin/pip
+/usr/local/bin/pip
+</code></pre>
+
+<p>我们要在<code>deep_sort</code>中安装 <code>numpy</code>包（随机举例用的包）的话，应该这样：</p>
+
+<pre><code>(deep_sort) ➜  deep_sort_REID_pytorch-master /Users/hongyi/anaconda3/envs/deep_sort/bin/pip install numpy
+</code></pre>
+
+<p>这样每次在虚拟环境使用<code>pip</code>的时候都需要虚拟环境内部的<code>pip</code>命令路径：<code>/Users/hongyi/anaconda3/envs/deep_sort/bin/pip</code>，这样显得非常繁琐</p>
+
+<p>如果想在虚拟环境内部使用简单的<code>pip install package</code>调用虚拟环境内部的<code>pip</code>命令的话，只需要我们在创建虚拟环境的时候指定<code>pip</code>只对虚拟环境生效，而不影响全局库：</p>
+
+<pre><code>conda create -n 虚拟环境名 pip pysocks
+</code></pre>
+
+<ul>
+<li><code>pip</code>：是为了指定<code>pip</code>命令只对当前虚拟环境生效</li>
+<li><code>pysocks</code>：是<code>pip</code>命令的依赖，如果不写，在虚拟环境内使用 <code>pip</code>命令的时候会出现<code>Missing dependencies for SOCKS support.</code>的报错。</li>
+</ul>
+
+<p><code>conda</code>默认创建的虚拟环境是如果安装 <code>python</code>的话是默认安装 <code>pip</code>但是没有默认安装 <code>pysocks</code>的，所以在虚拟环境下直接使用 <code>pip</code>会报<code>Missing dependencies for SOCKS support.</code></p>
+
+<p>解决方法：</p>
+
+<pre><code>conda install pysocks
+</code></pre>
+
+<p>之后再使用 <code>pip</code>命令就会默认使用虚拟环境中的 <code>pip</code>命令（<code>/Users/hongyi/anaconda3/envs/deep_sort/bin/pip</code>）</p>
+
+<p><strong>所以在 <code>conda</code>中使用 <code>pip</code>需要先开启虚拟环境，并确保该虚拟环境安装了 <code>pip</code>、<code>pysocks</code>包，如果没有安装这两个包，请使用 <code>conda</code>命令安装。</strong></p>
+
+<h4 id="conda换源">conda换源<a href="#conda换源" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>使用如下命令</p>
+
+<p>1)清华源(TUNA)</p>
+
+<pre><code>conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+
+conda config --set show_channel_urls yes
+</code></pre>
+
+<p>2)中科大源(USTC)</p>
+
+<pre><code>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/free/
+
+conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/main/
+
+conda config --set show_channel_urls yes
+</code></pre>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://wuhongyui.github.io/tags/untagged">untagged</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>102 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-04-29 21:29 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://wuhongyui.github.io/posts/opencv_configuration/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Opencv Configuration on MacOS</span>
+			</a>
+			<a class="prev-post" href="https://wuhongyui.github.io/posts/deepsort/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Fundamentals of target tracking algorithm---DeepSort</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+</div>
+	</main>
+
+<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2021 <a href="https://wuhongyui.github.io/">拿了橘子跑</a> &#183; <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Wuen</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://wuhongyui.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+
+
+
+
+	<script src="https://wuhongyui.github.io/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js" integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>

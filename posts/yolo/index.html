@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Learning YOLO detection algorithm">
+<meta itemprop="description" content="一、Yolo的思想 ​ 简单来说目标检测算法的思想首先就分为两个步骤，第一个任务是定位、第二个任务则是分类。目标检测就是要找出图片中的物体，并且使用bounding box将物体框出来。而bounding box可以使用左上角的坐标\((x,y)\)与矩形的宽和高\((h,w)\)表示。直观的想法是将一张图片喂给神经网络，然后输出\((x, y, h, w)\)四个值就好，但是，在一张图片中有两个或者多个物体，此时网络的输出维度则没法固定，因此直观的方法是行不通的。
+​ 既然输出需要固定维度，yolo采用了一个固定的输出维度，使其足够大可以包含图片中所有的检测物体，yolo固定维度的办法是把模型的输出划分成网格形状，每个网格中的cell（格子）都可以输出物体的类别和bounding box的坐标，如下图所示：
+
+设置模型的训练目标，将输入图像按照模型的输出网格（比如7x7大小）进行划分，划分之后就有很多小cell了。我们再看图片中物体的中心是落在哪个cell里面，落在哪个cell哪个cell就负责预测这个物体。比如下图中，狗的中心落在了红色cell内，则这个cell负责预测狗。
+假设你需要检测20个类\((C=20)\)，则将图像划分成\(S\times S\)个网格，每个cell预测两个bounding box\((B = 2)\)每个bounding box有五个参数值\(x,y,w,h,confidence\space sorce\)，因此模型的输出则是一个\(S\times S\times (B*5 &#43; C)\)的Tensor。
+
+分两个阶段来设置“目标中心落在哪个cell，就用哪个cell来检测”：
+ 训练阶段，如果物体中心落在这个cell，那么就给这个cell打上这个物体的label（包括xywh和类别）。也就是说我们是通过这种方式来设置训练的label的。换言之，我们在训练阶段，就教会cell要预测图像中的哪个物体。 测试阶段。因为你在训练阶段已经教会了cell去预测中心落在该cell中的物体，那么cell自然也会这么做。  以上就是yolo的核心思想，也就是说在训练阶段给模型中的各个cell打上label，在训练阶段告诉模型需要预测什么，然后测试阶段才能按照你训练阶段教它的去做。
+二、模型的架构 模型的网络架构见下图：
+
+从图中可以看到，yolo网络的输出的网格是7x7大小的，另外，输出的channel数目为30。一个cell内，前20个元素是类别概率值，然后2个元素是边界框confidence，最后8个元素是边界框的 \((x, y,w,h) \)。
+
+也就是说，每个cell有两个predictor，每个predictor分别预测一个bounding box的xywh和相应的confidence。但分类部分的预测却是共享的。正因为这个，同个cell是没办法预测多个目标的。yolov2则解决了这个问题，需要预测两个bounding box的原因是？这个还是要从训练阶段怎么给两个predictor安排训练目标来说。在训练的时候会在线地计算每个predictor预测的bounding box和ground truth的IOU，计算出来的IOU大的那个predictor，就会负责预测这个物体，另外一个则不预测。
+三、模型的输出 confidence预测 confidence表示：在cell预测的bounding box包含某一物体的置信度有多高，并且该bounding box预测的准确度有多大，用公式表示就是：\(Pr(Object)*IOU^{truth}_{pred}\)
+分两个阶段来解释confidence公式：
+ 在训练阶段，我们需要给每一个输出bounding box的confidence打上label，也就是，如果一个cell中包含一个物体的中心，就把\(Pr(Object)=1\)，因此confidence就变成了\(1\times IOU^{truth}_{pred}\)注意这个IOU是在训练过程中不断计算出来的，网络在训练过程中预测的bounding box每次都不一样，所以和ground truth计算出来的IOU每次也会不一样。若一个cell中不包含一个物体的中心，则\(Pr(Object)=0\)，因此confidence的值为0. 在预测阶段，因为训练时给的label就是一个值，因此预测是模型只吐出一个confidence的值。  bounding box预测 bounding box预测包括了\(x,y,w,h\)，\(x, y\)表示bounding box中心相对于cell左上角坐标的偏移量---通过偏移量公式计算:\((X*S/width-cell_x, Y*S/height-cell_y)\)，宽高都相对于整张图片的宽高进行归一化。
+xywh为什么要这么表示呢？实际上经过这么表示之后，xywh都归一化了，它们的值都是在0-1之间。我们通常做回归问题的时候都会将输出进行归一化，否则可能导致各个输出维度的取值范围差别很大，进而导致训练的时候，网络更关注数值大的维度。因为数值大的维度，算loss相应会比较大，为了让这个loss减小，那么网络就会尽量学习让这个维度loss变小，最终导致区别对待。
+类别预测 除以上两个预测输出之外，还有物体类别概率输出，物体类别是一个条件概率\(Pr(Class_i|Object)\)也可以分两个阶段来看：
+ 对于训练阶段，也就是打label阶段，怎么打label呢？对于一个cell，如果物体的中心落在了这个cell，那么我们给它打上这个物体的类别label，并设置概率为1。换句话说，这个概率是存在一个条件的，这个条件就是cell存在物体。 对于预测阶段，网络直接输出\(Pr(Class_i|Object)\)，代表了cell中有物体的条件下的概率，论文中还将这个值乘上了confidence，即\(Pr(Class_i|Object)\times Pr(Object)*IOU^{truth}_{pred}\)。这样保证了即使cell中不存在某个物体，类别预测的概率值可能为\(Pr(Class_i|Object)=0.">
+
+
+<meta itemprop="datePublished" content="2020-01-08T20:31:44&#43;08:00" />
+<meta itemprop="dateModified" content="2020-01-08T20:31:44&#43;08:00" />
+<meta itemprop="wordCount" content="294">
+
+
+
+<meta itemprop="keywords" content="yolo detection," />
+<meta property="og:title" content="Learning YOLO detection algorithm" />
+<meta property="og:description" content="一、Yolo的思想 ​ 简单来说目标检测算法的思想首先就分为两个步骤，第一个任务是定位、第二个任务则是分类。目标检测就是要找出图片中的物体，并且使用bounding box将物体框出来。而bounding box可以使用左上角的坐标\((x,y)\)与矩形的宽和高\((h,w)\)表示。直观的想法是将一张图片喂给神经网络，然后输出\((x, y, h, w)\)四个值就好，但是，在一张图片中有两个或者多个物体，此时网络的输出维度则没法固定，因此直观的方法是行不通的。
+​ 既然输出需要固定维度，yolo采用了一个固定的输出维度，使其足够大可以包含图片中所有的检测物体，yolo固定维度的办法是把模型的输出划分成网格形状，每个网格中的cell（格子）都可以输出物体的类别和bounding box的坐标，如下图所示：
+
+设置模型的训练目标，将输入图像按照模型的输出网格（比如7x7大小）进行划分，划分之后就有很多小cell了。我们再看图片中物体的中心是落在哪个cell里面，落在哪个cell哪个cell就负责预测这个物体。比如下图中，狗的中心落在了红色cell内，则这个cell负责预测狗。
+假设你需要检测20个类\((C=20)\)，则将图像划分成\(S\times S\)个网格，每个cell预测两个bounding box\((B = 2)\)每个bounding box有五个参数值\(x,y,w,h,confidence\space sorce\)，因此模型的输出则是一个\(S\times S\times (B*5 &#43; C)\)的Tensor。
+
+分两个阶段来设置“目标中心落在哪个cell，就用哪个cell来检测”：
+ 训练阶段，如果物体中心落在这个cell，那么就给这个cell打上这个物体的label（包括xywh和类别）。也就是说我们是通过这种方式来设置训练的label的。换言之，我们在训练阶段，就教会cell要预测图像中的哪个物体。 测试阶段。因为你在训练阶段已经教会了cell去预测中心落在该cell中的物体，那么cell自然也会这么做。  以上就是yolo的核心思想，也就是说在训练阶段给模型中的各个cell打上label，在训练阶段告诉模型需要预测什么，然后测试阶段才能按照你训练阶段教它的去做。
+二、模型的架构 模型的网络架构见下图：
+
+从图中可以看到，yolo网络的输出的网格是7x7大小的，另外，输出的channel数目为30。一个cell内，前20个元素是类别概率值，然后2个元素是边界框confidence，最后8个元素是边界框的 \((x, y,w,h) \)。
+
+也就是说，每个cell有两个predictor，每个predictor分别预测一个bounding box的xywh和相应的confidence。但分类部分的预测却是共享的。正因为这个，同个cell是没办法预测多个目标的。yolov2则解决了这个问题，需要预测两个bounding box的原因是？这个还是要从训练阶段怎么给两个predictor安排训练目标来说。在训练的时候会在线地计算每个predictor预测的bounding box和ground truth的IOU，计算出来的IOU大的那个predictor，就会负责预测这个物体，另外一个则不预测。
+三、模型的输出 confidence预测 confidence表示：在cell预测的bounding box包含某一物体的置信度有多高，并且该bounding box预测的准确度有多大，用公式表示就是：\(Pr(Object)*IOU^{truth}_{pred}\)
+分两个阶段来解释confidence公式：
+ 在训练阶段，我们需要给每一个输出bounding box的confidence打上label，也就是，如果一个cell中包含一个物体的中心，就把\(Pr(Object)=1\)，因此confidence就变成了\(1\times IOU^{truth}_{pred}\)注意这个IOU是在训练过程中不断计算出来的，网络在训练过程中预测的bounding box每次都不一样，所以和ground truth计算出来的IOU每次也会不一样。若一个cell中不包含一个物体的中心，则\(Pr(Object)=0\)，因此confidence的值为0. 在预测阶段，因为训练时给的label就是一个值，因此预测是模型只吐出一个confidence的值。  bounding box预测 bounding box预测包括了\(x,y,w,h\)，\(x, y\)表示bounding box中心相对于cell左上角坐标的偏移量---通过偏移量公式计算:\((X*S/width-cell_x, Y*S/height-cell_y)\)，宽高都相对于整张图片的宽高进行归一化。
+xywh为什么要这么表示呢？实际上经过这么表示之后，xywh都归一化了，它们的值都是在0-1之间。我们通常做回归问题的时候都会将输出进行归一化，否则可能导致各个输出维度的取值范围差别很大，进而导致训练的时候，网络更关注数值大的维度。因为数值大的维度，算loss相应会比较大，为了让这个loss减小，那么网络就会尽量学习让这个维度loss变小，最终导致区别对待。
+类别预测 除以上两个预测输出之外，还有物体类别概率输出，物体类别是一个条件概率\(Pr(Class_i|Object)\)也可以分两个阶段来看：
+ 对于训练阶段，也就是打label阶段，怎么打label呢？对于一个cell，如果物体的中心落在了这个cell，那么我们给它打上这个物体的类别label，并设置概率为1。换句话说，这个概率是存在一个条件的，这个条件就是cell存在物体。 对于预测阶段，网络直接输出\(Pr(Class_i|Object)\)，代表了cell中有物体的条件下的概率，论文中还将这个值乘上了confidence，即\(Pr(Class_i|Object)\times Pr(Object)*IOU^{truth}_{pred}\)。这样保证了即使cell中不存在某个物体，类别预测的概率值可能为\(Pr(Class_i|Object)=0." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuhongyui.github.io/posts/yolo/" />
+<meta property="article:published_time" content="2020-01-08T20:31:44+08:00" />
+<meta property="article:modified_time" content="2020-01-08T20:31:44+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Learning YOLO detection algorithm"/>
+<meta name="twitter:description" content="一、Yolo的思想 ​ 简单来说目标检测算法的思想首先就分为两个步骤，第一个任务是定位、第二个任务则是分类。目标检测就是要找出图片中的物体，并且使用bounding box将物体框出来。而bounding box可以使用左上角的坐标\((x,y)\)与矩形的宽和高\((h,w)\)表示。直观的想法是将一张图片喂给神经网络，然后输出\((x, y, h, w)\)四个值就好，但是，在一张图片中有两个或者多个物体，此时网络的输出维度则没法固定，因此直观的方法是行不通的。
+​ 既然输出需要固定维度，yolo采用了一个固定的输出维度，使其足够大可以包含图片中所有的检测物体，yolo固定维度的办法是把模型的输出划分成网格形状，每个网格中的cell（格子）都可以输出物体的类别和bounding box的坐标，如下图所示：
+
+设置模型的训练目标，将输入图像按照模型的输出网格（比如7x7大小）进行划分，划分之后就有很多小cell了。我们再看图片中物体的中心是落在哪个cell里面，落在哪个cell哪个cell就负责预测这个物体。比如下图中，狗的中心落在了红色cell内，则这个cell负责预测狗。
+假设你需要检测20个类\((C=20)\)，则将图像划分成\(S\times S\)个网格，每个cell预测两个bounding box\((B = 2)\)每个bounding box有五个参数值\(x,y,w,h,confidence\space sorce\)，因此模型的输出则是一个\(S\times S\times (B*5 &#43; C)\)的Tensor。
+
+分两个阶段来设置“目标中心落在哪个cell，就用哪个cell来检测”：
+ 训练阶段，如果物体中心落在这个cell，那么就给这个cell打上这个物体的label（包括xywh和类别）。也就是说我们是通过这种方式来设置训练的label的。换言之，我们在训练阶段，就教会cell要预测图像中的哪个物体。 测试阶段。因为你在训练阶段已经教会了cell去预测中心落在该cell中的物体，那么cell自然也会这么做。  以上就是yolo的核心思想，也就是说在训练阶段给模型中的各个cell打上label，在训练阶段告诉模型需要预测什么，然后测试阶段才能按照你训练阶段教它的去做。
+二、模型的架构 模型的网络架构见下图：
+
+从图中可以看到，yolo网络的输出的网格是7x7大小的，另外，输出的channel数目为30。一个cell内，前20个元素是类别概率值，然后2个元素是边界框confidence，最后8个元素是边界框的 \((x, y,w,h) \)。
+
+也就是说，每个cell有两个predictor，每个predictor分别预测一个bounding box的xywh和相应的confidence。但分类部分的预测却是共享的。正因为这个，同个cell是没办法预测多个目标的。yolov2则解决了这个问题，需要预测两个bounding box的原因是？这个还是要从训练阶段怎么给两个predictor安排训练目标来说。在训练的时候会在线地计算每个predictor预测的bounding box和ground truth的IOU，计算出来的IOU大的那个predictor，就会负责预测这个物体，另外一个则不预测。
+三、模型的输出 confidence预测 confidence表示：在cell预测的bounding box包含某一物体的置信度有多高，并且该bounding box预测的准确度有多大，用公式表示就是：\(Pr(Object)*IOU^{truth}_{pred}\)
+分两个阶段来解释confidence公式：
+ 在训练阶段，我们需要给每一个输出bounding box的confidence打上label，也就是，如果一个cell中包含一个物体的中心，就把\(Pr(Object)=1\)，因此confidence就变成了\(1\times IOU^{truth}_{pred}\)注意这个IOU是在训练过程中不断计算出来的，网络在训练过程中预测的bounding box每次都不一样，所以和ground truth计算出来的IOU每次也会不一样。若一个cell中不包含一个物体的中心，则\(Pr(Object)=0\)，因此confidence的值为0. 在预测阶段，因为训练时给的label就是一个值，因此预测是模型只吐出一个confidence的值。  bounding box预测 bounding box预测包括了\(x,y,w,h\)，\(x, y\)表示bounding box中心相对于cell左上角坐标的偏移量---通过偏移量公式计算:\((X*S/width-cell_x, Y*S/height-cell_y)\)，宽高都相对于整张图片的宽高进行归一化。
+xywh为什么要这么表示呢？实际上经过这么表示之后，xywh都归一化了，它们的值都是在0-1之间。我们通常做回归问题的时候都会将输出进行归一化，否则可能导致各个输出维度的取值范围差别很大，进而导致训练的时候，网络更关注数值大的维度。因为数值大的维度，算loss相应会比较大，为了让这个loss减小，那么网络就会尽量学习让这个维度loss变小，最终导致区别对待。
+类别预测 除以上两个预测输出之外，还有物体类别概率输出，物体类别是一个条件概率\(Pr(Class_i|Object)\)也可以分两个阶段来看：
+ 对于训练阶段，也就是打label阶段，怎么打label呢？对于一个cell，如果物体的中心落在了这个cell，那么我们给它打上这个物体的类别label，并设置概率为1。换句话说，这个概率是存在一个条件的，这个条件就是cell存在物体。 对于预测阶段，网络直接输出\(Pr(Class_i|Object)\)，代表了cell中有物体的条件下的概率，论文中还将这个值乘上了confidence，即\(Pr(Class_i|Object)\times Pr(Object)*IOU^{truth}_{pred}\)。这样保证了即使cell中不存在某个物体，类别预测的概率值可能为\(Pr(Class_i|Object)=0."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Learning YOLO detection algorithm</title>
+	<link rel="stylesheet" href="https://wuhongyui.github.io/css/style.min.657bcb7af31123e4156b1a3d2ff60a636717e54ead74f882136b5114cf72b55e.css" integrity="sha256-ZXvLevMRI+QVaxo9L/YKY2cX5U6tdPiCE2tRFM9ytV4=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://wuhongyui.github.io/">拿了橘子跑</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://wuhongyui.github.io/posts/">Article</a>
+				<a href="https://wuhongyui.github.io/about-hugo/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://twitter.com/" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="https://instagram.com/" target="_blank" rel="noopener me" title="Instagram"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg></a><a href="https://github.com/wuhongyui" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://wuhongyui.github.io/posts/">Article</a></li>
+			<li><a href="https://wuhongyui.github.io/about-hugo/">About</a></li>
+		</ul>
+	</div>
+
+
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jan 8, 2020</span></div>
+				<h1>Learning YOLO detection algorithm</h1>
+			</header>
+			<div class="content">
+				<h3 id="一yolo的思想">一、Yolo的思想<a href="#一yolo的思想" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>​   简单来说目标检测算法的思想首先就分为两个步骤，第一个任务是定位、第二个任务则是分类。目标检测就是要找出图片中的物体，并且使用bounding box将物体框出来。而bounding box可以使用左上角的坐标<span  class="math">\((x,y)\)</span>与矩形的宽和高<span  class="math">\((h,w)\)</span>表示。直观的想法是将一张图片喂给神经网络，然后输出<span  class="math">\((x, y, h, w)\)</span>四个值就好，但是，在一张图片中有两个或者多个物体，此时网络的输出维度则没法固定，因此直观的方法是行不通的。</p>
+
+<p>​   既然输出需要固定维度，yolo采用了一个固定的输出维度，使其足够大可以包含图片中所有的检测物体，yolo固定维度的办法是把模型的输出划分成网格形状，每个网格中的cell（格子）都可以输出物体的类别和bounding box的坐标，如下图所示：</p>
+
+<p><figure><img src="/images/yolo1.jpg" alt=""></figure></p>
+
+<p>设置模型的训练目标，将输入图像按照模型的输出网格（比如7x7大小）进行划分，划分之后就有很多小cell了。我们再看图片中物体的中心是落在哪个cell里面，落在哪个cell哪个cell就负责预测这个物体。比如下图中，狗的中心落在了红色cell内，则这个cell负责预测狗。</p>
+
+<p>假设你需要检测20个类<span  class="math">\((C=20)\)</span>，则将图像划分成<span  class="math">\(S\times S\)</span>个网格，每个cell预测两个bounding box<span  class="math">\((B = 2)\)</span>每个bounding box有五个参数值<span  class="math">\(x,y,w,h,confidence\space sorce\)</span>，因此模型的输出则是一个<span  class="math">\(S\times S\times (B*5 + C)\)</span>的Tensor。</p>
+
+<p><figure><img src="/images/yolo2.jpg" alt=""></figure></p>
+
+<p>分两个阶段来设置“目标中心落在哪个cell，就用哪个cell来检测”：</p>
+
+<ol>
+<li>训练阶段，如果物体中心落在这个cell，那么就给这个cell打上这个物体的label（包括xywh和类别）。也就是说我们是通过这种方式来设置训练的label的。换言之，我们在训练阶段，就教会cell要预测图像中的哪个物体。</li>
+<li>测试阶段。因为你在训练阶段已经教会了cell去预测中心落在该cell中的物体，那么cell自然也会这么做。</li>
+</ol>
+
+<p>以上就是yolo的核心思想，也就是说在训练阶段给模型中的各个cell打上label，在训练阶段告诉模型需要预测什么，然后测试阶段才能按照你训练阶段教它的去做。</p>
+
+<h3 id="二模型的架构">二、模型的架构<a href="#二模型的架构" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>模型的网络架构见下图：</p>
+
+<p><figure><img src="/images/yolo3.jpg" alt=""></figure></p>
+
+<p>从图中可以看到，yolo网络的输出的网格是7x7大小的，另外，输出的channel数目为30。一个cell内，前20个元素是类别概率值，然后2个元素是边界框confidence，最后8个元素是边界框的 <span  class="math">\((x, y,w,h) \)</span>。</p>
+
+<p><figure><img src="/images/yolo4.jpg" alt=""></figure></p>
+
+<p>也就是说，每个cell有两个predictor，每个predictor分别预测一个bounding box的xywh和相应的confidence。但分类部分的预测却是共享的。正因为这个，同个cell是没办法预测多个目标的。yolov2则解决了这个问题，需要预测两个bounding box的原因是？<strong>这个还是要从训练阶段怎么给两个predictor安排训练目标来说。在训练的时候会在线地计算每个predictor预测的bounding box和ground truth的IOU，计算出来的IOU大的那个predictor，就会负责预测这个物体，另外一个则不预测。</strong></p>
+
+<h3 id="三模型的输出">三、模型的输出<a href="#三模型的输出" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<h4 id="confidence预测">confidence预测<a href="#confidence预测" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>confidence表示：在cell预测的bounding box包含某一物体的置信度有多高，并且该bounding box预测的准确度有多大，用公式表示就是：<span  class="math">\(Pr(Object)*IOU^{truth}_{pred}\)</span></p>
+
+<p>分两个阶段来解释confidence公式：</p>
+
+<ol>
+<li>在训练阶段，我们需要给每一个输出bounding box的confidence打上label，也就是，如果一个cell中包含一个物体的中心，就把<span  class="math">\(Pr(Object)=1\)</span>，因此confidence就变成了<span  class="math">\(1\times IOU^{truth}_{pred}\)</span>注意这个IOU是在训练过程中不断计算出来的，网络在训练过程中预测的bounding box每次都不一样，所以和ground truth计算出来的IOU每次也会不一样。若一个cell中不包含一个物体的中心，则<span  class="math">\(Pr(Object)=0\)</span>，因此confidence的值为0.</li>
+<li>在预测阶段，因为训练时给的label就是一个值，因此预测是模型只吐出一个confidence的值。</li>
+</ol>
+
+<h4 id="bounding-box预测">bounding box预测<a href="#bounding-box预测" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>bounding box预测包括了<span  class="math">\(x,y,w,h\)</span>，<span  class="math">\(x, y\)</span>表示bounding box中心相对于cell左上角坐标的偏移量---通过偏移量公式计算:<span  class="math">\((X*S/width-cell_x, Y*S/height-cell_y)\)</span>，宽高都相对于整张图片的宽高进行归一化。</p>
+
+<p>xywh为什么要这么表示呢？实际上经过这么表示之后，xywh都归一化了，它们的值都是在0-1之间。我们通常做回归问题的时候都会将输出进行归一化，否则可能导致各个输出维度的取值范围差别很大，进而导致训练的时候，网络更关注数值大的维度。因为数值大的维度，算loss相应会比较大，为了让这个loss减小，那么网络就会尽量学习让这个维度loss变小，最终导致区别对待。</p>
+
+<h4 id="类别预测">类别预测<a href="#类别预测" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>除以上两个预测输出之外，还有物体类别概率输出，物体类别是一个条件概率<span  class="math">\(Pr(Class_i|Object)\)</span>也可以分两个阶段来看：</p>
+
+<ol>
+<li>对于训练阶段，也就是打label阶段，怎么打label呢？对于一个cell，如果物体的中心落在了这个cell，那么我们给它打上这个物体的类别label，并设置概率为1。换句话说，这个概率是存在一个条件的，这个条件就是cell存在物体。</li>
+<li>对于预测阶段，网络直接输出<span  class="math">\(Pr(Class_i|Object)\)</span>，代表了cell中有物体的条件下的概率，论文中还将这个值乘上了confidence，即<span  class="math">\(Pr(Class_i|Object)\times Pr(Object)*IOU^{truth}_{pred}\)</span>。这样保证了即使cell中不存在某个物体，类别预测的概率值可能为<span  class="math">\(Pr(Class_i|Object)=0.9\)</span>，但与<span  class="math">\(confidence=0\)</span>相乘之后便为0，这个是很合理的，因为你得确保cell中有物体（即confidence大），你算类别概率才有意义。</li>
+</ol>
+
+<h4 id="loss-function">Loss Function<a href="#loss-function" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p><figure><img src="/images/yolo5.jpg" alt=""></figure></p>
+
+<p>yolo的损失函数，定位误差和分类误差的权重不应该相同，由于图像中，有许多网格不包含物体，他们的confidence score为0，这样那些包含物体的cell的梯度则有很大优势，导致模型的不稳定，yolo增加了bounding box的坐标预测权重减少了不包含物体对象confidence的权重，因此设定了两个参数<span  class="math">\(\lambda_{coord}=5\)</span>和<span  class="math">\(\lambda=0.5\)</span>，同时，我们的loss应该能够体现出相同的误差对于big box及small box的重要性不同。 为了解决这个问题，YOLO使用w，h的平方根误差来减少这种差异性。</p>
+
+<h3 id="四总结">四、总结<a href="#四总结" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<ul>
+<li>YOLO是一个统一的unified(标准的)实时目标检测方法，它是一个单一的网络(one­ stage)，所以它可以根据检测性能进行端到端的优化。</li>
+<li>之前的方法都是重新调整分类器来进行检测，然而YOLO不同于之前的方法，它是将目标检测作为一个回归问题来构造空间上分离的BBoxes和相关类概率 YOLO作为一个实时算法非常快，基础模型能达到实时45帧每秒，fast YOLO可以达到155帧 每秒，同时能够达到其他实时算法mAP的两倍。</li>
+<li>相较于现有的目标检测算法，YOLO会产生更多的定位误差(localization errors)，但是不太可能产生对于背景的误报(圈出错误的背景)。 所以YOLO学习了非常一般的表示。但是当从自然图像推广到其他领域(艺术品、风格化图 像)时，YOLO方法优于其他方法，灵活性比较强。</li>
+
+<li><p>由于YOLO是对图像进行网格划分，对于每个网格单元产生固定数量的bounding box，并且之 预测一个类概率集合，这就样的空间约束就限制了model能够够预测的相邻目标的数目。而且 YOLO目前目标检测的难题是如何预测成群出现的小目标的问题(相邻很近的多个小目标)， 比如一群鸟。</p></li>
+
+<li><p>由于model从数据中预测bounding box，它面临对于新的、特殊的长宽比或者配置的目标的 bounding box大小的概括。</p></li>
+
+<li><p>而且，对于loss function, YOLO的损失误差主要来自于定位误差，应该解决对于不同大小 bounding box的定位误差的重要性的不同。(big box 与 small box)</p></li>
+</ul>
+
+<h5 id="缺点">缺点:<a href="#缺点" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<ol>
+<li>YOLO的物体检测精度低于其他state­-of­-the­-art的物体检测系统。</li>
+<li>YOLO容易产生物体的定位错误。</li>
+<li>YOLO对小物体的检测效果不好(尤其是密集的小物体，因为一个 cell只能预测2个物体)。</li>
+</ol>
+
+<h3 id="五yolov2">五、YOLOV2<a href="#五yolov2" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<h4 id="motivation">motivation<a href="#motivation" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<ul>
+<li>虽然YOLOV1的检测速度很快，但在精度上比不上R-CNN一系列的检测方法，YOLOV2通过8种方法来改进YOLO模型的定位准确率和召回率，在保证检测速度的情况下，从而提高mAP</li>
+<li>在YOLOV2的基础上提出了一种将检测数据集与分类数据集进行联合训练的方法，使用这种联合训练的方法在COCO检测数据集和ImageNet分类数据集上训练出了YOLO9000模型，能够检测超过9000类物体。</li>
+<li>YOLOV2致力于检测精度和速度之间的平衡，提出了一个新的multi-scale training method（多尺度训练模型），这样使得相同的YOLOV2模型能够在不同大小的图像（不同尺度）上运行。可以输出不同分辨率的图像。</li>
+</ul>
+
+<h4 id="tricks">Tricks<a href="#tricks" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<ol>
+<li>Batch Normalization（BN 批标准化）</li>
+</ol>
+
+<p>BN可以提升模型的收敛速度，而且可以起到一定正则化的效果，降低模型的过拟合。在YOLOV2中，每个卷积层后都添加了Batch Normalization层，并且不再使用dropout。使用Batch Normalization后，YOLOV2模型的mAP提升了2.4%</p>
+
+<ol start="2">
+<li>High Resolution Classifier</li>
+</ol>
+
+<p>目前大部分检测模型都会在ImageNet分类数据集上训练模型的主体部分，ImageNet分类模型基本采用大小224x224的图片输入，分辨率较低，不利于检测，YOLOV2将与训练分成两步：先用224x224的输入训练模型，大概跑160个epoch，然后在将输入调整到448x448，再训练10个epoch，这两步都是在ImageNet分类数据集上操作，最后在检测数据集上fine-tuning，也就是detection的时候用448x448的图像作为输入就可以顺利过渡。</p>
+
+<ol start="3">
+<li>Convolutionlal With Anchor Boxes</li>
+</ol>
+
+<p>在YOLOv1中，输入图片最终被划分为7x7网格，每个网格单元预测两个bounding box。YOLOV1最 后采用的是全连接层直接对bounding box进行预测，其中边界框的宽与高是相对整张图片大小的， 而由于各个图片中存在不同尺度和长宽比(scales and ratios)的物体，YOLOV1在训练过程中学习 适应不同物体的形状是比较困难的，这也导致YOLOV1在精确定位方面表现较差。</p>
+
+<p>YOLOv2移除了YOLOV1中的全连接层而采用了卷积和anchor boxes来预测边界框。为了使检测所用的特征图分辨率更高，移除最后一个pool层。为了使模型输出特征图为13x13，因此选择检测输入图片为416x416，这样对检测单个大的物体效果比较好。同时，更细的格子也可以预测更小的物体，使用了anchor boxes来预测之后，每一个位置的各个anchor box都单独预测一套分类的概率值，并且可以预测上千个13x13xnumanchor边界框，使得召回率大大提升。</p>
+
+<ol start="4">
+<li>Dimension Clusters</li>
+</ol>
+
+<p>采用了anchor boxes来预测边界框，在Faster中K=9，在YOLOV2中作者通过K-Means聚类的方法在VOC和COCO数据集上的聚类分析结果，随着聚类中心数目的增加，平均IOU值(各 个边界框与聚类中心的IOU的平均值)是增加的，但是综合考虑模型复杂度和召回率，作者最终选 取5个聚类中心作为先验框，其相对于图片的大小如下图所示。</p>
+
+<p><figure><img src="/images/yolo6.jpg" alt=""></figure></p>
+
+<p>注：K-Means采用的距离函数为：
+   <span  class="math">\(
+   d(box, centroid)=1-IOU(box, centroid)
+   \)</span>
+   作者实验发现，5种boxes的Avg IOU(61.0)就和Faster R-CNN的9种Avg IOU(60.9)相当。 说明K-means方法的生成的boxes更具有代表性。</p>
+
+<ol start="5">
+<li>Direct location prediction</li>
+</ol>
+
+<p>使用Anchor Boxes回归会导致模型不稳定，因为该公式没有任何约束，中心点会出现在图像中任意位置，这就可能导致回归过程震荡，甚至无法收敛：
+   <span  class="math">\(
+   t_x=(x-x_a)/w_a,\space t_y=(y-y_a)/h_a,\\
+   t_w=log(w/w_a),\space t_h=log(h/h_a)
+   \)</span>
+   在RPN中计算中心点坐标的公式：
+   <span  class="math">\(
+   x=(t_x*w_a)-x_a,\\
+   y=(t_y*h_a)-y_a
+   \)</span>
+   由此计算的预测框中心点坐标，当<span  class="math">\(t_x=1\)</span>时，预测框将会向右移动一个anchor box的距离，当<span  class="math">\(t_x=-1\)</span>时，预测框将会向左移动一个anchor box的距离，因此使预测框十分不稳定。针对这个问题，yolov2采用了强约束的方法：</p>
+
+<ol>
+<li>对应 Cell 距离左上角的边距为<span  class="math">\(（C_x，C_y）\)</span>，<span  class="math">\(σ\)</span>定义为sigmoid激活函数，将函数值约束到［0，1］，用来预测相对于该Cell 中心的偏移（不会偏离cell）；</li>
+<li>预定Anchor（文中描述为bounding box prior）对应的宽高为<span  class="math">\(（P_w，P_h）\)</span>，预测 Location 是相对于Anchor的宽高乘以系数得到；</li>
+</ol>
+
+<p>如下图：</p>
+
+<p><figure><img src="/images/yolo7.jpg" alt=""></figure></p>
+
+<ol start="6">
+<li><p>Fine-Grained Features</p>
+
+<p>SSD通过不同Scale的Feature Map来预测Box来实现多尺度，而YOLO v2则采用了另一种思路：添加一个passthrough layer，来获取上一层26x26的特征，并将该特征同最后输出特征（13*13）相结合，以此来提高对小目标的检测能力。</p></li>
+</ol>
+
+<p>通过Passthrough 把26 * 26 * 512的特征图叠加成13 * 13 * 2048的特征图，与原生的深层特征图相连接。</p>
+
+<p>YOLO v2 使用扩展后的的特征图（add passthrough），将mAP提高了了1%。</p>
+
+<p>PS：这里实际上是有个Trick，网络最后一层是13x13，相对原来7x7的网络来讲，细粒度的处理目标已经double了，再加上上一层26*26的Feature共同决策，这两层的贡献等价于SSD的4层以上，但计算量其实并没有增加多少。</p>
+
+<ol start="7">
+<li>Multi-Scale Training</li>
+</ol>
+
+<p>YOLOV2采用了多尺度训练的方法，因为网络的骨架是全卷积神级网络，因此可以输入任意大小的图片，这个时候网络输出的grid大小就不是固定的，如果是416x416的图片输入，那么网络的输出的grid是13x13大小，输入图像大小变化，相应的grid大小也会变化，在训练过程中每10个batch采用就从不同的图片大小选择一种大小进行训练，这样强制网络去学习不同尺度的图片。</p>
+
+<h4 id="训练过程">训练过程<a href="#训练过程" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<h5 id="a预训练训练分类网络training-for-classification">a）预训练-训练分类网络（Training for classification）<a href="#a预训练训练分类网络training-for-classification" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>​      采用随机梯度下降法SGD，在ImageNet分类数据集上训练了160个epoch，参数设定为：</p>
+
+<pre><code>     初始学习率 - starting learning rate：0.1
+
+   多项式速率衰减 - polynomial rate decay：4的幂次
+
+   权值衰减 - weight decay：0.0005
+
+   动量 - momentum：0.9
+</code></pre>
+
+<h5 id="b采用数据增广的方法data-augmentation">b采用数据增广的方法（data augmentation）<a href="#b采用数据增广的方法data-augmentation" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>​      采用了常见的数据增广的方法：随机剪裁，旋转- random crops、rotations</p>
+
+<p>​                                                           色调、饱和度、曝光偏移 - hue、saturation、exposure shifts</p>
+
+<h5 id="c多分辨率训练">c）多分辨率训练<a href="#c多分辨率训练" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>​   通过初始的224 * 224训练后，把分辨率上调到了448 * 448，同样的参数又训练了10个epochs，然后将学习率调整到了<span  class="math">\(10^{-3}\)</span>。</p>
+
+<h5 id="d训练检测网络--training-for-detection">d）训练检测网络 - Training for detection<a href="#d训练检测网络--training-for-detection" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>​      把分类网络改成检测网络，去掉原网络最后一个卷积层，增加了三个 3 * 3 （1024 ﬁlters）的卷积层，并且在每一个卷积层后面跟一个1 * 1的卷积层，输出个数是检测所需要的数量。</p>
+
+<pre><code> 初始学习率为$$10^{-3}$$，训练了160个epochs（划分为60 | 10 | 90），权值衰减 与 momentum参数与前面一样。
+</code></pre>
+
+<h3 id="六yolov3">六、YOLOV3<a href="#六yolov3" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>YOLOv3结构图：</p>
+
+<p><figure><img src="/images/yolo8.jpeg" alt=""></figure></p>
+
+<p>DBL:  如图1左下角所示，也就是代码中的Darknetconv2d_BN_Leaky，是yolo_v3的基本组件。就是卷积+BN+Leaky relu。对于v3来说，BN和leaky relu已经是和卷积层不可分离的部分了(最后一层卷积除外)，共同构成了最小组件。
+resn：n代表数字，有res1，res2, … ,res8等等，表示这个res_block里含有多少个res_unit。这是yolo_v3的大组件，yolo_v3开始借鉴了ResNet的残差结构，使用这种结构可以让网络结构更深(从v2的darknet-19上升到v3的darknet-53，前者没有残差结构)。对于res_block的解释，可以在图1的右下角直观看到，其基本组件也是DBL。
+concat：张量拼接。将darknet中间层和后面的某一层的上采样进行拼接。拼接的操作和残差层add的操作是不一样的，拼接会扩充张量的维度，而add只是直接相加不会导致张量维度的改变。</p>
+
+<h5 id="1-backbone">1. backbone<a href="#1-backbone" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>在整个yolov3的结构中没有池化层和全连接层的。所以在前向传播的过程中，张量的尺寸变换是通过改变卷积核的步长来实现的。</p>
+
+<h5 id="2-output">2. output<a href="#2-output" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>YOLOv3输出了三个不同尺度的feature map，这也就是论文中提到为数不多的改进点：<strong>predictions across scales</strong></p>
+
+<p>这个借鉴了FPN(feature pyramid networks)，采用多尺度来对不同size的目标进行检测，越精细的grid cell就可以检测出越精细的物体。y1,y2和y3的深度都是255，边长的规律是13:26:52</p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://wuhongyui.github.io/tags/yolo-detection">yolo detection</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>294 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-01-08 20:31 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://wuhongyui.github.io/posts/fcos/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>FCOS Paper notes</span>
+			</a>
+			<a class="prev-post" href="https://wuhongyui.github.io/posts/ubuntu18.04/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Ubuntu18.04 DeepLearning Environment Setup</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+</div>
+	</main>
+
+<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2021 <a href="https://wuhongyui.github.io/">拿了橘子跑</a> &#183; <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Wuen</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://wuhongyui.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+
+
+
+
+	<script src="https://wuhongyui.github.io/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js" integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>

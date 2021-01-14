@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Tracking">
+<meta itemprop="description" content="摘要 1.多目标跟踪的关键方向 2.现有技术所属的不同方向的讨论 3.检验现有公开的实验并且总结主流数据集上的实验结果，再进行量化的对比 4.提供MOT研究中会遇到的问题
+介绍 多目标跟踪(Multiple Object Tracking or Multiple Target Tracking, MOT or MTT)主要任务是在给定视频中同时对多个感兴趣的目标进行定位，并且维持他们的ID、记录他们的轨迹。 单目标跟踪(Single Object Tracking, SOT)主要集中在设计复杂的外观模型和/或运动模式，解决具有挑战性的问题如尺度变化，出平面旋转和光照变化，而多目标跟踪还有额外的两个任务需要解决：确定目标的数量（通常随时间变化），和维持各自的ID。除了SOT和MOT的共同问题外，MOT还需要处理更复杂的关键问题包括： 1）频繁遮挡；2）轨道初始化和终止；3）相似的外观；4）多目标间的相互影响。
+MOT问题 多目标跟踪可以任务是多变量的估计问题，给定一个图像序列，\(S_t^i\) 表示第 \(t\) 帧第i个目标的状态，\(S_t = \left\{S_t^i, S_t^2, \cdots, S_t^{M_t}\right\}\),表示所有的目标 \(M_t\) 的状态序列。 \(S_{1:t} = \left\{S_1, S_2, \cdots, S_t\right\}\) 表示所有目标从第一帧到第t帧的状态序列。
+\(O_t^i\)表示第t帧第i个观测目标，\(O_t = \left\{O_t^i, O_t^2, \cdots, O_t^{M_t}\right\}\)，表示所有的观测目标\(M_t\)的状态序列。 \(O_{1:t} = \left\{O_1, O_2, \cdots, O_t\right\}\)表示所有观测目标从第一帧到第t帧的状态序列。 多目标跟踪的目的是为了找到一个“最好的”状态序列，可以基于MAP估计泛化建模得到： \(\hat{S_{1:t}} = argmaxP({S_{1:t}}|{O_{1:t}})\)
+MOT分类 初始化方法 DBT：首先检测目标，然后链接到轨迹中，给定一个序列，在每帧中进行特定类型的目标检测或运动检测（基于背景建模，得到目标假设， 然后进行顺序或批量跟踪，将检测假设连接到轨迹中。有两个问题值得注意：第一，由于提前训练目标检测器，DBT大部分关注特定的目标类型，如行人、车辆或人脸。第二，DBT的性能非常依赖于所采用的目标检测器的性能。 DFT：需要在第一帧手动初始化一定数量的目标，然后在后续帧定位这些物体。相对来说，DBT更受欢迎，因为它可以自动发现新目标、自动终止消失的目标。而DFT就不能处理新目标出现的情况，但它不需要提前训练目标探测器。
+处理模式 Online跟踪：图像序列是一步步处理的因此该跟踪方式也称序列跟踪 Offline跟踪：利用一组帧来处理数据
+输出类型 这个标准根据输出的随机性将MOT方法分成基于决策的和基于概率的。基于决策的跟踪输出是恒定的无论运行方法多少次，而基于概率的跟踪每次运行都可能产生不同输出结果。
+MOT测评 对于给定的MOT方法，需要根据评分指标和数据集定量地评估其性能。这尤关重要，一方面，必须测量不同组成成分和参数对整体性能的影响，才能设计出最佳的系统。另一方面，可以与其他方法直接比较。而性能评估往往并不简单。
+指标 MOT指标通常反应了，目标检测性能以及跟踪性能">
+
+
+<meta itemprop="datePublished" content="2019-12-19T20:22:22&#43;08:00" />
+<meta itemprop="dateModified" content="2019-12-19T20:22:22&#43;08:00" />
+<meta itemprop="wordCount" content="305">
+
+
+
+<meta itemprop="keywords" content="," />
+<meta property="og:title" content="Tracking" />
+<meta property="og:description" content="摘要 1.多目标跟踪的关键方向 2.现有技术所属的不同方向的讨论 3.检验现有公开的实验并且总结主流数据集上的实验结果，再进行量化的对比 4.提供MOT研究中会遇到的问题
+介绍 多目标跟踪(Multiple Object Tracking or Multiple Target Tracking, MOT or MTT)主要任务是在给定视频中同时对多个感兴趣的目标进行定位，并且维持他们的ID、记录他们的轨迹。 单目标跟踪(Single Object Tracking, SOT)主要集中在设计复杂的外观模型和/或运动模式，解决具有挑战性的问题如尺度变化，出平面旋转和光照变化，而多目标跟踪还有额外的两个任务需要解决：确定目标的数量（通常随时间变化），和维持各自的ID。除了SOT和MOT的共同问题外，MOT还需要处理更复杂的关键问题包括： 1）频繁遮挡；2）轨道初始化和终止；3）相似的外观；4）多目标间的相互影响。
+MOT问题 多目标跟踪可以任务是多变量的估计问题，给定一个图像序列，\(S_t^i\) 表示第 \(t\) 帧第i个目标的状态，\(S_t = \left\{S_t^i, S_t^2, \cdots, S_t^{M_t}\right\}\),表示所有的目标 \(M_t\) 的状态序列。 \(S_{1:t} = \left\{S_1, S_2, \cdots, S_t\right\}\) 表示所有目标从第一帧到第t帧的状态序列。
+\(O_t^i\)表示第t帧第i个观测目标，\(O_t = \left\{O_t^i, O_t^2, \cdots, O_t^{M_t}\right\}\)，表示所有的观测目标\(M_t\)的状态序列。 \(O_{1:t} = \left\{O_1, O_2, \cdots, O_t\right\}\)表示所有观测目标从第一帧到第t帧的状态序列。 多目标跟踪的目的是为了找到一个“最好的”状态序列，可以基于MAP估计泛化建模得到： \(\hat{S_{1:t}} = argmaxP({S_{1:t}}|{O_{1:t}})\)
+MOT分类 初始化方法 DBT：首先检测目标，然后链接到轨迹中，给定一个序列，在每帧中进行特定类型的目标检测或运动检测（基于背景建模，得到目标假设， 然后进行顺序或批量跟踪，将检测假设连接到轨迹中。有两个问题值得注意：第一，由于提前训练目标检测器，DBT大部分关注特定的目标类型，如行人、车辆或人脸。第二，DBT的性能非常依赖于所采用的目标检测器的性能。 DFT：需要在第一帧手动初始化一定数量的目标，然后在后续帧定位这些物体。相对来说，DBT更受欢迎，因为它可以自动发现新目标、自动终止消失的目标。而DFT就不能处理新目标出现的情况，但它不需要提前训练目标探测器。
+处理模式 Online跟踪：图像序列是一步步处理的因此该跟踪方式也称序列跟踪 Offline跟踪：利用一组帧来处理数据
+输出类型 这个标准根据输出的随机性将MOT方法分成基于决策的和基于概率的。基于决策的跟踪输出是恒定的无论运行方法多少次，而基于概率的跟踪每次运行都可能产生不同输出结果。
+MOT测评 对于给定的MOT方法，需要根据评分指标和数据集定量地评估其性能。这尤关重要，一方面，必须测量不同组成成分和参数对整体性能的影响，才能设计出最佳的系统。另一方面，可以与其他方法直接比较。而性能评估往往并不简单。
+指标 MOT指标通常反应了，目标检测性能以及跟踪性能" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuhongyui.github.io/posts/tracking/" />
+<meta property="article:published_time" content="2019-12-19T20:22:22+08:00" />
+<meta property="article:modified_time" content="2019-12-19T20:22:22+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Tracking"/>
+<meta name="twitter:description" content="摘要 1.多目标跟踪的关键方向 2.现有技术所属的不同方向的讨论 3.检验现有公开的实验并且总结主流数据集上的实验结果，再进行量化的对比 4.提供MOT研究中会遇到的问题
+介绍 多目标跟踪(Multiple Object Tracking or Multiple Target Tracking, MOT or MTT)主要任务是在给定视频中同时对多个感兴趣的目标进行定位，并且维持他们的ID、记录他们的轨迹。 单目标跟踪(Single Object Tracking, SOT)主要集中在设计复杂的外观模型和/或运动模式，解决具有挑战性的问题如尺度变化，出平面旋转和光照变化，而多目标跟踪还有额外的两个任务需要解决：确定目标的数量（通常随时间变化），和维持各自的ID。除了SOT和MOT的共同问题外，MOT还需要处理更复杂的关键问题包括： 1）频繁遮挡；2）轨道初始化和终止；3）相似的外观；4）多目标间的相互影响。
+MOT问题 多目标跟踪可以任务是多变量的估计问题，给定一个图像序列，\(S_t^i\) 表示第 \(t\) 帧第i个目标的状态，\(S_t = \left\{S_t^i, S_t^2, \cdots, S_t^{M_t}\right\}\),表示所有的目标 \(M_t\) 的状态序列。 \(S_{1:t} = \left\{S_1, S_2, \cdots, S_t\right\}\) 表示所有目标从第一帧到第t帧的状态序列。
+\(O_t^i\)表示第t帧第i个观测目标，\(O_t = \left\{O_t^i, O_t^2, \cdots, O_t^{M_t}\right\}\)，表示所有的观测目标\(M_t\)的状态序列。 \(O_{1:t} = \left\{O_1, O_2, \cdots, O_t\right\}\)表示所有观测目标从第一帧到第t帧的状态序列。 多目标跟踪的目的是为了找到一个“最好的”状态序列，可以基于MAP估计泛化建模得到： \(\hat{S_{1:t}} = argmaxP({S_{1:t}}|{O_{1:t}})\)
+MOT分类 初始化方法 DBT：首先检测目标，然后链接到轨迹中，给定一个序列，在每帧中进行特定类型的目标检测或运动检测（基于背景建模，得到目标假设， 然后进行顺序或批量跟踪，将检测假设连接到轨迹中。有两个问题值得注意：第一，由于提前训练目标检测器，DBT大部分关注特定的目标类型，如行人、车辆或人脸。第二，DBT的性能非常依赖于所采用的目标检测器的性能。 DFT：需要在第一帧手动初始化一定数量的目标，然后在后续帧定位这些物体。相对来说，DBT更受欢迎，因为它可以自动发现新目标、自动终止消失的目标。而DFT就不能处理新目标出现的情况，但它不需要提前训练目标探测器。
+处理模式 Online跟踪：图像序列是一步步处理的因此该跟踪方式也称序列跟踪 Offline跟踪：利用一组帧来处理数据
+输出类型 这个标准根据输出的随机性将MOT方法分成基于决策的和基于概率的。基于决策的跟踪输出是恒定的无论运行方法多少次，而基于概率的跟踪每次运行都可能产生不同输出结果。
+MOT测评 对于给定的MOT方法，需要根据评分指标和数据集定量地评估其性能。这尤关重要，一方面，必须测量不同组成成分和参数对整体性能的影响，才能设计出最佳的系统。另一方面，可以与其他方法直接比较。而性能评估往往并不简单。
+指标 MOT指标通常反应了，目标检测性能以及跟踪性能"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Tracking</title>
+	<link rel="stylesheet" href="https://wuhongyui.github.io/css/style.min.657bcb7af31123e4156b1a3d2ff60a636717e54ead74f882136b5114cf72b55e.css" integrity="sha256-ZXvLevMRI+QVaxo9L/YKY2cX5U6tdPiCE2tRFM9ytV4=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://wuhongyui.github.io/">拿了橘子跑</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://wuhongyui.github.io/posts/">Article</a>
+				<a href="https://wuhongyui.github.io/about-hugo/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://twitter.com/" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="https://instagram.com/" target="_blank" rel="noopener me" title="Instagram"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg></a><a href="https://github.com/wuhongyui" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://wuhongyui.github.io/posts/">Article</a></li>
+			<li><a href="https://wuhongyui.github.io/about-hugo/">About</a></li>
+		</ul>
+	</div>
+
+
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Dec 19, 2019</span></div>
+				<h1>Tracking</h1>
+			</header>
+			<div class="content">
+				<h1 id="摘要">摘要<a href="#摘要" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+
+<p>1.多目标跟踪的关键方向
+2.现有技术所属的不同方向的讨论
+3.检验现有公开的实验并且总结主流数据集上的实验结果，再进行量化的对比
+4.提供MOT研究中会遇到的问题</p>
+
+<h2 id="介绍">介绍<a href="#介绍" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>多目标跟踪(Multiple Object Tracking or Multiple Target Tracking, MOT or MTT)主要任务是在给定视频中同时对多个感兴趣的目标进行定位，并且维持他们的ID、记录他们的轨迹。
+单目标跟踪(Single Object Tracking, SOT)主要集中在设计复杂的外观模型和/或运动模式，解决具有挑战性的问题如尺度变化，出平面旋转和光照变化，而多目标跟踪还有额外的两个任务需要解决：确定目标的数量（通常随时间变化），和维持各自的ID。除了SOT和MOT的共同问题外，MOT还需要处理更复杂的关键问题包括：
+1）频繁遮挡；2）轨道初始化和终止；3）相似的外观；4）多目标间的相互影响。</p>
+
+<h2 id="mot问题">MOT问题<a href="#mot问题" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p><strong>多目标跟踪可以任务是多变量的估计问题</strong>，给定一个图像序列，<span  class="math">\(S_t^i\)</span> 表示第 <span  class="math">\(t\)</span> 帧第i个目标的状态，<span  class="math">\(S_t = \left\{S_t^i, S_t^2, \cdots, S_t^{M_t}\right\}\)</span>,表示所有的目标 <span  class="math">\(M_t\)</span> 的状态序列。
+ <span  class="math">\(S_{1:t} = \left\{S_1, S_2, \cdots, S_t\right\}\)</span> 表示所有目标从第一帧到第t帧的状态序列。</p>
+
+<p><span  class="math">\(O_t^i\)</span>表示第t帧第i个观测目标，<span  class="math">\(O_t = \left\{O_t^i, O_t^2, \cdots, O_t^{M_t}\right\}\)</span>，表示所有的观测目标<span  class="math">\(M_t\)</span>的状态序列。
+<span  class="math">\(O_{1:t} = \left\{O_1, O_2, \cdots, O_t\right\}\)</span>表示所有观测目标从第一帧到第t帧的状态序列。
+多目标跟踪的目的是为了找到一个“最好的”状态序列，可以基于MAP估计泛化建模得到： <span  class="math">\(\hat{S_{1:t}} = argmaxP({S_{1:t}}|{O_{1:t}})\)</span></p>
+
+<h2 id="mot分类">MOT分类<a href="#mot分类" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<h5 id="初始化方法">初始化方法<a href="#初始化方法" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p><strong>DBT</strong>：首先检测目标，然后链接到轨迹中，给定一个序列，在每帧中进行特定类型的目标检测或运动检测（基于背景建模，得到目标假设， 然后进行顺序或批量跟踪，将检测假设连接到轨迹中。有两个问题值得注意：第一，由于提前训练目标检测器，DBT大部分关注特定的目标类型，如行人、车辆或人脸。第二，DBT的性能非常依赖于所采用的目标检测器的性能。
+<strong>DFT</strong>：需要在第一帧手动初始化一定数量的目标，然后在后续帧定位这些物体。相对来说，DBT更受欢迎，因为它可以自动发现新目标、自动终止消失的目标。而DFT就不能处理新目标出现的情况，但它不需要提前训练目标探测器。</p>
+
+<h5 id="处理模式">处理模式<a href="#处理模式" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p><strong>Online</strong>跟踪：图像序列是一步步处理的因此该跟踪方式也称序列跟踪
+<strong>Offline</strong>跟踪：利用一组帧来处理数据</p>
+
+<h5 id="输出类型">输出类型<a href="#输出类型" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>这个标准根据输出的随机性将MOT方法分成基于决策的和基于概率的。基于决策的跟踪输出是恒定的无论运行方法多少次，而基于概率的跟踪每次运行都可能产生不同输出结果。</p>
+
+<h2 id="mot测评">MOT测评<a href="#mot测评" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+
+<p>对于给定的MOT方法，需要根据评分指标和数据集定量地评估其性能。这尤关重要，一方面，必须测量不同组成成分和参数对整体性能的影响，才能设计出最佳的系统。另一方面，可以与其他方法直接比较。而性能评估往往并不简单。</p>
+
+<h6 id="指标">指标<a href="#指标" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h6>
+
+<p>MOT指标通常反应了，目标检测性能以及跟踪性能</p>
+
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Description</th>
+<th>note</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Recall</td>
+<td>Retio of correctly  matched detections to ground-truth detection</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+
+<tr>
+<td>Precision</td>
+<td>Retio of correctly  matched detections to total result detection</td>
+<td><span  class="math">\(\uparrow \)</span></td>
+</tr>
+
+<tr>
+<td>FAP/FPPI</td>
+<td>Number of false alarms per frame averaged of the sequence</td>
+<td><span  class="math">\(\downarrow\)</span></td>
+</tr>
+
+<tr>
+<td>MODA</td>
+<td>Combines missed detections and FAP</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+
+<tr>
+<td>MODP</td>
+<td>Average overlap between true positive and ground truth</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+
+<tr>
+<td>MOTA</td>
+<td>Combines false negative, false positive and mismatch rate</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+
+<tr>
+<td>IDS</td>
+<td>Number of times that a tracked trajectory changes its matched ground-truth identity</td>
+<td><span  class="math">\(\downarrow\)</span></td>
+</tr>
+
+<tr>
+<td>MOTP</td>
+<td>Overlap between the estimated positions and the ground truth averaged over the matched</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+
+<tr>
+<td>TDE</td>
+<td>Distance between the ground-truth annotation and the tracking result</td>
+<td><span  class="math">\(\downarrow\)</span></td>
+</tr>
+
+<tr>
+<td>OSPA</td>
+<td>Cardinality error and spatial distance between ground truth and tracking result</td>
+<td><span  class="math">\(\downarrow\)</span></td>
+</tr>
+
+<tr>
+<td>MT</td>
+<td>Percentage of ground truth trajectories which covered by tracker output for more than 80% for their length</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+
+<tr>
+<td>ML</td>
+<td>Percentage of ground truth trajectories which covered by tracker output for more than 20% for their length</td>
+<td><span  class="math">\(\downarrow\)</span></td>
+</tr>
+
+<tr>
+<td>FM</td>
+<td>Number of times that a tracked trajectory is interrupted in the traking result</td>
+<td><span  class="math">\(\downarrow\)</span></td>
+</tr>
+
+<tr>
+<td>RS</td>
+<td>Ratio of track which are correctly recovered from short occlusion</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+
+<tr>
+<td>RL</td>
+<td>Ratio of track which are correctly recovered from length occlusion</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+</tbody>
+</table>
+
+<h5 id="检测指标">检测指标<a href="#检测指标" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p><strong>准确度(Accuracy)</strong>：常用召回率和精度指标以及每帧平均误报率(False Alarms per Frame, FAF)作为MOT指标[1]。[63]使用False Positive Per Image(FPPI)评价检测性能。多目标检测的准确性(Multiple Object Detection Accuracy, MODA)，一个全面的评估标准，将误检和漏检的相对数纳入考虑范围，由[135]提出。</p>
+
+<p><strong>精度(Precision)</strong>：多目标检测精度(Multiple Object Detection Precision, MODP)测量的是检测目标和ground truths之间的误差[135]。</p>
+
+<h5 id="跟踪指标">跟踪指标<a href="#跟踪指标" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p><strong>准确度(Accuracy)</strong>：它度量算法跟踪目标的准确程度。ID Switches[80]则统计MOT算法在目标之间切换的次数。多目标跟踪的准确性(MOTA)【136】将false positive率、false negative率和错配(mismatch)率结合成一个单独的数，对整体的跟踪性给出一个比较合理评估。尽管仍有一些弊端，但这是目前最普及的MOT评估方法。</p>
+
+<p><strong>精度(Precision)</strong>：三个指标，多目标跟踪精度(MOTP)，跟踪距离误差(TDE)[36]和OSPA[137]。它们描述了通过bounding box重叠和/或距离来测量目标跟踪的精确程度。具体而言，在[137]中还考虑了基数(cardinality)错误。</p>
+
+<p><strong>完整性(Completeness)</strong>：完整性度量指的是ground truth trajectories被跟踪的完整度。大多数跟踪(Mostly Tracked, MT)、部分跟踪(Partly Tracked, PT)、大部分丢失(Mostly Lost, ML)和分段(Fragmentation, FM)[40]的数量属于这一组。</p>
+
+<p><strong>鲁棒性(Robustness)</strong>：通过从遮挡中恢复出来的能力来评估MOT算法的度量标准，包括在[51]中的从短期遮挡恢复(Recopver from Short-term occlusion, RS)和长期遮挡恢复(RL)。</p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://wuhongyui.github.io/tags/"></a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>305 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2019-12-19 20:22 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://wuhongyui.github.io/posts/buildblog/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>How to build blog by Hugo</span>
+			</a>
+			<a class="prev-post" href="https://wuhongyui.github.io/posts/yolov3/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Yolov3 training own dataset</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+</div>
+	</main>
+
+<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2021 <a href="https://wuhongyui.github.io/">拿了橘子跑</a> &#183; <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Wuen</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://wuhongyui.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+
+
+
+
+	<script src="https://wuhongyui.github.io/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js" integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>

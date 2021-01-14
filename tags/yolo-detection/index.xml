@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>yolo detection on 拿了橘子跑</title>
+    <link>https://wuhongyui.github.io/tags/yolo-detection/</link>
+    <description>Recent content in yolo detection on 拿了橘子跑</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Wed, 08 Jan 2020 20:31:44 +0800</lastBuildDate>
+    
+	<atom:link href="https://wuhongyui.github.io/tags/yolo-detection/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Learning YOLO detection algorithm</title>
+      <link>https://wuhongyui.github.io/posts/yolo/</link>
+      <pubDate>Wed, 08 Jan 2020 20:31:44 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/yolo/</guid>
+      <description>一、Yolo的思想 ​ 简单来说目标检测算法的思想首先就分为两个步骤，第一个任务是定位、第二个任务则是分类。目标检测就是要找出图片中的物体，并且使用bounding box将物体框出来。而bounding box可以使用左上角的坐标\((x,y)\)与矩形的宽和高\((h,w)\)表示。直观的想法是将一张图片喂给神经网络，然后输出\((x, y, h, w)\)四个值就好，但是，在一张图片中有两个或者多个物体，此时网络的输出维度则没法固定，因此直观的方法是行不通的。
+​ 既然输出需要固定维度，yolo采用了一个固定的输出维度，使其足够大可以包含图片中所有的检测物体，yolo固定维度的办法是把模型的输出划分成网格形状，每个网格中的cell（格子）都可以输出物体的类别和bounding box的坐标，如下图所示：
+
+设置模型的训练目标，将输入图像按照模型的输出网格（比如7x7大小）进行划分，划分之后就有很多小cell了。我们再看图片中物体的中心是落在哪个cell里面，落在哪个cell哪个cell就负责预测这个物体。比如下图中，狗的中心落在了红色cell内，则这个cell负责预测狗。
+假设你需要检测20个类\((C=20)\)，则将图像划分成\(S\times S\)个网格，每个cell预测两个bounding box\((B = 2)\)每个bounding box有五个参数值\(x,y,w,h,confidence\space sorce\)，因此模型的输出则是一个\(S\times S\times (B*5 + C)\)的Tensor。
+
+分两个阶段来设置“目标中心落在哪个cell，就用哪个cell来检测”：
+ 训练阶段，如果物体中心落在这个cell，那么就给这个cell打上这个物体的label（包括xywh和类别）。也就是说我们是通过这种方式来设置训练的label的。换言之，我们在训练阶段，就教会cell要预测图像中的哪个物体。 测试阶段。因为你在训练阶段已经教会了cell去预测中心落在该cell中的物体，那么cell自然也会这么做。  以上就是yolo的核心思想，也就是说在训练阶段给模型中的各个cell打上label，在训练阶段告诉模型需要预测什么，然后测试阶段才能按照你训练阶段教它的去做。
+二、模型的架构 模型的网络架构见下图：
+
+从图中可以看到，yolo网络的输出的网格是7x7大小的，另外，输出的channel数目为30。一个cell内，前20个元素是类别概率值，然后2个元素是边界框confidence，最后8个元素是边界框的 \((x, y,w,h) \)。
+
+也就是说，每个cell有两个predictor，每个predictor分别预测一个bounding box的xywh和相应的confidence。但分类部分的预测却是共享的。正因为这个，同个cell是没办法预测多个目标的。yolov2则解决了这个问题，需要预测两个bounding box的原因是？这个还是要从训练阶段怎么给两个predictor安排训练目标来说。在训练的时候会在线地计算每个predictor预测的bounding box和ground truth的IOU，计算出来的IOU大的那个predictor，就会负责预测这个物体，另外一个则不预测。
+三、模型的输出 confidence预测 confidence表示：在cell预测的bounding box包含某一物体的置信度有多高，并且该bounding box预测的准确度有多大，用公式表示就是：\(Pr(Object)*IOU^{truth}_{pred}\)
+分两个阶段来解释confidence公式：
+ 在训练阶段，我们需要给每一个输出bounding box的confidence打上label，也就是，如果一个cell中包含一个物体的中心，就把\(Pr(Object)=1\)，因此confidence就变成了\(1\times IOU^{truth}_{pred}\)注意这个IOU是在训练过程中不断计算出来的，网络在训练过程中预测的bounding box每次都不一样，所以和ground truth计算出来的IOU每次也会不一样。若一个cell中不包含一个物体的中心，则\(Pr(Object)=0\)，因此confidence的值为0. 在预测阶段，因为训练时给的label就是一个值，因此预测是模型只吐出一个confidence的值。  bounding box预测 bounding box预测包括了\(x,y,w,h\)，\(x, y\)表示bounding box中心相对于cell左上角坐标的偏移量---通过偏移量公式计算:\((X*S/width-cell_x, Y*S/height-cell_y)\)，宽高都相对于整张图片的宽高进行归一化。
+xywh为什么要这么表示呢？实际上经过这么表示之后，xywh都归一化了，它们的值都是在0-1之间。我们通常做回归问题的时候都会将输出进行归一化，否则可能导致各个输出维度的取值范围差别很大，进而导致训练的时候，网络更关注数值大的维度。因为数值大的维度，算loss相应会比较大，为了让这个loss减小，那么网络就会尽量学习让这个维度loss变小，最终导致区别对待。
+类别预测 除以上两个预测输出之外，还有物体类别概率输出，物体类别是一个条件概率\(Pr(Class_i|Object)\)也可以分两个阶段来看：
+ 对于训练阶段，也就是打label阶段，怎么打label呢？对于一个cell，如果物体的中心落在了这个cell，那么我们给它打上这个物体的类别label，并设置概率为1。换句话说，这个概率是存在一个条件的，这个条件就是cell存在物体。 对于预测阶段，网络直接输出\(Pr(Class_i|Object)\)，代表了cell中有物体的条件下的概率，论文中还将这个值乘上了confidence，即\(Pr(Class_i|Object)\times Pr(Object)*IOU^{truth}_{pred}\)。这样保证了即使cell中不存在某个物体，类别预测的概率值可能为\(Pr(Class_i|Object)=0.</description>
+    </item>
+    
+  </channel>
+</rss>

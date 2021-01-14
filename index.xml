@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>拿了橘子跑</title>
+    <link>https://wuhongyui.github.io/</link>
+    <description>Recent content on 拿了橘子跑</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Thu, 14 Jan 2021 20:24:31 +0800</lastBuildDate>
+    
+	<atom:link href="https://wuhongyui.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Find the nth term of the Fibonacci sequence</title>
+      <link>https://wuhongyui.github.io/posts/fibonacci/</link>
+      <pubDate>Thu, 14 Jan 2021 20:24:31 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/fibonacci/</guid>
+      <description>Fibonacci 大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项（从0开始，第0项为0，第1项是1）。
+方法一：递归 斐波那契数列公式为：\(F(n) = \begin{cases} 0, &amp; n=0 \\ 1, &amp; n =1,2 \\ F[n-1]+F[n-2], &amp;n2 \end{cases}\)，初始值\(F[0]=0,F[1]=1\) 考虑使用递归的方法。
+class Solution { public: int Fibonacci(int n) { if (n == 0 || n == 1) return n; return Fibonacci(n-1) + Fibonacci(n-2); } };  递归算法实现简单，代码量少，但时间复杂度为\(o(2^n)\)，空间复杂度为递归栈的空间 为什么时间复杂度为\(o(2^n)\)，可以从二叉树的节点个数来考虑，递归算法可以展开为一个二叉树，所以有$n$项的递归数列，可以看成深度为\(n\)二叉树，故算法运算次数为二叉树上至多含有的节点个数\(2^n-1\)，时间复杂度为\(o(2^n)\)。
+方法二：动态规划 递归算法的时间复杂度高是因为存在很多重复的计算，改进办法是将计算的过程保存。动态规划是不用递归过程，直接从子树求得答案，过程是从下往上。简而言之，我们已知前两项的值，然后我们就可以用前两项的值求出第3项的值，接着求第4、第5、……，直到求出第n项的值。 
+int Fibonacci(int n) { vector&amp;lt;int&amp;gt; dp(n+1, 0); dp[1] = 1; for (int i=2; i&amp;lt;=n; ++i) { dp[i] = dp[i-1] + dp[i-2]; } return dp[n]; }  继续优化，例如求第五项的时候只用到第四项和第三项，因此前面的项就不需要保存，来占用内存空间。通过定义三个变量交替存储计算结果。</description>
+    </item>
+    
+    <item>
+      <title>Ubuntu18.04 Openpose Environment configuration</title>
+      <link>https://wuhongyui.github.io/posts/openpose/</link>
+      <pubDate>Thu, 13 Aug 2020 21:01:10 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/openpose/</guid>
+      <description>Ubuntu18.04 人体姿态检测算法OpenPose环境配置 最近项目中需要实现一个人体姿态检测算法的需求，GitHub中也有Pytorch版本的OpenPose但是跑起视频来惨不忍睹，只有2-3FPS；于是就考虑使用CMU官方的代码，就进行了一波漫长的环境配置。
+资源的准备 首先在Github上获取OpenPose项目文件：
+git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose.git 根据网络情况可能有快有慢，还是建议挂一下梯子下载速度快一些。
+OpenPose的项目环境需要Caffe与OpenCV，于是先行安装OpenCV，可以从OpenCV官网下载OpenCV官网，也可以通过git：
+git clone https://github.com/Itseez/opencv.git git clone https://github.com/Itseez/opencv_contrib.git 下载成功后，可以在你的home目录下看见opencv和opencv_contrib两个文件夹，将opencv_contrib目录移到opencv目录下。
+在下载的过程中，我们可以添加opencv所需要的依赖库：
+sudo apt-get install build-essential sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev 安装build-essential可能会出现安装不上的问题，需要安装可以使用：
+apt depends build-essential 查看build-essential所需要的依赖。
+在各项依赖安装完成之后mkdir build在opencv目录下创建build目录，cd build进入build目录，执行：
+cmake -D CMAKE_INSTALL_PREFIX=/usr/local -D CMAKE_BUILD_TYPE=Release -D OPENCV_EXTRA_MODULES_PATH=../opencv_contrib/modules .. 注意：最后的两个点不能丢
+cmake编译成功出现Configuring done和Generating done，接下来进行下一步输入
+sudo make -j8 如果顺利的话就会出现
+这就意味着opencv编译成功了，如果出现了编译错误，那就需要找一找是否是有哪些依赖没有事先安装。</description>
+    </item>
+    
+    <item>
+      <title>Note for paper SwiftNet</title>
+      <link>https://wuhongyui.github.io/posts/swiftnet/</link>
+      <pubDate>Fri, 10 Jul 2020 10:08:35 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/swiftnet/</guid>
+      <description>Abstract 许多先前的工作解决了定制轻量级结构的挑战，这些结构通过减少网络的深度，宽度和层的容量来降低计算的复杂度。我们提出了一种可替代的方法，在减少计算代价上达到了显著的效果。第一，我们通过一个通用的轻量级结构来作为识别引擎，之后我们采用一个横向的连接的轻量上采样作为恢复预测分辨率的最经济有效的解决方案。最后，提出了用在多分率下融合共有特征来增加感受野。
+Introduction 大多数轻量级的模型从零开始初始化训练，因此丢失了由一些大型数据集提供的知识迁移的机会，这样模型就有相当大的过拟合的风险。一般的模型有两个问题：
+ 较低的分辨率(一般比输入图像小32倍)导致小目标较难识别 感受野过小对一些大目标难以识别到  有许多技巧可以改善这些问题，如扩张卷积，学习上采样，横向连接和分辨率金字塔等方法，但是并非所有的技巧都适用实时分割。
+本文认为基于ImageNet-grade 分类的结构可以权衡模型的精度和速度，我们提出了一种基于共享参数的分辨率金字塔来增加深度模型感受野的新方法。我们的研究表明，通过一个带有横向连接的轻量级编码器，可以有效和准确地提高预测的分辨率。
+The proposed segmentation method Basic building blocks 提出了选用ResNet-18和MobileNet V2作为分割的encoders，其中ResNet支持GPU加速更胜一筹
+Upsampling decoder 
+梯子型的上采样模块有两个输入：低分辨率的特征和来自先前编码器的横向特征
+Module for increasing the receptive field 两种可行的增加感受野的方法 1）空间金字塔池化；2）金字塔融合，SPP模块收集编码器在几个池化层产生的特征，并生成具有不同细节级别的表示。该模型SPP block是PSPNet中的简化版本。
+Single Scale model 
+ 黄色梯形代表卷积组，即编码器的部分，在相同的空间分辨率下工作，每个卷积组下采样一次，分辨率下降两倍，最后为H/32xW/32 绿色的SPP(Spatial Pyramid pooling)来增加模型的感受野 编码器特征维数随下采样路径增加，而蓝色上采样层维度不变，所以需要红色模块进行维度统一  Interleaved pyramid fusion model 紧密的编码结构会减小感受野和降低模型容纳能力，提出了一种图像金字塔来解决问题，为了增强梯度在编码器中传播，增加了一个concatenation
+
+Experiment  Adam optimizer learning rate set \(4\times10^{-4}\) decay learning rate with cosine annealing 448x448 crops CamVid  在Cityscapes上的结果</description>
+    </item>
+    
+    <item>
+      <title>Opencv Configuration on MacOS</title>
+      <link>https://wuhongyui.github.io/posts/opencv_configuration/</link>
+      <pubDate>Sun, 24 May 2020 17:14:06 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/opencv_configuration/</guid>
+      <description>1.下载OpenCV  可以到OpenCV官网下载安装文件，根据需要下载对应的版本 Cmake，官网下载，然后安装，进行配置 在MacOS下，Xcode的是必须安装的  Opencv安装命令 下载解压资源包后，找到一个文件目录放置，在解压好的文件如：opencv-4.3.0下创建一个新文件目录，命名为release，在终端中进入到这个文件目录，输入以下命令：
+$cmake -G “Unix Makefiles” .. (如果提示权限问题，加sudo) $make (可以加-j2；-j4；-j8等表示多线程编译) $sudo make install 安装成功后在/usr/local/lib下会有关于libopencvXXX.dylib文件，在/usr/local/include下会有opencv4、opencv2目录
+通过Homebrew安装  下载Homebrew，Homebrew是Mac上的一个包管理软件，相当于linux上的apt-get，wget等，根据Homebrew官网的教程下载不出意外是会失败的  第一步，获取install文件 通过如下代码把官网的脚本拿下来
+curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install &amp;gt;&amp;gt; brew_install 第二步，更改脚本中的资源链接，替换成清华大学的镜像 就是把这两句
+BREW_REPO = “https://github.com/Homebrew/brew“.freeze CORE_TAP_REPO = “https://github.com/Homebrew/homebrew-core“.freeze 替换成
+BREW_REPO = “https://mirrors.ustc.edu.cn/brew.git “.freeze CORE_TAP_REPO = “https://mirrors.ustc.edu.cn/homebrew-core.git“.freeze 如果镜像有问题，可以换成其他的镜像源，接着执行脚本文件
+ruby brew_install 出现报错是因为源不通，更换为其他的国内镜像源
+git clone git://mirrors.ustc.edu.cn/homebrew-core.git/ /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core --depth=1 然后把homebrew-core的镜像地址也设为中科院的国内镜像
+git remote set-url origin https://mirrors.ustc.edu.cn/brew.git cd &amp;#34;$(brew --repo)/Library/Taps/homebrew/homebrew-core&amp;#34; # 替换核心软件仓库 git remote set-url origin https://mirrors.</description>
+    </item>
+    
+    <item>
+      <title>Conda virtual env</title>
+      <link>https://wuhongyui.github.io/posts/conda_install/</link>
+      <pubDate>Wed, 29 Apr 2020 21:29:14 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/conda_install/</guid>
+      <description>在conda的指定虚拟环境中使用pip安装包的问题 比如，虚拟环境deep_Sort，一般先激活虚拟环境
+conda activate deep_sort  在 conda中安装包应该使用
+conda install package  我们来看下在目前有多少 pip 命令：
+(deep_sort) ➜ deep_sort_REID_pytorch-master where pip /Users/hongyi/anaconda3/bin/pip /Users/hongyi/anaconda3/envs/deep_sort/bin/pip /Users/hongyi/anaconda3/bin/pip /usr/local/bin/pip  我们要在deep_sort中安装 numpy包（随机举例用的包）的话，应该这样：
+(deep_sort) ➜ deep_sort_REID_pytorch-master /Users/hongyi/anaconda3/envs/deep_sort/bin/pip install numpy  这样每次在虚拟环境使用pip的时候都需要虚拟环境内部的pip命令路径：/Users/hongyi/anaconda3/envs/deep_sort/bin/pip，这样显得非常繁琐
+如果想在虚拟环境内部使用简单的pip install package调用虚拟环境内部的pip命令的话，只需要我们在创建虚拟环境的时候指定pip只对虚拟环境生效，而不影响全局库：
+conda create -n 虚拟环境名 pip pysocks   pip：是为了指定pip命令只对当前虚拟环境生效 pysocks：是pip命令的依赖，如果不写，在虚拟环境内使用 pip命令的时候会出现Missing dependencies for SOCKS support.的报错。  conda默认创建的虚拟环境是如果安装 python的话是默认安装 pip但是没有默认安装 pysocks的，所以在虚拟环境下直接使用 pip会报Missing dependencies for SOCKS support.
+解决方法：
+conda install pysocks  之后再使用 pip命令就会默认使用虚拟环境中的 pip命令（/Users/hongyi/anaconda3/envs/deep_sort/bin/pip）</description>
+    </item>
+    
+    <item>
+      <title>Fundamentals of target tracking algorithm---DeepSort</title>
+      <link>https://wuhongyui.github.io/posts/deepsort/</link>
+      <pubDate>Tue, 21 Apr 2020 15:24:41 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/deepsort/</guid>
+      <description>经典多目标跟踪算法 目前主流的目标跟踪算法都是基于Tracking-by-Detection策略，即基于目标检测结果来进行目标跟踪。
+对于一个视频中不同时刻的同一个目标，位置发生了变化，要如何进行关联？目前主要采用匈牙利算法和卡尔曼滤波。
+ 匈牙利算法可以告诉我们当前帧的某个目标，是否与前一帧的某个目标相同，或者说相互匹配的代价最小。 卡尔曼滤波可以基于目标前一时刻的位置，来预测当前时刻的位置，并且可以比传感器（在目标跟踪中即目标检测器，比如Yolo）更准确的估计目标的位置。  匈牙利算法（Hungarian Algorithm） 首先，先介绍一下什么是分配问题（Assignment Problem）：假设有N个人和N个任务，每个任务可以任意分配给不同的人，已知每个人完成每个任务要花费的代价不尽相同，那么如何分配可以使得总的代价最小。
+举个例子，假设现在有3个任务，要分别分配给3个人，每个人完成各个任务所需代价矩阵（cost matrix）如下所示（这个代价可以是金钱、时间等等）：
+    Task_1 Task_2 Task_3     Person_1 15 40 45   Person_2 20 60 35   Person_3 20 40 25    怎么样才能找到一个最优分配，使得完成所有任务所花的代价最小？
+匈牙利算法（又叫KM算法）就是用来解决分配问题的一种方法，它基于定理：
+ 如果代价矩阵的某一行或某一列同时加上或减去某个数，则这个新的代价矩阵的最优分配仍然是原代价矩阵的最优分配。
+ 算法步骤（假设矩阵为NxN方阵）：
+ 对于矩阵的每一行，减去其中最小的元素 对于矩阵的每一列，减去其中最小的元素 用最少的水平线或垂直线覆盖矩阵中所有的0 如果线的数量等于N，则找到了最优分配，算法结束，否则进入步骤5 找到没有被任何线覆盖的最小元素，每个没被线覆盖的行减去这个元素，每个被线覆盖的列加上这个元素，返回步骤3  Step1 每一行最小的元素分别为15， 20， 20，减去得到
+    Task_1 Task_2 Task_3     Person_1 0 25 30   Person_2 0 40 15   Person_3 0 20 5    Step2 每一列最小的元素分别为0、20、5，减去得到</description>
+    </item>
+    
+    <item>
+      <title>FCOS Paper notes</title>
+      <link>https://wuhongyui.github.io/posts/fcos/</link>
+      <pubDate>Mon, 16 Mar 2020 14:00:10 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/fcos/</guid>
+      <description>1.摘要 提出了一种全卷积的单级目标检测器（FCOS），这是一种逐像素预测的方式解决目标检测问题，类似于语义分割。近年来一些最先进的目标检测算法，如RetinaNet，SSD，YOLOv3，Faster R-CNN都依赖于预定义的锚框，相反，FCOS提出的检测器算法是无锚框的(anchor free)，也就是无建议(proposal free)，通过取消预定义锚框的设定，FCOS完全避免了与锚框相关的复杂计算，如在训练过程中计算重叠，更重要的是，FCOS还避免了所有与锚框相关的超参数，这些超参数会对最终的检测结果非常敏感。由于只有后处理非最大抑制 ( NMS )，我们的检测器 FCOS 比以前的基于锚框的单级检测器具有更简单的优点。首次提出了一种简单灵活的检测框架，提高了检测精度。
+2.Introduction 目标检测是计算机视觉中的一项基本而又具有挑战性的任务，它要求算法为图像中感兴趣的每个实例预测一个带有类别标签的边界框。如 Faster R-CNN [20]、SSD [15]、YOLOv2、v3 都依赖于一组预定义的锚框，长期以来人们认为锚框的使用是检测器成功的关键。尽管它们取得了巨大的成功，但值得注意的是，基于锚框的检测器存在一些缺陷：
+ 检测器的性能对锚框的尺寸、长宽比和数量敏感，例如，RetinaNet中，在COCO数据集基准上，改变这些超参数会导致4%的AP的性能变化，因此，在基于锚框预测的模型中，这些超参数需要细心的调整 尽管精心的超参数调整，由于锚框的尺寸和长宽比是固定的，检测器在处理形状变化较大的候选对象较为困难，特别是对于小对象，预定义锚框还限制了检测器的泛化能力，因为它们需要针对不同对象大小或纵横比的新检测任务重新设计 为了获得较高的召回率，需要一个基于锚框的检测器将框密集地放置在输入图像上 ( 例如，对于短边为 800 的图像，在特征金字塔网络 ( FPN ) 中放置超过 180K 个锚框)。在训练过程中，这些锚框大多被标记为负样本。负样本数量过多加剧了训练中正样本与负样本之间的不平衡。 训练过程中，当计算所有锚框和地面真实框（ground-truth boxes）之间的交并集 ( intersectionover-union, IOU ) 得分时，锚框数量过多也会显著增加计算量和内存占用。  近年来，全卷积网络在语义分割、深度估计、关键点检测、计数等密集预测任务中取得了巨大的成功。目标检测作为高级视觉任务之一，可能是唯一一个偏离纯卷积逐像素预测框架的任务，这主要是由于锚框的使用。思考这样一个问题：我们能否以简洁的逐像素的预测方式来解决对象检测问题，例如，类似用于语义分割的FCN，FCOS算法首次证明了基于 FCN 的检测器比基于锚框的检测器具有更好的性能。
+在一些文献中，一些文章一些文章试图利用FCN的框架进行目标检测，例如DenseBox和UnitBox，具体地说，这些基于 FCN 的框架直接预测了特征图（feature maps）级别上每个空间位置上的一个 4D 向量加上一个类的类别。由下图(左图)所示，4D向量描述了一个边界框到该位置的四个边的相对偏移量，这些框架类似于用于语义分割的 FCNs，只是每个位置都需要回归一个 4D 连续向量。但是，为了处理不同大小的边界框，DenseBox 将训练图像调整为固定的比例。因此，DenseBox 必须对图像金字塔进行检测，这与 FCN 一次计算所有卷积的思想是相悖的。此外，更重要的是，这些方法主要用于特殊领域的目标检测，如场景文本检测或人脸检测，因为人们认为这些方法不适用于具有高度重叠边界框的一般对象检测。如图所示(右图)，高度重叠的边界框导致了训练过程中难以处理的模糊性：对于重叠区域中的像素，不清楚 w.r.t 应该回归到哪个边界框。
+
+在后续中，我们将进一步研究这个问题，并说明使用 FPN 可以在很大程度上消除这种模糊性。结果表明，该方法与传统的基于锚框的检测方法具有相当的检测精度。此外，我们注意到我们的方法可能会在远离目标对象中心的位置产生大量低质量的预测边界框。为了抑制这些低质量的检测，我们引入了一个新的 “ 中心度（center-ness）” 分支(只有一层)来预测一个像素到其相应边界框中心的偏移，如公式所定义。然后，该分数用于降低低质量检测边界框的权重，并将检测结果合并到NMS中。简单而有效的中心度分支允许基于 FCN 的检测器在完全相同的训练和测试设置下胜过基于锚框的检测器。 \( centerness* = \sqrt {\frac{min(l*, r*)}{max(l*, r*)}\times \frac{min(t*, b*)}{max(t*,b*)} } \) 这种新型检测器架构有一下几种优点：</description>
+    </item>
+    
+    <item>
+      <title>Learning YOLO detection algorithm</title>
+      <link>https://wuhongyui.github.io/posts/yolo/</link>
+      <pubDate>Wed, 08 Jan 2020 20:31:44 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/yolo/</guid>
+      <description>一、Yolo的思想 ​ 简单来说目标检测算法的思想首先就分为两个步骤，第一个任务是定位、第二个任务则是分类。目标检测就是要找出图片中的物体，并且使用bounding box将物体框出来。而bounding box可以使用左上角的坐标\((x,y)\)与矩形的宽和高\((h,w)\)表示。直观的想法是将一张图片喂给神经网络，然后输出\((x, y, h, w)\)四个值就好，但是，在一张图片中有两个或者多个物体，此时网络的输出维度则没法固定，因此直观的方法是行不通的。
+​ 既然输出需要固定维度，yolo采用了一个固定的输出维度，使其足够大可以包含图片中所有的检测物体，yolo固定维度的办法是把模型的输出划分成网格形状，每个网格中的cell（格子）都可以输出物体的类别和bounding box的坐标，如下图所示：
+
+设置模型的训练目标，将输入图像按照模型的输出网格（比如7x7大小）进行划分，划分之后就有很多小cell了。我们再看图片中物体的中心是落在哪个cell里面，落在哪个cell哪个cell就负责预测这个物体。比如下图中，狗的中心落在了红色cell内，则这个cell负责预测狗。
+假设你需要检测20个类\((C=20)\)，则将图像划分成\(S\times S\)个网格，每个cell预测两个bounding box\((B = 2)\)每个bounding box有五个参数值\(x,y,w,h,confidence\space sorce\)，因此模型的输出则是一个\(S\times S\times (B*5 + C)\)的Tensor。
+
+分两个阶段来设置“目标中心落在哪个cell，就用哪个cell来检测”：
+ 训练阶段，如果物体中心落在这个cell，那么就给这个cell打上这个物体的label（包括xywh和类别）。也就是说我们是通过这种方式来设置训练的label的。换言之，我们在训练阶段，就教会cell要预测图像中的哪个物体。 测试阶段。因为你在训练阶段已经教会了cell去预测中心落在该cell中的物体，那么cell自然也会这么做。  以上就是yolo的核心思想，也就是说在训练阶段给模型中的各个cell打上label，在训练阶段告诉模型需要预测什么，然后测试阶段才能按照你训练阶段教它的去做。
+二、模型的架构 模型的网络架构见下图：
+
+从图中可以看到，yolo网络的输出的网格是7x7大小的，另外，输出的channel数目为30。一个cell内，前20个元素是类别概率值，然后2个元素是边界框confidence，最后8个元素是边界框的 \((x, y,w,h) \)。
+
+也就是说，每个cell有两个predictor，每个predictor分别预测一个bounding box的xywh和相应的confidence。但分类部分的预测却是共享的。正因为这个，同个cell是没办法预测多个目标的。yolov2则解决了这个问题，需要预测两个bounding box的原因是？这个还是要从训练阶段怎么给两个predictor安排训练目标来说。在训练的时候会在线地计算每个predictor预测的bounding box和ground truth的IOU，计算出来的IOU大的那个predictor，就会负责预测这个物体，另外一个则不预测。
+三、模型的输出 confidence预测 confidence表示：在cell预测的bounding box包含某一物体的置信度有多高，并且该bounding box预测的准确度有多大，用公式表示就是：\(Pr(Object)*IOU^{truth}_{pred}\)
+分两个阶段来解释confidence公式：
+ 在训练阶段，我们需要给每一个输出bounding box的confidence打上label，也就是，如果一个cell中包含一个物体的中心，就把\(Pr(Object)=1\)，因此confidence就变成了\(1\times IOU^{truth}_{pred}\)注意这个IOU是在训练过程中不断计算出来的，网络在训练过程中预测的bounding box每次都不一样，所以和ground truth计算出来的IOU每次也会不一样。若一个cell中不包含一个物体的中心，则\(Pr(Object)=0\)，因此confidence的值为0. 在预测阶段，因为训练时给的label就是一个值，因此预测是模型只吐出一个confidence的值。  bounding box预测 bounding box预测包括了\(x,y,w,h\)，\(x, y\)表示bounding box中心相对于cell左上角坐标的偏移量---通过偏移量公式计算:\((X*S/width-cell_x, Y*S/height-cell_y)\)，宽高都相对于整张图片的宽高进行归一化。
+xywh为什么要这么表示呢？实际上经过这么表示之后，xywh都归一化了，它们的值都是在0-1之间。我们通常做回归问题的时候都会将输出进行归一化，否则可能导致各个输出维度的取值范围差别很大，进而导致训练的时候，网络更关注数值大的维度。因为数值大的维度，算loss相应会比较大，为了让这个loss减小，那么网络就会尽量学习让这个维度loss变小，最终导致区别对待。
+类别预测 除以上两个预测输出之外，还有物体类别概率输出，物体类别是一个条件概率\(Pr(Class_i|Object)\)也可以分两个阶段来看：
+ 对于训练阶段，也就是打label阶段，怎么打label呢？对于一个cell，如果物体的中心落在了这个cell，那么我们给它打上这个物体的类别label，并设置概率为1。换句话说，这个概率是存在一个条件的，这个条件就是cell存在物体。 对于预测阶段，网络直接输出\(Pr(Class_i|Object)\)，代表了cell中有物体的条件下的概率，论文中还将这个值乘上了confidence，即\(Pr(Class_i|Object)\times Pr(Object)*IOU^{truth}_{pred}\)。这样保证了即使cell中不存在某个物体，类别预测的概率值可能为\(Pr(Class_i|Object)=0.</description>
+    </item>
+    
+    <item>
+      <title>Ubuntu18.04 DeepLearning Environment Setup</title>
+      <link>https://wuhongyui.github.io/posts/ubuntu18.04/</link>
+      <pubDate>Mon, 30 Dec 2019 20:04:40 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/ubuntu18.04/</guid>
+      <description>安装Ubuntu18.04后应该做的事 安装ubuntu18.04后，参考该博客进行相关的配置。
+NIVDIA Driver  sudo apt purge nvidia-*移除原有老驱动； sudo add-apt-repository ppa:graphics-drivers/ppa安装相关依赖文件； sudo apt update &amp;amp;&amp;amp; sudo apt upgrade ubuntu-drivers devices查看支持的驱动版本； sudo apt install nvidia-driver-440安装440版本驱动； 重启后sudo reboot检查安装nvidia-smiorwatch -n 0.1 nvidia-smi 使用sudo apt-mark hold nvidia-driver-440 来保证驱动不会自动更新； 进行以上步骤可能出现安装不成功的问题，一般在网络正常的情况下可以正常安装，也可以选择手动安装，进入官网根据显卡型号下载适配驱动Nvidia官网参考这里进行手动安装  CUDA 下载cuda_10.2.89_440.33.01_linux.run或者下载其他的版本other version
+ 运行sudo sh cuda_10.2.89_440.33.01_linux.run
+ 最好不要安装OpenGL相关的，选择不要安装NVIDIA Accelerate driver；
+ 添加环境变量，使用sudo gedit ~/.bashrcorsudo vim ~/.bashrc加入如下：
+export CUDA_HOME=/usr/local/cuda export PATH=$PATH:$CUDA_HOME/bin export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}  source ~/.bashrc之后使用nvcc -V查看是否安转成功；
+  Cudnn 下载cudnn或者其他版本other version</description>
+    </item>
+    
+    <item>
+      <title>How to build blog by Hugo</title>
+      <link>https://wuhongyui.github.io/posts/buildblog/</link>
+      <pubDate>Sat, 21 Dec 2019 16:17:36 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/buildblog/</guid>
+      <description>Hugo 简介 ​ Hugo是一个用Go语言编写的静态站点生成器，hugo的易操作性和其拥有大量的主题库使其备受技术博客博主喜爱。记录一些自己亲手搭建博客的经验之谈。本文操作基于macos 下
+如何安装Hugo 如果你是macOs 用户可以使用homebrew 来安装：
+brew install hugo 如果你是Ubuntu 或者其他linux 用户可以使用apt 来安装：
+sudo apt-get install hugo  如果是Windows 用户，使用scoop 快速安装：
+scoop install hugo  使用包管理工具，基本上可以实现一条代码快速安装，具体可以参考Hugo官网
+Hugo官网
+生成博客文件 自己选择合适的文件夹下使用终端输入命令：
+hugo new site myblog  此命令会在当前文件夹下建立一个名叫myblog的文件夹；
+接下来就是选择你喜爱的主题hugo主题可以随意挑一个自己喜爱的主题使用，也可以在github中搜索你想要的主题库，使用命令：
+cd themes git clone https://github.com/Track3/hermit.git themes/hermit  myblog/content文件夹是存放你博客文章的地方，在此新建.md文件
+hugo new posts/XXXX.md  可以在XXXX.md文件中使用markdown格式编写一些博客内容，使用命令：
+hugo server -t 主题名 -D  进行主题预览
+配置主题，打开myblog/config.toml每个主题有不同的配置：
+baseURL = &amp;quot;https://wuhongyui.github.io&amp;quot; languageCode = &amp;quot;en-us&amp;quot; defaultContentLanguage = &amp;quot;en&amp;quot; title = &amp;quot;拿了橘子跑&amp;quot; theme = &amp;quot;hermit&amp;quot; # enableGitInfo = true pygmentsCodefences = true pygmentsUseClasses = true # hasCJKLanguage = true # If Chinese/Japanese/Korean is your main content language, enable this to make wordCount works right.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,2626 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Posts on 拿了橘子跑</title>
+		<link>https://wuhongyui.github.io/posts/</link>
+		<description>Recent content in Posts on 拿了橘子跑</description>
+		<generator>Hugo -- gohugo.io</generator>
+		<language>en-us</language>
+		<copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+		<lastBuildDate>Thu, 14 Jan 2021 20:24:31 +0800</lastBuildDate>
+		<atom:link href="https://wuhongyui.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>Find the nth term of the Fibonacci sequence</title>
+			<link>https://wuhongyui.github.io/posts/fibonacci/</link>
+			<pubDate>Thu, 14 Jan 2021 20:24:31 +0800</pubDate>
+			
+			<guid>https://wuhongyui.github.io/posts/fibonacci/</guid>
+			<description>Fibonacci 大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项（从0开始，第0项为0，第1项是1）。
+方法一：递归 斐波那契数列公式为：\(F(n) = \begin{cases} 0, &amp; n=0 \\ 1, &amp; n =1,2 \\ F[n-1]+F[n-2], &amp;n2 \end{cases}\)，初始值\(F[0]=0,F[1]=1\) 考虑使用递归的方法。
+class Solution { public: int Fibonacci(int n) { if (n == 0 || n == 1) return n; return Fibonacci(n-1) + Fibonacci(n-2); } };  递归算法实现简单，代码量少，但时间复杂度为\(o(2^n)\)，空间复杂度为递归栈的空间 为什么时间复杂度为\(o(2^n)\)，可以从二叉树的节点个数来考虑，递归算法可以展开为一个二叉树，所以有$n$项的递归数列，可以看成深度为\(n\)二叉树，故算法运算次数为二叉树上至多含有的节点个数\(2^n-1\)，时间复杂度为\(o(2^n)\)。
+方法二：动态规划 递归算法的时间复杂度高是因为存在很多重复的计算，改进办法是将计算的过程保存。动态规划是不用递归过程，直接从子树求得答案，过程是从下往上。简而言之，我们已知前两项的值，然后我们就可以用前两项的值求出第3项的值，接着求第4、第5、……，直到求出第n项的值。 
+int Fibonacci(int n) { vector&amp;lt;int&amp;gt; dp(n+1, 0); dp[1] = 1; for (int i=2; i&amp;lt;=n; ++i) { dp[i] = dp[i-1] + dp[i-2]; } return dp[n]; }  继续优化，例如求第五项的时候只用到第四项和第三项，因此前面的项就不需要保存，来占用内存空间。通过定义三个变量交替存储计算结果。</description>
+			<content type="html"><![CDATA[<h1 id="fibonacci">Fibonacci</h1>
+
+<p>大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项（从0开始，第0项为0，第1项是1）。</p>
+
+<h3 id="方法一递归">方法一：递归</h3>
+
+<p>斐波那契数列公式为：<span  class="math">\(F(n) =
+\begin{cases} 
+0,  & n=0 \\
+1, & n =1,2 \\
+F[n-1]+F[n-2], &n>2
+\end{cases}\)</span>，初始值<span  class="math">\(F[0]=0,F[1]=1\)</span>
+考虑使用递归的方法。</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="kt">int</span> <span class="n">Fibonacci</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="n">n</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nf">Fibonacci</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Fibonacci</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>递归算法实现简单，代码量少，但时间复杂度为<span  class="math">\(o(2^n)\)</span>，空间复杂度为递归栈的空间
+为什么时间复杂度为<span  class="math">\(o(2^n)\)</span>，可以从二叉树的节点个数来考虑，递归算法可以展开为一个二叉树，所以有$n$项的递归数列，可以看成深度为<span  class="math">\(n\)</span>二叉树，故算法运算次数为二叉树上至多含有的节点个数<span  class="math">\(2^n-1\)</span>，时间复杂度为<span  class="math">\(o(2^n)\)</span>。</p>
+
+<h3 id="方法二动态规划">方法二：动态规划</h3>
+
+<p>递归算法的时间复杂度高是因为存在很多重复的计算，改进办法是将计算的过程保存。动态规划是不用递归过程，直接从子树求得答案，过程是从下往上。简而言之，我们已知前两项的值，然后我们就可以用前两项的值求出第3项的值，接着求第4、第5、……，直到求出第n项的值。
+<figure><img src="/images/16106254573778.png" alt=""></figure></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="nf">Fibonacci</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">dp</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">dp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;=</span><span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">2</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">dp</span><span class="p">[</span><span class="n">n</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>继续优化，例如求第五项的时候只用到第四项和第三项，因此前面的项就不需要保存，来占用内存空间。通过定义三个变量交替存储计算结果。</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="kt">int</span> <span class="n">Fibonacci</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="n">n</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">c</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span>  <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">){</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">c</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>时间复杂度：<span  class="math">\(O(n)\)</span>
+空间复杂度：<span  class="math">\(O(1)\)</span></p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>Ubuntu18.04 Openpose Environment configuration</title>
+			<link>https://wuhongyui.github.io/posts/openpose/</link>
+			<pubDate>Thu, 13 Aug 2020 21:01:10 +0800</pubDate>
+			
+			<guid>https://wuhongyui.github.io/posts/openpose/</guid>
+			<description>Ubuntu18.04 人体姿态检测算法OpenPose环境配置 最近项目中需要实现一个人体姿态检测算法的需求，GitHub中也有Pytorch版本的OpenPose但是跑起视频来惨不忍睹，只有2-3FPS；于是就考虑使用CMU官方的代码，就进行了一波漫长的环境配置。
+资源的准备 首先在Github上获取OpenPose项目文件：
+git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose.git 根据网络情况可能有快有慢，还是建议挂一下梯子下载速度快一些。
+OpenPose的项目环境需要Caffe与OpenCV，于是先行安装OpenCV，可以从OpenCV官网下载OpenCV官网，也可以通过git：
+git clone https://github.com/Itseez/opencv.git git clone https://github.com/Itseez/opencv_contrib.git 下载成功后，可以在你的home目录下看见opencv和opencv_contrib两个文件夹，将opencv_contrib目录移到opencv目录下。
+在下载的过程中，我们可以添加opencv所需要的依赖库：
+sudo apt-get install build-essential sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev 安装build-essential可能会出现安装不上的问题，需要安装可以使用：
+apt depends build-essential 查看build-essential所需要的依赖。
+在各项依赖安装完成之后mkdir build在opencv目录下创建build目录，cd build进入build目录，执行：
+cmake -D CMAKE_INSTALL_PREFIX=/usr/local -D CMAKE_BUILD_TYPE=Release -D OPENCV_EXTRA_MODULES_PATH=../opencv_contrib/modules .. 注意：最后的两个点不能丢
+cmake编译成功出现Configuring done和Generating done，接下来进行下一步输入
+sudo make -j8 如果顺利的话就会出现
+这就意味着opencv编译成功了，如果出现了编译错误，那就需要找一找是否是有哪些依赖没有事先安装。</description>
+			<content type="html"><![CDATA[
+
+<h3 id="ubuntu18-04-人体姿态检测算法openpose环境配置">Ubuntu18.04 人体姿态检测算法OpenPose环境配置</h3>
+
+<p>最近项目中需要实现一个人体姿态检测算法的需求，GitHub中也有Pytorch版本的OpenPose但是跑起视频来惨不忍睹，只有2-3FPS；于是就考虑使用CMU官方的代码，就进行了一波漫长的环境配置。</p>
+
+<h4 id="资源的准备">资源的准备</h4>
+
+<p>首先在Github上获取OpenPose项目文件：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose.git</code></pre></div>
+<p>根据网络情况可能有快有慢，还是建议挂一下梯子下载速度快一些。</p>
+
+<p>OpenPose的项目环境需要Caffe与OpenCV，于是先行安装OpenCV，可以从OpenCV官网下载<a href="https://github.com/opencv">OpenCV官网</a>，也可以通过git：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">git clone https://github.com/Itseez/opencv.git
+git clone https://github.com/Itseez/opencv_contrib.git</code></pre></div>
+<p>下载成功后，可以在你的home目录下看见opencv和opencv_contrib两个文件夹，将opencv_contrib目录移到opencv目录下。</p>
+
+<p>在下载的过程中，我们可以添加opencv所需要的依赖库：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo apt-get install build-essential
+sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev</code></pre></div>
+<p>安装build-essential可能会出现安装不上的问题，需要安装可以使用：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">apt depends build-essential</code></pre></div>
+<p>查看build-essential所需要的依赖。</p>
+
+<p>在各项依赖安装完成之后<code>mkdir build</code>在opencv目录下创建build目录，<code>cd build</code>进入build目录，执行：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">cmake -D <span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span>/usr/local -D <span class="nv">CMAKE_BUILD_TYPE</span><span class="o">=</span>Release -D <span class="nv">OPENCV_EXTRA_MODULES_PATH</span><span class="o">=</span>../opencv_contrib/modules ..</code></pre></div>
+<p>注意：最后的两个点不能丢</p>
+
+<p><img src="/images/OpenPose1.jpg" alt="OpenPose1" /></p>
+
+<p>cmake编译成功出现Configuring done和Generating done，接下来进行下一步输入</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo make -j8</code></pre></div>
+<p>如果顺利的话就会出现</p>
+
+<p><img src="/images/OpenPose2.jpg" alt="OpenPose2" /></p>
+
+<p>这就意味着opencv编译成功了，如果出现了编译错误，那就需要找一找是否是有哪些依赖没有事先安装。</p>
+
+<p>接下来运行：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo make install</code></pre></div>
+<p>可以在<code>/usr/local/lib</code>目录下看到一系列<code>libopencv_xxx.so</code>等这样的动态库，这样成功安装OpenCV，可以适用于各种语言。</p>
+
+<h4 id="caffe搭建">Caffe搭建</h4>
+
+<p>安装相关依赖库</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo apt-get --assume-yes install build-essential
+ 
+sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev protobuf-compiler
+ 
+sudo apt-get install --no-install-recommends libboost-all-dev
+ 
+sudo apt-get install libopenblas-dev liblapack-dev libatlas-base-dev
+ 
+sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev
+ 
+sudo -H pip install --upgrade numpy protobuf</code></pre></div>
+<p>Caffe的下载</p>
+
+<p>可以直接从<code>OpenPose</code>的GitHub项目中的<code>3rdparty</code>的第三方目录中<code>Caffe</code>中获取：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">git clone https://github.com/CMU-Perceptual-Computing-Lab/caffe.git</code></pre></div>
+<p>将下载好的Caffe文件放在OpenPose项目的Caffe目录下进行编译，以免一些未知的错误，打开下载好的Caffe文件，目录下新建一个build目录</p>
+
+<p>修改<code>MakeFile.config</code>进入caffe，将 <code>Makefile.config.example</code> 文件复制一份并更名为<code>Makefile.config</code>，也可以在caffe目录下直接调用以下命令完成复制操作 ：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo cp Makefile.config.example Makefile.config</code></pre></div>
+<p>修改<code>Makefile.config</code>文件，在caffe目录下打开该文件：</p>
+<div class="highlight"><pre class="chroma"><code class="language-makefile" data-lang="makefile"><span class="err">...</span>
+<span class="err">将</span>
+<span class="c">#USE_CUDNN := 1
+</span><span class="c"></span><span class="err">修改成：</span> 
+<span class="nv">USE_CUDNN</span> <span class="o">:=</span> <span class="m">1</span>
+<span class="err">...</span>
+ 
+<span class="err">...</span>
+<span class="c">#如果此处是OpenCV2，则不用修改
+</span><span class="c"></span><span class="err">将</span>
+<span class="c">#OPENCV_VERSION := 3 
+</span><span class="c"></span><span class="err">修改为：</span> 
+<span class="nv">OPENCV_VERSION</span> <span class="o">:=</span> <span class="m">3</span>
+<span class="err">...</span>
+ 
+<span class="err">...</span>
+<span class="err">将</span>
+<span class="c">#WITH_PYTHON_LAYER := 1 
+</span><span class="c"></span><span class="err">修改为</span> 
+<span class="nv">WITH_PYTHON_LAYER</span> <span class="o">:=</span> <span class="m">1</span>
+<span class="err">...</span>
+ 
+<span class="err">...</span>
+<span class="nv">INCLUDE_DIRS</span> <span class="o">:=</span> <span class="k">$(</span>PYTHON_INCLUDE<span class="k">)</span> /usr/local/include
+<span class="nv">LIBRARY_DIRS</span> <span class="o">:=</span> <span class="k">$(</span>PYTHON_LIB<span class="k">)</span> /usr/local/lib /usr/lib 
+<span class="err">修改为：</span> 
+<span class="nv">INCLUDE_DIRS</span> <span class="o">:=</span> <span class="k">$(</span>PYTHON_INCLUDE<span class="k">)</span> /usr/local/include /usr/include/hdf5/serial
+<span class="nv">LIBRARY_DIRS</span> <span class="o">:=</span> <span class="k">$(</span>PYTHON_LIB<span class="k">)</span> /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/hdf5/serial       
+<span class="err">...</span>
+ 
+<span class="err">...</span>
+<span class="err">将</span>
+<span class="nv">CUDA_ARCH</span> <span class="o">:=</span> -gencode <span class="nv">arch</span><span class="o">=</span>compute_20,code<span class="o">=</span>sm_20 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_20,code<span class="o">=</span>sm_21 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_30,code<span class="o">=</span>sm_30 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_35,code<span class="o">=</span>sm_35 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_50,code<span class="o">=</span>sm_50 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_52,code<span class="o">=</span>sm_52 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_60,code<span class="o">=</span>sm_60 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_61,code<span class="o">=</span>sm_61 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_61,code<span class="o">=</span>compute_61
+<span class="err">修改为</span>
+<span class="nv">CUDA_ARCH</span> <span class="o">:=</span> -gencode <span class="nv">arch</span><span class="o">=</span>compute_30,code<span class="o">=</span>sm_30 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_35,code<span class="o">=</span>sm_35 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_50,code<span class="o">=</span>sm_50 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_52,code<span class="o">=</span>sm_52 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_60,code<span class="o">=</span>sm_60 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_61,code<span class="o">=</span>sm_61 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_61,code<span class="o">=</span>compute_61
+<span class="err">...</span>
+</code></pre></div>
+<p>然后修改 Caffe 目录下的<code>Makefile</code> 文件：</p>
+<div class="highlight"><pre class="chroma"><code class="language-makefile" data-lang="makefile"><span class="err">...</span>
+<span class="err">将：</span>
+<span class="nv">NVCCFLAGS</span> <span class="o">+=</span>-ccbin<span class="o">=</span><span class="k">$(</span>CXX<span class="k">)</span> -Xcompiler-fPIC <span class="k">$(</span>COMMON_FLAGS<span class="k">)</span>
+<span class="err">替换为：</span>
+<span class="nv">NVCCFLAGS</span> <span class="o">+=</span> -D_FORCE_INLINES -ccbin<span class="o">=</span><span class="k">$(</span>CXX<span class="k">)</span> -Xcompiler -fPIC <span class="k">$(</span>COMMON_FLAGS<span class="k">)</span>
+<span class="err">...</span>
+ 
+<span class="err">...</span>
+<span class="err">将：</span>
+<span class="nv">LIBRARIES</span> <span class="o">+=</span> glog gflags protobuf boost_system boost_filesystem m hdf5_hl hdf5
+<span class="err">改为：</span>
+<span class="nv">LIBRARIES</span> <span class="o">+=</span> glog gflags protobuf boost_system boost_filesystem m hdf5_serial_hl hdf5_serial
+<span class="err">...</span>
+</code></pre></div>
+<p>然后修改<code>/usr/local/cuda/include/host_config.h</code>文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="p">...</span>
+<span class="err">将</span>
+<span class="cp">#error-- unsupported GNU version! gcc versions later than 4.9 are not supported!
+</span><span class="cp"></span><span class="err">改为</span>
+<span class="c1">//#error-- unsupported GNU version! gcc versions later than 4.9 are not supported!
+</span><span class="c1"></span><span class="p">...</span>
+</code></pre></div>
+<p>编译 ,在caffe目录下执行：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo make all -j8</code></pre></div>
+<p>在编译的过程中遇到了：</p>
+
+<pre><code>libcudart.so.10.0: cannot open shared object file: No such file or directory
+</code></pre>
+
+<p>显示连接不上cuda的相关动态库，首先确认了环境变量<code>/etc/profile</code>与<code>~/.bashrc</code>中有含了：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/usr/local/cuda-10.0/bin
+<span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:/usr/local/cuda-10.0/lib64
+<span class="nb">export</span> <span class="nv">LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LIBRARY_PATH</span>:/usr/local/cuda-10.0/lib64</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">source</span> /etc/profile</code></pre></div>
+<p>使得配置文件生效之后在编译</p>
+
+<p>若仍提示相同的错误，则执行以下命令，将相应的库文件复制到<code>/usr/lib</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo cp /usr/local/cuda-8.0/lib64/libcudart.so.8.0 /usr/local/lib/libcudart.so.8.0 <span class="o">&amp;&amp;</span> sudo ldconfig
+sudo cp /usr/local/cuda-8.0/lib64/libcublas.so.8.0 /usr/local/lib/libcublas.so.8.0 <span class="o">&amp;&amp;</span> sudo ldconfig
+sudo cp /usr/local/cuda-8.0/lib64/libcurand.so.8.0 /usr/local/lib/libcurand.so.8.0 <span class="o">&amp;&amp;</span> sudo ldconfig</code></pre></div>
+<p>ldconfig命令是一个动态链接库管理命令，是为了让动态链接库为系统共享。</p>
+
+<p>然后重新进入Caffe目录下进行编译</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo make clean
+sudo make all -j8</code></pre></div>
+<p>再测试Caffe是否安装成功：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo make runtest -j8</code></pre></div>
+<p>测试时间较长，但是觉得还是有必要进行一下，因为如果Caffe编译不成功导致后面OpenPose编译不成功，问题不好排查，当终端出现RUN OK等绿色字样意味着编译成功了，便可以进行下一步</p>
+
+<h4 id="openpose编译">OpenPose编译</h4>
+
+<p>首先安装Cmake GUI</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo apt-get install cmake-gui</code></pre></div>
+<p>下载官方给的caffemodel</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">cd</span> models
+./getModels.sh
+<span class="nb">cd</span> ..</code></pre></div>
+<p>下载速度看网络情况，也可选择一下连接手动下载模型权重，放在对应的模型目录下</p>
+
+<pre><code>http://posefs1.perception.cs.cmu.edu/OpenPose/models/pose/body_25/pose_iter_584000.caffemodel
+http://posefs1.perception.cs.cmu.edu/OpenPose/models/pose/coco/pose_iter_440000.caffemodel
+http://posefs1.perception.cs.cmu.edu/OpenPose/models/pose/mpi/pose_iter_160000.caffemodel
+http://posefs1.perception.cs.cmu.edu/OpenPose/models/face/pose_iter_116000.caffemodel
+http://posefs1.perception.cs.cmu.edu/OpenPose/models/hand/pose_iter_102000.caffemodel
+</code></pre>
+
+<p>打开Cmake GUI对OpenPose进行编译，进入图形化界面后<code>where is the source code</code>与<code>Where to build the binaries</code>分别填写OpenPose项目目录和build目录</p>
+
+<p>然后在左下角的configure</p>
+
+<p><img src="/images/OpenPose3.jpg" alt="" /></p>
+
+<p>默认就这两个选项，点击Finish，完成之后选择</p>
+
+<p><img src="/images/OpenPose4.jpg" alt="" /></p>
+
+<p>这个时候要填写之前配置的caffe路径<code>Caffe_INCLUDE_DIRS</code>这个填写caffe目录下的include目录<code>/home/user/openpose/3rdparty/caffe/include</code></p>
+
+<p><code>caffe_LIBS</code>填写<code>home/user/openpose/3rdparty/caffe/build/lib/libcaffe.so</code>然后去掉最上面的BUILD_CAFFE选项，点击下方的Generate，结束</p>
+
+<p>编译OpenPose：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">cd</span> build
+sudo make -j8</code></pre></div>
+<p>可能会出现fatal error：caffe/proto/caffe.pd.h : No such file or diretory  解决方案：找到最初编译caffe的文件夹，使用命令行(生成caffe.pb.h，然后新建空文件夹移过去）</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">protoc src/caffe/proto/caffe.proto --cpp_out<span class="o">=</span>.
+mkdir include/caffe/proto
+mv src/caffe/proto/caffe.pb.h include/caffe/proto</code></pre></div>
+<p>接下来就可以编译成功了</p>
+
+<p>测试OpenPose</p>
+
+<p>测试视频：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># human pose</span>
+./build/examples/openpose/openpose.bin --video examples/media/video.avi
+<span class="c1"># human pose with face and hands</span>
+./build/examples/openpose/openpose.bin --video examples/media/video.avi --face --hand</code></pre></div>
+<p>摄像头测试：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># human pose</span>
+./build/examples/openpose/openpose.bin
+<span class="c1"># human pose with face and hands</span>
+./build/examples/openpose/openpose.bin --face --hand</code></pre></div>
+<p>最后成功显示</p>
+
+<p><img src="/images/OpenPose5.jpg" alt="" /></p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>Note for paper SwiftNet</title>
+			<link>https://wuhongyui.github.io/posts/swiftnet/</link>
+			<pubDate>Fri, 10 Jul 2020 10:08:35 +0800</pubDate>
+			
+			<guid>https://wuhongyui.github.io/posts/swiftnet/</guid>
+			<description>Abstract 许多先前的工作解决了定制轻量级结构的挑战，这些结构通过减少网络的深度，宽度和层的容量来降低计算的复杂度。我们提出了一种可替代的方法，在减少计算代价上达到了显著的效果。第一，我们通过一个通用的轻量级结构来作为识别引擎，之后我们采用一个横向的连接的轻量上采样作为恢复预测分辨率的最经济有效的解决方案。最后，提出了用在多分率下融合共有特征来增加感受野。
+Introduction 大多数轻量级的模型从零开始初始化训练，因此丢失了由一些大型数据集提供的知识迁移的机会，这样模型就有相当大的过拟合的风险。一般的模型有两个问题：
+ 较低的分辨率(一般比输入图像小32倍)导致小目标较难识别 感受野过小对一些大目标难以识别到  有许多技巧可以改善这些问题，如扩张卷积，学习上采样，横向连接和分辨率金字塔等方法，但是并非所有的技巧都适用实时分割。
+本文认为基于ImageNet-grade 分类的结构可以权衡模型的精度和速度，我们提出了一种基于共享参数的分辨率金字塔来增加深度模型感受野的新方法。我们的研究表明，通过一个带有横向连接的轻量级编码器，可以有效和准确地提高预测的分辨率。
+The proposed segmentation method Basic building blocks 提出了选用ResNet-18和MobileNet V2作为分割的encoders，其中ResNet支持GPU加速更胜一筹
+Upsampling decoder 
+梯子型的上采样模块有两个输入：低分辨率的特征和来自先前编码器的横向特征
+Module for increasing the receptive field 两种可行的增加感受野的方法 1）空间金字塔池化；2）金字塔融合，SPP模块收集编码器在几个池化层产生的特征，并生成具有不同细节级别的表示。该模型SPP block是PSPNet中的简化版本。
+Single Scale model 
+ 黄色梯形代表卷积组，即编码器的部分，在相同的空间分辨率下工作，每个卷积组下采样一次，分辨率下降两倍，最后为H/32xW/32 绿色的SPP(Spatial Pyramid pooling)来增加模型的感受野 编码器特征维数随下采样路径增加，而蓝色上采样层维度不变，所以需要红色模块进行维度统一  Interleaved pyramid fusion model 紧密的编码结构会减小感受野和降低模型容纳能力，提出了一种图像金字塔来解决问题，为了增强梯度在编码器中传播，增加了一个concatenation
+
+Experiment  Adam optimizer learning rate set \(4\times10^{-4}\) decay learning rate with cosine annealing 448x448 crops CamVid  在Cityscapes上的结果</description>
+			<content type="html"><![CDATA[<h3 id="abstract">Abstract</h3>
+
+<p>许多先前的工作解决了定制轻量级结构的挑战，这些结构通过减少网络的深度，宽度和层的容量来降低计算的复杂度。我们提出了一种可替代的方法，在减少计算代价上达到了显著的效果。第一，我们通过一个通用的轻量级结构来作为识别引擎，之后我们采用一个横向的连接的轻量上采样作为恢复预测分辨率的最经济有效的解决方案。最后，提出了用在多分率下融合共有特征来增加感受野。</p>
+
+<h3 id="introduction">Introduction</h3>
+
+<p>大多数轻量级的模型从零开始初始化训练，因此丢失了由一些大型数据集提供的知识迁移的机会，这样模型就有相当大的过拟合的风险。一般的模型有两个问题：</p>
+
+<ol>
+<li>较低的分辨率(一般比输入图像小32倍)导致小目标较难识别</li>
+<li>感受野过小对一些大目标难以识别到</li>
+</ol>
+
+<p>有许多技巧可以改善这些问题，如扩张卷积，学习上采样，横向连接和分辨率金字塔等方法，但是并非所有的技巧都适用实时分割。</p>
+
+<p>本文认为基于ImageNet-grade 分类的结构可以权衡模型的精度和速度，我们提出了一种基于共享参数的分辨率金字塔来增加深度模型感受野的新方法。我们的研究表明，通过一个带有横向连接的轻量级编码器，可以有效和准确地提高预测的分辨率。</p>
+
+<h3 id="the-proposed-segmentation-method">The proposed segmentation method</h3>
+
+<h4 id="basic-building-blocks">Basic building blocks</h4>
+
+<p>提出了选用ResNet-18和MobileNet V2作为分割的encoders，其中ResNet支持GPU加速更胜一筹</p>
+
+<h4 id="upsampling-decoder">Upsampling decoder</h4>
+
+<p><figure><img src="/images/SwiftNet1.png" alt="解码器结构"></figure></p>
+
+<p>梯子型的上采样模块有两个输入：低分辨率的特征和来自先前编码器的横向特征</p>
+
+<h4 id="module-for-increasing-the-receptive-field">Module for increasing the receptive field</h4>
+
+<p>两种可行的增加感受野的方法 1）空间金字塔池化；2）金字塔融合，SPP模块收集编码器在几个池化层产生的特征，并生成具有不同细节级别的表示。该模型SPP block是PSPNet中的简化版本。</p>
+
+<h3 id="single-scale-model">Single Scale model</h3>
+
+<p><figure><img src="/images/SwiftNet2.png" alt="单规模结构"></figure></p>
+
+<ul>
+<li>黄色梯形代表卷积组，即编码器的部分，在相同的空间分辨率下工作，每个卷积组下采样一次，分辨率下降两倍，最后为H/32xW/32</li>
+<li>绿色的SPP(Spatial Pyramid pooling)来增加模型的感受野</li>
+<li>编码器特征维数随下采样路径增加，而蓝色上采样层维度不变，所以需要红色模块进行维度统一</li>
+</ul>
+
+<h3 id="interleaved-pyramid-fusion-model">Interleaved pyramid fusion model</h3>
+
+<p>紧密的编码结构会减小感受野和降低模型容纳能力，提出了一种图像金字塔来解决问题，为了增强梯度在编码器中传播，增加了一个concatenation</p>
+
+<p><figure><img src="/images/SwiftNet3.png" alt="插值金字塔融合结构"></figure></p>
+
+<h3 id="experiment">Experiment</h3>
+
+<ul>
+<li>Adam optimizer</li>
+<li>learning rate set <span  class="math">\(4\times10^{-4}\)</span> decay learning rate with cosine annealing</li>
+<li>448x448 crops CamVid</li>
+</ul>
+
+<p>在Cityscapes上的结果</p>
+
+<p><figure><img src="/images/SwiftNet4.png" alt=""></figure></p>
+
+<p>在CamVid上的对比结果</p>
+
+<p><figure><img src="/images/SwiftNet5.png" alt=""></figure></p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>通过 1）设计了比肩ImageNet上的紧凑编码器 2）轻量级的横向跳跃连接解码器；来实现精度和速度的权衡，另外，提出了一种新的交叉金字塔融合方案，它能够进一步提高对靠近摄像机的大物体的检测结果。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>Opencv Configuration on MacOS</title>
+			<link>https://wuhongyui.github.io/posts/opencv_configuration/</link>
+			<pubDate>Sun, 24 May 2020 17:14:06 +0800</pubDate>
+			
+			<guid>https://wuhongyui.github.io/posts/opencv_configuration/</guid>
+			<description>1.下载OpenCV  可以到OpenCV官网下载安装文件，根据需要下载对应的版本 Cmake，官网下载，然后安装，进行配置 在MacOS下，Xcode的是必须安装的  Opencv安装命令 下载解压资源包后，找到一个文件目录放置，在解压好的文件如：opencv-4.3.0下创建一个新文件目录，命名为release，在终端中进入到这个文件目录，输入以下命令：
+$cmake -G “Unix Makefiles” .. (如果提示权限问题，加sudo) $make (可以加-j2；-j4；-j8等表示多线程编译) $sudo make install 安装成功后在/usr/local/lib下会有关于libopencvXXX.dylib文件，在/usr/local/include下会有opencv4、opencv2目录
+通过Homebrew安装  下载Homebrew，Homebrew是Mac上的一个包管理软件，相当于linux上的apt-get，wget等，根据Homebrew官网的教程下载不出意外是会失败的  第一步，获取install文件 通过如下代码把官网的脚本拿下来
+curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install &amp;gt;&amp;gt; brew_install 第二步，更改脚本中的资源链接，替换成清华大学的镜像 就是把这两句
+BREW_REPO = “https://github.com/Homebrew/brew“.freeze CORE_TAP_REPO = “https://github.com/Homebrew/homebrew-core“.freeze 替换成
+BREW_REPO = “https://mirrors.ustc.edu.cn/brew.git “.freeze CORE_TAP_REPO = “https://mirrors.ustc.edu.cn/homebrew-core.git“.freeze 如果镜像有问题，可以换成其他的镜像源，接着执行脚本文件
+ruby brew_install 出现报错是因为源不通，更换为其他的国内镜像源
+git clone git://mirrors.ustc.edu.cn/homebrew-core.git/ /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core --depth=1 然后把homebrew-core的镜像地址也设为中科院的国内镜像
+git remote set-url origin https://mirrors.ustc.edu.cn/brew.git cd &amp;#34;$(brew --repo)/Library/Taps/homebrew/homebrew-core&amp;#34; # 替换核心软件仓库 git remote set-url origin https://mirrors.</description>
+			<content type="html"><![CDATA[
+
+<h4 id="1-下载opencv">1.下载OpenCV</h4>
+
+<ul>
+<li>可以到OpenCV<a href="https://opencv.org/">官网</a>下载安装文件，根据需要下载对应的版本</li>
+<li>Cmake，<a href="https://cmake.org">官网下载</a>，然后安装，进行配置</li>
+<li>在MacOS下，Xcode的是必须安装的</li>
+</ul>
+
+<h4 id="opencv安装命令">Opencv安装命令</h4>
+
+<p>下载解压资源包后，找到一个文件目录放置，在解压好的文件如：<code>opencv-4.3.0</code>下创建一个新文件目录，命名为release，在终端中进入到这个文件目录，输入以下命令：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">$cmake</span> -G “Unix Makefiles” .. <span class="o">(</span>如果提示权限问题，加sudo<span class="o">)</span>
+<span class="nv">$make</span> <span class="o">(</span>可以加-j2；-j4；-j8等表示多线程编译<span class="o">)</span>
+<span class="nv">$sudo</span> make install</code></pre></div>
+<p>安装成功后在/usr/local/lib下会有关于libopencvXXX.dylib文件，在/usr/local/include下会有opencv4、opencv2目录</p>
+
+<p><img src="/images/opencv1.png" alt="" /></p>
+
+<p><img src="/images/OpenCV2.png" alt="" /></p>
+
+<h4 id="通过homebrew安装">通过Homebrew安装</h4>
+
+<ol>
+<li>下载Homebrew，Homebrew是Mac上的一个包管理软件，相当于linux上的apt-get，wget等，根据Homebrew官网的教程下载不出意外是会失败的</li>
+</ol>
+
+<h6 id="第一步-获取install文件">第一步，获取install文件</h6>
+
+<p>通过如下代码把官网的脚本拿下来</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install &gt;&gt; brew_install</code></pre></div>
+<h6 id="第二步-更改脚本中的资源链接-替换成清华大学的镜像"><strong>第二步，更改脚本中的资源链接，替换成清华大学的镜像</strong></h6>
+
+<p>就是把这两句</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">BREW_REPO</span> <span class="o">=</span> “https://github.com/Homebrew/brew“.freeze
+<span class="nv">CORE_TAP_REPO</span> <span class="o">=</span> “https://github.com/Homebrew/homebrew-core“.freeze</code></pre></div>
+<p>替换成</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">BREW_REPO</span> <span class="o">=</span> “https://mirrors.ustc.edu.cn/brew.git “.freeze
+<span class="nv">CORE_TAP_REPO</span> <span class="o">=</span> “https://mirrors.ustc.edu.cn/homebrew-core.git“.freeze</code></pre></div>
+<p>如果镜像有问题，可以换成其他的镜像源，接着执行脚本文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">ruby brew_install</code></pre></div>
+<p>出现报错是因为源不通，更换为其他的国内镜像源</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">git clone git://mirrors.ustc.edu.cn/homebrew-core.git/ /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core --depth<span class="o">=</span><span class="m">1</span></code></pre></div>
+<p>然后把homebrew-core的镜像地址也设为中科院的国内镜像</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">git remote set-url origin https://mirrors.ustc.edu.cn/brew.git
+
+<span class="nb">cd</span> <span class="s2">&#34;</span><span class="k">$(</span>brew --repo<span class="k">)</span><span class="s2">/Library/Taps/homebrew/homebrew-core&#34;</span>
+<span class="c1"># 替换核心软件仓库</span>
+git remote set-url origin https://mirrors.ustc.edu.cn/homebrew-core.git</code></pre></div>
+<p>执行更新，成功</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">brew update</code></pre></div>
+<p>最后用这个命令检查无错误：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">brew doctor</code></pre></div>
+<p>最后接着换源：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1">#替换 cask 软件仓库（提供 macOS 应用和大型二进制文件）</span>
+<span class="nb">cd</span> <span class="s2">&#34;</span><span class="k">$(</span>brew --repo<span class="k">)</span><span class="s2">&#34;</span>/Library/Taps/caskroom/homebrew-cask
+git remote set-url origin https://mirrors.ustc.edu.cn/homebrew-cask.git
+
+<span class="c1">#替换 Bottles 源（Homebrew 预编译二进制软件包）</span>
+bash（默认 shell）用户：
+<span class="nb">echo</span> <span class="s1">&#39;export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles&#39;</span> &gt;&gt; ~/.bash_profile
+<span class="nb">source</span> ~/.bash_profile
+
+zsh 用户：
+~ <span class="nb">echo</span> <span class="s1">&#39;export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles&#39;</span> &gt;&gt; ~/.zshrc
+~ <span class="nb">source</span> ~/.zshrc</code></pre></div>
+<p>执行完以上步骤，你就应该在Mac上安装好了Homebrew，并且可以用它来安装Cmake，OpenCV等</p>
+
+<h5 id="安装opencv">安装OpenCV</h5>
+
+<pre><code>brew install opencv
+</code></pre>
+
+<p>经过漫长的等待，OpenCV安装完成，可以在<code>/usr/local/Cellar/opencv/4.3.0_3/include</code>和<code>/usr/local/Cellar/opencv/4.3.0_3/lib</code>文件目录下分别找到头文件和库文件</p>
+
+<h5 id="在终端中运行">在终端中运行</h5>
+
+<p>创建一个文件目录，创建CMakeLists.txt和main.cpp文件</p>
+
+<p>CMakeLists.txt</p>
+<div class="highlight"><pre class="chroma"><code class="language-cmake" data-lang="cmake"><span class="c">#版本  
+</span><span class="c"></span><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.15.1</span><span class="p">)</span>   <span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="c">#项目名称                                        
+</span><span class="c"></span><span class="nb">project</span><span class="p">(</span> <span class="s">test</span> <span class="p">)</span>       <span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="c">#设置OpenCV所在目录，为后面的find_package提供位置                                                      
+</span><span class="c">#OpenCV_DIR为OpenCV源码编译后得到的文件夹(如上面的release目录)                   
+</span><span class="c"></span><span class="nb">set</span><span class="p">(</span> <span class="s">OpenCV_DIR</span> <span class="s">/Users/hongyi/MyServers/opencv-3.3.1/release</span><span class="p">)</span>  <span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="c">#会在OpenCV所在目录查找配置文件OpenCVConfig.cmake  
+</span><span class="c"></span><span class="nb">find_package</span><span class="p">(</span> <span class="s">OpenCV</span> <span class="s">REQUIRED</span> <span class="p">)</span>    <span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="c">#向工程添加源文件                                         
+</span><span class="c"></span><span class="nb">add_executable</span><span class="p">(</span> <span class="s">test</span> <span class="s">main.cpp</span> <span class="p">)</span>    <span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="c">#添加链接库                                   
+</span><span class="c"></span><span class="nb">target_link_libraries</span><span class="p">(</span> <span class="s">test</span> <span class="o">${</span><span class="nv">OpenCV_LIBS</span><span class="o">}</span> <span class="p">)</span> </code></pre></div>
+<p>使用<code>Cmake --Version</code>可以查询Cmake版本，这里需要注意的是，<code>find_package</code>里一定要找到OpenCVConfig.cmake</p>
+
+<p>Main.cpp</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="cp">#include</span> <span class="cpf">&lt;opencv2/opencv.hpp&gt;  </span><span class="cp">
+</span><span class="cp"></span><span class="k">using</span> <span class="k">namespace</span> <span class="n">cv</span><span class="p">;</span>  
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>  
+    <span class="n">Mat</span> <span class="n">image</span><span class="p">;</span>  
+    <span class="n">image</span> <span class="o">=</span> <span class="n">imread</span><span class="p">(</span><span class="s">&#34;/Users/..&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>  <span class="c1">//输入正确的图片路径  
+</span><span class="c1"></span>    <span class="n">namedWindow</span><span class="p">(</span><span class="s">&#34;Display Image&#34;</span><span class="p">,</span> <span class="n">WINDOW_AUTOSIZE</span><span class="p">);</span>  
+    <span class="n">imshow</span><span class="p">(</span><span class="s">&#34;Display Image&#34;</span><span class="p">,</span> <span class="n">image</span><span class="p">);</span>  
+    <span class="n">waitKey</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>  
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>  
+<span class="p">}</span>  
+</code></pre></div>
+<p>在终端运行命令：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cmake .
+$ make
+$ ./test  <span class="c1">#生成的二进制文件的文件名</span></code></pre></div>
+<ol>
+<li>在Clion中使用</li>
+</ol>
+
+<p>原理和在终端中运行一样，需要将新建项目里的CmakeLists.txt文件加上：</p>
+<div class="highlight"><pre class="chroma"><code class="language-cmake" data-lang="cmake"><span class="nb">find_package</span><span class="p">(</span><span class="s">OpenCV</span> <span class="s">REQUIRED</span><span class="p">)</span><span class="err">
+</span><span class="err"></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">test_opencv</span> <span class="o">${</span><span class="nv">OpenCV_LIBS</span><span class="o">}</span><span class="p">)</span></code></pre></div>
+<h5 id="在xcode中使用">在Xcode中使用</h5>
+
+<ul>
+<li>单击项目名，选择”Building Settings” -&gt; “Search Paths”,相应位置填上相应路径，在Header Search Paths里输入: <code>/usr/local/Cellar/opencv/4.3.0_3/include</code>头文件路径，在Library Search Paths里输入:<code>/usr/local/Cellar/opencv/4.3.0_3/lib</code>库文件路径</li>
+<li>在项目下创建一个lib group，将相应的lib文件，通过”Add to Files”拷贝进去，文件在上面安装时的库文件目录下，记住替身文件不用添加（就是左下角有箭头的）</li>
+</ul>
+
+<h4 id="运行时出现的错误">运行时出现的错误</h4>
+
+<p>一开始运行就出现了，如下错误：</p>
+
+<p><img src="/images/OpenCV3.png" alt="" /></p>
+
+<p>大概意思就是动态库文件libopencore-amrnb.0.dylib未成功导入，于是就寻找这个文件</p>
+
+<p><img src="/images/OpenCV4.png" alt="OpenCV4" /></p>
+
+<p>发现果然没有，这里最开始我没看仔细把libopencore-amrwb.0.dylib当成了libopencore-amrnb.0.dylib，我就很疑惑，明明有文件为什么导入不了？于是就走上了岔路&hellip;</p>
+
+<p>最后发现opencore-amr是FFmpeg这个库的一项依赖，经过了解FFmpeg是一套可以用来记录、转换数字音频、视频，并能将其转化为流的开源计算机程序，具体OpenCV为什么要导入它我也不太清楚，最后经过，重新安装依赖</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ brew install opencore-amr</code></pre></div>
+<p>于是就把libopencore-amrnb.0.dylib这个库安装好了，最后运行</p>
+
+<p><img src="/images/opencv5.png" alt="" /></p>
+
+<h4 id="结束语">结束语</h4>
+
+<p>一定要看清楚报错信息，认真查看清楚再去搜索。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>Conda virtual env</title>
+			<link>https://wuhongyui.github.io/posts/conda_install/</link>
+			<pubDate>Wed, 29 Apr 2020 21:29:14 +0800</pubDate>
+			
+			<guid>https://wuhongyui.github.io/posts/conda_install/</guid>
+			<description>在conda的指定虚拟环境中使用pip安装包的问题 比如，虚拟环境deep_Sort，一般先激活虚拟环境
+conda activate deep_sort  在 conda中安装包应该使用
+conda install package  我们来看下在目前有多少 pip 命令：
+(deep_sort) ➜ deep_sort_REID_pytorch-master where pip /Users/hongyi/anaconda3/bin/pip /Users/hongyi/anaconda3/envs/deep_sort/bin/pip /Users/hongyi/anaconda3/bin/pip /usr/local/bin/pip  我们要在deep_sort中安装 numpy包（随机举例用的包）的话，应该这样：
+(deep_sort) ➜ deep_sort_REID_pytorch-master /Users/hongyi/anaconda3/envs/deep_sort/bin/pip install numpy  这样每次在虚拟环境使用pip的时候都需要虚拟环境内部的pip命令路径：/Users/hongyi/anaconda3/envs/deep_sort/bin/pip，这样显得非常繁琐
+如果想在虚拟环境内部使用简单的pip install package调用虚拟环境内部的pip命令的话，只需要我们在创建虚拟环境的时候指定pip只对虚拟环境生效，而不影响全局库：
+conda create -n 虚拟环境名 pip pysocks   pip：是为了指定pip命令只对当前虚拟环境生效 pysocks：是pip命令的依赖，如果不写，在虚拟环境内使用 pip命令的时候会出现Missing dependencies for SOCKS support.的报错。  conda默认创建的虚拟环境是如果安装 python的话是默认安装 pip但是没有默认安装 pysocks的，所以在虚拟环境下直接使用 pip会报Missing dependencies for SOCKS support.
+解决方法：
+conda install pysocks  之后再使用 pip命令就会默认使用虚拟环境中的 pip命令（/Users/hongyi/anaconda3/envs/deep_sort/bin/pip）</description>
+			<content type="html"><![CDATA[
+
+<h2 id="在conda的指定虚拟环境中使用pip安装包的问题">在conda的指定虚拟环境中使用pip安装包的问题</h2>
+
+<p>比如，虚拟环境<code>deep_Sort</code>，一般先激活虚拟环境</p>
+
+<pre><code>conda activate deep_sort
+</code></pre>
+
+<p>在 <code>conda</code>中安装包应该使用</p>
+
+<pre><code>conda install package
+</code></pre>
+
+<p>我们来看下在目前有多少 <code>pip</code> 命令：</p>
+
+<pre><code>(deep_sort) ➜  deep_sort_REID_pytorch-master where pip
+/Users/hongyi/anaconda3/bin/pip
+/Users/hongyi/anaconda3/envs/deep_sort/bin/pip
+/Users/hongyi/anaconda3/bin/pip
+/usr/local/bin/pip
+</code></pre>
+
+<p>我们要在<code>deep_sort</code>中安装 <code>numpy</code>包（随机举例用的包）的话，应该这样：</p>
+
+<pre><code>(deep_sort) ➜  deep_sort_REID_pytorch-master /Users/hongyi/anaconda3/envs/deep_sort/bin/pip install numpy
+</code></pre>
+
+<p>这样每次在虚拟环境使用<code>pip</code>的时候都需要虚拟环境内部的<code>pip</code>命令路径：<code>/Users/hongyi/anaconda3/envs/deep_sort/bin/pip</code>，这样显得非常繁琐</p>
+
+<p>如果想在虚拟环境内部使用简单的<code>pip install package</code>调用虚拟环境内部的<code>pip</code>命令的话，只需要我们在创建虚拟环境的时候指定<code>pip</code>只对虚拟环境生效，而不影响全局库：</p>
+
+<pre><code>conda create -n 虚拟环境名 pip pysocks
+</code></pre>
+
+<ul>
+<li><code>pip</code>：是为了指定<code>pip</code>命令只对当前虚拟环境生效</li>
+<li><code>pysocks</code>：是<code>pip</code>命令的依赖，如果不写，在虚拟环境内使用 <code>pip</code>命令的时候会出现<code>Missing dependencies for SOCKS support.</code>的报错。</li>
+</ul>
+
+<p><code>conda</code>默认创建的虚拟环境是如果安装 <code>python</code>的话是默认安装 <code>pip</code>但是没有默认安装 <code>pysocks</code>的，所以在虚拟环境下直接使用 <code>pip</code>会报<code>Missing dependencies for SOCKS support.</code></p>
+
+<p>解决方法：</p>
+
+<pre><code>conda install pysocks
+</code></pre>
+
+<p>之后再使用 <code>pip</code>命令就会默认使用虚拟环境中的 <code>pip</code>命令（<code>/Users/hongyi/anaconda3/envs/deep_sort/bin/pip</code>）</p>
+
+<p><strong>所以在 <code>conda</code>中使用 <code>pip</code>需要先开启虚拟环境，并确保该虚拟环境安装了 <code>pip</code>、<code>pysocks</code>包，如果没有安装这两个包，请使用 <code>conda</code>命令安装。</strong></p>
+
+<h4 id="conda换源">conda换源</h4>
+
+<p>使用如下命令</p>
+
+<p>1)清华源(TUNA)</p>
+
+<pre><code>conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+
+conda config --set show_channel_urls yes
+</code></pre>
+
+<p>2)中科大源(USTC)</p>
+
+<pre><code>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/free/
+
+conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/main/
+
+conda config --set show_channel_urls yes
+</code></pre>
+]]></content>
+		</item>
+		
+		<item>
+			<title>Fundamentals of target tracking algorithm---DeepSort</title>
+			<link>https://wuhongyui.github.io/posts/deepsort/</link>
+			<pubDate>Tue, 21 Apr 2020 15:24:41 +0800</pubDate>
+			
+			<guid>https://wuhongyui.github.io/posts/deepsort/</guid>
+			<description>经典多目标跟踪算法 目前主流的目标跟踪算法都是基于Tracking-by-Detection策略，即基于目标检测结果来进行目标跟踪。
+对于一个视频中不同时刻的同一个目标，位置发生了变化，要如何进行关联？目前主要采用匈牙利算法和卡尔曼滤波。
+ 匈牙利算法可以告诉我们当前帧的某个目标，是否与前一帧的某个目标相同，或者说相互匹配的代价最小。 卡尔曼滤波可以基于目标前一时刻的位置，来预测当前时刻的位置，并且可以比传感器（在目标跟踪中即目标检测器，比如Yolo）更准确的估计目标的位置。  匈牙利算法（Hungarian Algorithm） 首先，先介绍一下什么是分配问题（Assignment Problem）：假设有N个人和N个任务，每个任务可以任意分配给不同的人，已知每个人完成每个任务要花费的代价不尽相同，那么如何分配可以使得总的代价最小。
+举个例子，假设现在有3个任务，要分别分配给3个人，每个人完成各个任务所需代价矩阵（cost matrix）如下所示（这个代价可以是金钱、时间等等）：
+    Task_1 Task_2 Task_3     Person_1 15 40 45   Person_2 20 60 35   Person_3 20 40 25    怎么样才能找到一个最优分配，使得完成所有任务所花的代价最小？
+匈牙利算法（又叫KM算法）就是用来解决分配问题的一种方法，它基于定理：
+ 如果代价矩阵的某一行或某一列同时加上或减去某个数，则这个新的代价矩阵的最优分配仍然是原代价矩阵的最优分配。
+ 算法步骤（假设矩阵为NxN方阵）：
+ 对于矩阵的每一行，减去其中最小的元素 对于矩阵的每一列，减去其中最小的元素 用最少的水平线或垂直线覆盖矩阵中所有的0 如果线的数量等于N，则找到了最优分配，算法结束，否则进入步骤5 找到没有被任何线覆盖的最小元素，每个没被线覆盖的行减去这个元素，每个被线覆盖的列加上这个元素，返回步骤3  Step1 每一行最小的元素分别为15， 20， 20，减去得到
+    Task_1 Task_2 Task_3     Person_1 0 25 30   Person_2 0 40 15   Person_3 0 20 5    Step2 每一列最小的元素分别为0、20、5，减去得到</description>
+			<content type="html"><![CDATA[<h3 id="经典多目标跟踪算法">经典多目标跟踪算法</h3>
+
+<p>目前主流的目标跟踪算法都是基于Tracking-by-Detection策略，即基于目标检测结果来进行目标跟踪。</p>
+
+<p>对于一个视频中不同时刻的同一个目标，位置发生了变化，要如何进行关联？目前主要采用匈牙利算法和卡尔曼滤波。</p>
+
+<ul>
+<li>匈牙利算法可以告诉我们当前帧的某个目标，是否与前一帧的某个目标相同，或者说相互匹配的代价最小。</li>
+<li>卡尔曼滤波可以基于目标前一时刻的位置，来预测当前时刻的位置，并且可以比传感器（在目标跟踪中即目标检测器，比如Yolo）更准确的估计目标的位置。</li>
+</ul>
+
+<h4 id="匈牙利算法hungarian-algorithm">匈牙利算法（Hungarian Algorithm）</h4>
+
+<p>首先，先介绍一下什么是<strong>分配问题（Assignment Problem）：</strong>假设有N个人和N个任务，每个任务可以任意分配给不同的人，已知每个人完成每个任务要花费的代价不尽相同，那么如何分配可以使得总的代价最小。</p>
+
+<p>举个例子，假设现在有3个任务，要分别分配给3个人，每个人完成各个任务所需<strong>代价矩阵（cost matrix）</strong>如下所示（这个代价可以是金钱、时间等等）：</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Task_1</th>
+<th>Task_2</th>
+<th>Task_3</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Person_1</td>
+<td>15</td>
+<td>40</td>
+<td>45</td>
+</tr>
+
+<tr>
+<td>Person_2</td>
+<td>20</td>
+<td>60</td>
+<td>35</td>
+</tr>
+
+<tr>
+<td>Person_3</td>
+<td>20</td>
+<td>40</td>
+<td>25</td>
+</tr>
+</tbody>
+</table>
+
+<p>怎么样才能找到一个最优分配，使得完成所有任务所花的代价最小？</p>
+
+<p>匈牙利算法（又叫<strong>KM</strong>算法）就是用来解决分配问题的一种方法，它基于定理：</p>
+
+<blockquote>
+<p>如果代价矩阵的某一行或某一列同时加上或减去某个数，则这个新的代价矩阵的最优分配仍然是原代价矩阵的最优分配。</p>
+</blockquote>
+
+<p>算法步骤（假设矩阵为NxN方阵）：</p>
+
+<ol>
+<li>对于矩阵的每一行，减去其中最小的元素</li>
+<li>对于矩阵的每一列，减去其中最小的元素</li>
+<li>用最少的水平线或垂直线覆盖矩阵中所有的0</li>
+<li>如果线的数量等于N，则找到了最优分配，算法结束，否则进入步骤5</li>
+<li>找到没有被任何线覆盖的最小元素，每个<strong>没被线覆盖的行</strong>减去这个元素，每个<strong>被线覆盖的列</strong>加上这个元素，返回步骤3</li>
+</ol>
+
+<p>Step1 每一行最小的元素分别为15， 20， 20，减去得到</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Task_1</th>
+<th>Task_2</th>
+<th>Task_3</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Person_1</td>
+<td>0</td>
+<td>25</td>
+<td>30</td>
+</tr>
+
+<tr>
+<td>Person_2</td>
+<td>0</td>
+<td>40</td>
+<td>15</td>
+</tr>
+
+<tr>
+<td>Person_3</td>
+<td>0</td>
+<td>20</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+
+<p>Step2 每一列最小的元素分别为0、20、5，减去得到</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Task_1</th>
+<th>Task_2</th>
+<th>Task_3</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Person_1</td>
+<td>0</td>
+<td>5</td>
+<td>25</td>
+</tr>
+
+<tr>
+<td>Person_2</td>
+<td>0</td>
+<td>20</td>
+<td>10</td>
+</tr>
+
+<tr>
+<td>Person_3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>Step3 用最少的水平线或垂直线覆盖所有的0，得到：</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Task_1</th>
+<th>Task_2</th>
+<th>Task_3</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Person_1</td>
+<td>0</td>
+<td>5</td>
+<td>25</td>
+</tr>
+
+<tr>
+<td>Person_2</td>
+<td>0</td>
+<td>20</td>
+<td>10</td>
+</tr>
+
+<tr>
+<td>Person_3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>Step4 线的数量为2，小于3，进入下一步；</p>
+
+<p>Step5 现在没被覆盖的最小元素是5，没被覆盖的行（第一和第二行）减去5，得到：</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Task_1</th>
+<th>Task_2</th>
+<th>Task_3</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Person_1</td>
+<td>-5</td>
+<td>0</td>
+<td>20</td>
+</tr>
+
+<tr>
+<td>Person_2</td>
+<td>-5</td>
+<td>15</td>
+<td>5</td>
+</tr>
+
+<tr>
+<td>Person_3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>被覆盖的列（第一列）加上5，得到：</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Task_1</th>
+<th>Task_2</th>
+<th>Task_3</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Person_1</td>
+<td>0</td>
+<td>0</td>
+<td>20</td>
+</tr>
+
+<tr>
+<td>Person_2</td>
+<td>0</td>
+<td>15</td>
+<td>5</td>
+</tr>
+
+<tr>
+<td>Person_3</td>
+<td>5</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>跳转到step3，用最少的水平线或垂直线覆盖所有的0，得到：</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Task_1</th>
+<th>Task_2</th>
+<th>Task_3</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Person_1</td>
+<td>0---------</td>
+<td>0</td>
+<td>20</td>
+</tr>
+
+<tr>
+<td>Person_2</td>
+<td>0--------</td>
+<td>15--------</td>
+<td>5</td>
+</tr>
+
+<tr>
+<td>Person_3</td>
+<td>5--------</td>
+<td>0----------</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>step4：线的数量为3，满足条件，算法结束。显然，将任务2分配给第1个人、任务1分配给第2个人、任务3分配给第3个人时，总的代价最小（0+0+0=0）：</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Task_1</th>
+<th>Task_2</th>
+<th>Task_3</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Person_1</td>
+<td>0</td>
+<td><strong>0</strong></td>
+<td>20</td>
+</tr>
+
+<tr>
+<td>Person_2</td>
+<td><strong>0</strong></td>
+<td>15</td>
+<td>5</td>
+</tr>
+
+<tr>
+<td>Person_3</td>
+<td>5</td>
+<td>0</td>
+<td><strong>0</strong></td>
+</tr>
+</tbody>
+</table>
+
+<p>所以原矩阵的最小总代价为（40+20+25=85）：</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Task_1</th>
+<th>Task_2</th>
+<th>Task_3</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Person_1</td>
+<td>15</td>
+<td><strong>40</strong></td>
+<td>45</td>
+</tr>
+
+<tr>
+<td>Person_2</td>
+<td><strong>20</strong></td>
+<td>60</td>
+<td>35</td>
+</tr>
+
+<tr>
+<td>Person_3</td>
+<td>20</td>
+<td>40</td>
+<td><strong>25</strong></td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>sklearn</strong>里的<strong>linear_assignment()</strong>函数以及<strong>scipy</strong>里的<strong>linear_sum_assignment()</strong>函数都实现了匈牙利算法，两者的返回值的形式不同：</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> 
+<span class="kn">from</span> <span class="nn">sklearn.utils.linear_assignment_</span> <span class="kn">import</span> <span class="n">linear_assignment</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">linear_sum_assignment</span>
+ 
+
+<span class="n">cost_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">15</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">45</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">20</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">35</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">20</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">25</span><span class="p">]</span>
+<span class="p">])</span>
+ 
+<span class="n">matches</span> <span class="o">=</span> <span class="n">linear_assignment</span><span class="p">(</span><span class="n">cost_matrix</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;sklearn API result:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">matches</span><span class="p">)</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">linear_sum_assignment</span><span class="p">(</span><span class="n">cost_matrix</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;scipy API result:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">matches</span><span class="p">)</span>
+ 
+
+<span class="s2">&#34;&#34;&#34;Outputs
+</span><span class="s2">sklearn API result:
+</span><span class="s2"> [[0 1]
+</span><span class="s2">  [1 0]
+</span><span class="s2">  [2 2]]
+</span><span class="s2">scipy API result:
+</span><span class="s2"> (array([0, 1, 2], dtype=int64), array([1, 0, 2], dtype=int64))
+</span><span class="s2">&#34;&#34;&#34;</span></code></pre></div>
+<p>在DeepSORT中，匈牙利算法用来将前一帧中的<strong>跟踪框tracks</strong>与当前帧中的<strong>检测框detections</strong>进行关联，通过<strong>外观信息（appearance information）</strong>和<strong>马氏距离（Mahalanobis distance）</strong>，或者<strong>IOU</strong>来计算代价矩阵。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1">#  linear_assignment.py</span>
+<span class="k">def</span> <span class="nf">min_cost_matching</span><span class="p">(</span><span class="n">distance_metric</span><span class="p">,</span> <span class="n">max_distance</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">detections</span><span class="p">,</span> 
+                      <span class="n">track_indices</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">detection_indices</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="c1">#计算代价矩阵</span>
+    <span class="n">cost_matrix</span> <span class="o">=</span> <span class="n">distance_metric</span><span class="p">(</span><span class="n">tracks</span><span class="p">,</span> <span class="n">detections</span><span class="p">,</span> <span class="n">track_indices</span><span class="p">,</span> <span class="n">detection_indices</span><span class="p">)</span>
+    <span class="n">cost_matrix</span><span class="p">[</span><span class="n">cost_matrix</span> <span class="o">&gt;</span> <span class="n">max_distance</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_distance</span> <span class="o">+</span> <span class="mf">1e-5</span> <span class="c1">#将超过阈值的代价丢弃</span>
+    <span class="c1">#执行匈牙利算法，得到匹配成功的索引对，行索引为tracks的索引，列索引为detection的索引</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">linear_assignment</span><span class="p">(</span><span class="n">cost_matrix</span><span class="p">)</span> 
+    <span class="c1">#初始化列表</span>
+    <span class="n">matches</span><span class="p">,</span> <span class="n">unmatched_tracks</span><span class="p">,</span> <span class="n">unmatched_detections</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="c1">#找出未匹配的检测框</span>
+    <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">detection_idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">detection_indices</span><span class="p">):</span>
+    	<span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]:</span>
+      		<span class="n">unmatched_detections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">detection_idx</span><span class="p">)</span>
+    <span class="c1">#找出未匹配的跟踪框</span>
+    <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">track_idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">track_indices</span><span class="p">):</span>
+    	<span class="k">if</span> <span class="n">row</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]:</span>
+      		<span class="n">unmatched_tracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track_idx</span><span class="p">)</span>
+    <span class="c1">#遍历匹配的(track,detection)索引对</span>
+    <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
+        <span class="n">track_idx</span> <span class="o">=</span> <span class="n">track_indices</span><span class="p">[</span><span class="n">row</span><span class="p">]</span>
+        <span class="n">detection_idx</span> <span class="o">=</span> <span class="n">detection_indices</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
+        <span class="c1">#如果相应的cost大于阈值max_distance，也视为未匹配成功</span>
+        <span class="k">if</span> <span class="n">cost_matrix</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max_distance</span><span class="p">:</span>
+            <span class="n">unmatched_tracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track_idx</span><span class="p">)</span>
+            <span class="n">unmatched_detections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">detection_idx</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">track_idx</span><span class="p">,</span> <span class="n">detection_idx</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">matches</span><span class="p">,</span> <span class="n">unmatched_tracks</span><span class="p">,</span> <span class="n">unmatched_detections</span></code></pre></div>
+<h4 id="卡尔曼滤波kalman-filter">卡尔曼滤波（Kalman Filter）</h4>
+
+<p>在目标跟踪中，需要估计track的以下两个状态：</p>
+
+<ul>
+<li><strong>均值(Mean)：</strong>表示目标的位置信息，由bbox的中心坐标 (cx, cy)，宽高比r，高h，以及各自的速度变化值组成，由8维向量表示为 x = [cx, cy, r, h, vx, vy, vr, vh]，各个速度值初始化为0。</li>
+<li><strong>协方差(Covariance )：</strong>表示目标位置信息的不确定性，由8x8的对角矩阵表示，矩阵中数字越大则表明不确定性越大，可以以任意值初始化。</li>
+</ul>
+
+<p>卡尔曼滤波分为两个阶段：(1) <strong>预测</strong>track在下一时刻的位置，(2) 基于detection来<strong>更新</strong>预测的位置。</p>
+
+<p><strong>预测</strong></p>
+
+<blockquote>
+<p>基于track在t-1时刻的状态来预其在t时刻的状态。</p>
+</blockquote>
+
+<p><span  class="math">\[
+x' = Fx \\
+P' = FPF^T +Q
+\]</span></p>
+
+<p>在以上公式中，<strong>x</strong>为track在t-1时刻的均值，<strong>F</strong>称为<strong>状态转移矩阵</strong>，该公式预测t时刻的<strong>x'</strong>：</p>
+
+<p><figure><img src="/images/Deepsort1.png" alt=""></figure></p>
+
+<p>矩阵F中的<strong>dt</strong>是当前帧和前一帧之间的差，将等号右边的矩阵乘法展开，可以得到<strong>cx'=cx+dt*vx，cy'=cy+dt*vy...</strong>，所以这里的卡尔曼滤波是一个<strong>匀速模型（Constant Velocity Model）。</strong></p>
+
+<p>在公式2中，<strong>P</strong>为track在t-1时刻的协方差，<strong>Q</strong>为系统的<strong>噪声矩阵</strong>，代表整个系统的可靠程度，一般初始化为很小的值，该公式预测t时刻的<strong>P'</strong></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1">#  kalman_filter.py</span>
+<span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">covariance</span><span class="p">):</span>
+  <span class="o">...</span>
+    <span class="n">std_pos</span> <span class="o">=</span> <span class="p">[</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">_std_weight_position</span> <span class="o">*</span> <span class="n">mean</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">_std_weight_position</span> <span class="o">*</span> <span class="n">mean</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+          <span class="mf">1e-2</span><span class="p">,</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">_std_weight_position</span> <span class="o">*</span> <span class="n">mean</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+    <span class="n">std_vel</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_std_weight_velocity</span> <span class="o">*</span> <span class="n">mean</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_std_weight_velocity</span> <span class="o">*</span> <span class="n">mean</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+        <span class="mf">1e-5</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_std_weight_velocity</span> <span class="o">*</span> <span class="n">mean</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+    
+    <span class="n">motion_cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">std_pos</span><span class="p">,</span> <span class="n">std_vel</span><span class="p">]))</span>  <span class="c1"># 初始化噪声矩阵Q</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_motion_mat</span><span class="p">,</span> <span class="n">mean</span><span class="p">)</span>  <span class="c1"># x&#39; = Fx</span>
+    <span class="n">covariance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_motion_mat</span><span class="p">,</span> <span class="n">covariance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_motion_mat</span><span class="o">.</span><span class="n">T</span><span class="p">))</span> <span class="o">+</span> <span class="n">motion_cov</span>  <span class="c1"># P&#39; = FPF(T) + Q</span>
+ 		<span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">covariance</span></code></pre></div>
+<p><strong>更新</strong></p>
+
+<blockquote>
+<p>基于<strong>t</strong>时刻检测到的detection，校正与其关联的track的状态，得到一个更精确的结果</p>
+</blockquote>
+
+<p><span  class="math">\[
+y = z-Hx'\qquad(1)\\
+S = HP'H^T +R\qquad(2)\\
+K = P'H^TS^{-1}\qquad(3)\\
+x=x'+Ky\qquad(4)\\
+p=(I-KH)P'\qquad(5)
+\]</span></p>
+
+<p>在公式1中，<strong>z</strong>为detection的均值向量，不包含速度变化值，即<strong>z=[cx, cy, r, h]</strong>，<strong>H</strong>称为<strong>测量矩阵</strong>，它将track的均值向量x'映射到检测空间，该公式计算detection和track的均值误差；</p>
+
+<p>在公式2中，<strong>R</strong>为检测器的<strong>噪声矩阵</strong>，它是一个4x4的对角矩阵，对角线上的值分别为中心点两个坐标以及宽高的噪声，以任意值初始化，一般设置宽高的噪声大于中心点的噪声，该公式先将协方差矩阵P'映射到检测空间，然后再加上噪声矩阵R；</p>
+
+<p>公式3计算<strong>卡尔曼增益K，</strong>卡尔曼增益用于估计误差的重要程度；</p>
+
+<p>公式4和公式5得到更新后的均值向量<strong>x</strong>和协方差矩阵<strong>P</strong></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python">    <span class="k">def</span> <span class="nf">project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">covariance</span><span class="p">):</span>
+        <span class="s2">&#34;&#34;&#34;Project state distribution to measurement space.
+</span><span class="s2">
+</span><span class="s2">        Parameters
+</span><span class="s2">        ----------
+</span><span class="s2">        mean : ndarray
+</span><span class="s2">            The state&#39;s mean vector (8 dimensional array).
+</span><span class="s2">        covariance : ndarray
+</span><span class="s2">            The state&#39;s covariance matrix (8x8 dimensional).
+</span><span class="s2">
+</span><span class="s2">        Returns
+</span><span class="s2">        -------
+</span><span class="s2">        (ndarray, ndarray)
+</span><span class="s2">            Returns the projected mean and covariance matrix of the given state
+</span><span class="s2">            estimate.
+</span><span class="s2">
+</span><span class="s2">        &#34;&#34;&#34;</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_std_weight_position</span> <span class="o">*</span> <span class="n">mean</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_std_weight_position</span> <span class="o">*</span> <span class="n">mean</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+            <span class="mf">1e-1</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_std_weight_position</span> <span class="o">*</span> <span class="n">mean</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+        <span class="n">innovation_cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">std</span><span class="p">))</span> <span class="c1">#初始化噪声矩阵</span>
+				<span class="c1">#update_mat为4x8矩阵</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update_mat</span><span class="p">,</span> <span class="n">mean</span><span class="p">)</span> <span class="c1">#将track跟踪框映射到检测空间4x4大小</span>
+         <span class="c1"># 将协方差矩阵映射到检测空间，即HP&#39;H^T</span>
+        <span class="n">covariance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">((</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_mat</span><span class="p">,</span> <span class="n">covariance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_mat</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">covariance</span> <span class="o">+</span> <span class="n">innovation_cov</span>
+
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">covariance</span><span class="p">,</span> <span class="n">measurement</span><span class="p">):</span>
+        <span class="s2">&#34;&#34;&#34;Run Kalman filter correction step.
+</span><span class="s2">
+</span><span class="s2">        Parameters
+</span><span class="s2">        ----------
+</span><span class="s2">        mean : ndarray
+</span><span class="s2">            The predicted state&#39;s mean vector (8 dimensional).
+</span><span class="s2">        covariance : ndarray
+</span><span class="s2">            The state&#39;s covariance matrix (8x8 dimensional).
+</span><span class="s2">        measurement : ndarray
+</span><span class="s2">            The 4 dimensional measurement vector (x, y, a, h), where (x, y)
+</span><span class="s2">            is the center position, a the aspect ratio, and h the height of the
+</span><span class="s2">            bounding box.
+</span><span class="s2">
+</span><span class="s2">        Returns
+</span><span class="s2">        -------
+</span><span class="s2">        (ndarray, ndarray)
+</span><span class="s2">            Returns the measurement-corrected state distribution.
+</span><span class="s2">
+</span><span class="s2">        &#34;&#34;&#34;</span>
+        <span class="c1"># 将mean和covariance映射到检测空间，得到Hx&#39;和S</span>
+        <span class="n">projected_mean</span><span class="p">,</span> <span class="n">projected_cov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">covariance</span><span class="p">)</span>
+				<span class="c1">#矩阵分解，转换为AX=B的问题</span>
+        <span class="n">chol_factor</span><span class="p">,</span> <span class="n">lower</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cho_factor</span><span class="p">(</span>
+            <span class="n">projected_cov</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">check_finite</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="c1">#卡尔曼增益</span>
+        <span class="n">kalman_gain</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cho_solve</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">chol_factor</span><span class="p">,</span> <span class="n">lower</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">covariance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_mat</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+            <span class="n">check_finite</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">innovation</span> <span class="o">=</span> <span class="n">measurement</span> <span class="o">-</span> <span class="n">projected_mean</span> <span class="c1">#z-Hx’</span>
+
+        <span class="n">new_mean</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">innovation</span><span class="p">,</span> <span class="n">kalman_gain</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="c1">#x = x&#39;+ Ky</span>
+        <span class="c1">#P = (I - KH)P&#39;</span>
+        <span class="n">new_covariance</span> <span class="o">=</span> <span class="n">covariance</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">((</span>
+            <span class="n">kalman_gain</span><span class="p">,</span> <span class="n">projected_cov</span><span class="p">,</span> <span class="n">kalman_gain</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">new_mean</span><span class="p">,</span> <span class="n">new_covariance</span></code></pre></div>
+<h4 id="deepsort工作流程">DeepSort工作流程</h4>
+
+<p>DeepSORT对每一帧的处理流程如下：</p>
+
+<p>检测器得到bbox → 生成detections → 卡尔曼滤波预测→ 使用匈牙利算法将预测后的tracks和当前帧中的detecions进行匹配（级联匹配和IOU匹配） → 卡尔曼滤波更新</p>
+
+<blockquote>
+<p><strong>Frame 0：</strong>检测器检测到了3个detections，当前没有任何tracks，将这3个detections初始化为tracks
+<strong>Frame 1：</strong>检测器又检测到了3个detections，对于Frame 0中的tracks，先进行预测得到新的tracks，然后使用匈牙利算法将新的tracks与detections进行匹配，得到(track, detection)匹配对，最后用每对中的detection更新对应的track</p>
+</blockquote>
+
+<h5 id="检测">检测</h5>
+
+<p>使用Yolo作为检测器，检测当前帧中的bbox：</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1">#  demo_yolo3_deepsort.py</span>
+<span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">vdo</span><span class="o">.</span><span class="n">grab</span><span class="p">():</span>
+	<span class="o">...</span>
+	<span class="n">bbox_xcycwh</span><span class="p">,</span> <span class="n">cls_conf</span><span class="p">,</span> <span class="n">cls_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yolo3</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>  <span class="c1"># 检测到的bbox[cx,cy,w,h]，置信度，类别id</span>
+	<span class="k">if</span> <span class="n">bbox_xcycwh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    	    <span class="c1"># 筛选出人的类别</span>
+    	    <span class="n">mask</span> <span class="o">=</span> <span class="n">cls_ids</span> <span class="o">==</span> <span class="mi">0</span>
+  	    <span class="n">bbox_xcycwh</span> <span class="o">=</span> <span class="n">bbox_xcycwh</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+  	    <span class="n">bbox_xcycwh</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">:]</span> <span class="o">*=</span> <span class="mf">1.2</span>
+   	    <span class="n">cls_conf</span> <span class="o">=</span> <span class="n">cls_conf</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+            <span class="o">...</span></code></pre></div>
+<p><strong>生成detections</strong></p>
+
+<p>将检测到的bbox转换成detections：</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1">#  deep_sort.py</span>
+<span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox_xywh</span><span class="p">,</span> <span class="n">confidences</span><span class="p">,</span> <span class="n">ori_img</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">ori_img</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="c1"># 提取每个bbox的feature</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_features</span><span class="p">(</span><span class="n">bbox_xywh</span><span class="p">,</span> <span class="n">ori_img</span><span class="p">)</span>
+    <span class="c1"># [cx,cy,w,h] -&gt; [x1,y1,w,h]</span>
+    <span class="n">bbox_tlwh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xywh_to_tlwh</span><span class="p">(</span><span class="n">bbox_xywh</span><span class="p">)</span>
+    <span class="c1"># 过滤掉置信度小于self.min_confidence的bbox，生成detections</span>
+    <span class="n">detections</span> <span class="o">=</span> <span class="p">[</span><span class="n">Detection</span><span class="p">(</span><span class="n">bbox_tlwh</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">conf</span><span class="p">,</span> <span class="n">features</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">conf</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">confidences</span><span class="p">)</span> <span class="k">if</span> <span class="n">conf</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_confidence</span><span class="p">]</span>
+    <span class="c1"># NMS (这里self.nms_max_overlap的值为1，即保留了所有的detections)</span>
+    <span class="n">boxes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">tlwh</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">detections</span><span class="p">])</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">confidence</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">detections</span><span class="p">])</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">non_max_suppression</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nms_max_overlap</span><span class="p">,</span> <span class="n">scores</span><span class="p">)</span>
+    <span class="n">detections</span> <span class="o">=</span> <span class="p">[</span><span class="n">detections</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+    <span class="o">...</span></code></pre></div>
+<p><strong>卡尔曼滤波预测阶段</strong></p>
+
+<p>使用卡尔曼滤波预测前一帧中的tracks在当前帧的状态：</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># track.py</span>
+<span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kf</span><span class="p">):</span>
+    <span class="s2">&#34;&#34;&#34;Propagate the state distribution to the current time step using a 
+</span><span class="s2">       Kalman filter prediction step.
+</span><span class="s2">    Parameters
+</span><span class="s2">    ----------
+</span><span class="s2">    kf: The Kalman filter.
+</span><span class="s2">    &#34;&#34;&#34;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">=</span> <span class="n">kf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">)</span>  <span class="c1"># 预测</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># 该track自出现以来的总帧数加1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">time_since_update</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># 该track自最近一次更新以来的总帧数加1</span></code></pre></div>
+<p><strong>匹配</strong></p>
+
+<p>首先对基于外观信息和马氏距离计算tracks和detections的代价矩阵，然后相继进行级联匹配和IOU匹配，最后得到当前帧的所有匹配对、未匹配的tracks以及未匹配的detections：</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1">#tracker.py</span>
+<span class="k">def</span> <span class="nf">_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detections</span><span class="p">):</span>
+	<span class="s1">&#39;&#39;&#39;
+</span><span class="s1">	基于外观信息和马氏距离，计算卡尔曼滤波预测的tracks和当前帧检测到的detection的代价矩阵
+</span><span class="s1">	&#39;&#39;&#39;</span>
+  <span class="k">def</span> <span class="nf">gated_metric</span><span class="p">(</span><span class="n">tracks</span><span class="p">,</span> <span class="n">dets</span><span class="p">,</span> <span class="n">track_indices</span><span class="p">,</span> <span class="n">detection_indices</span><span class="p">):</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">feature</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">detection_indices</span><span class="p">])</span>
+    <span class="n">targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tracks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">track_id</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">track_indices</span><span class="p">])</span>
+    <span class="c1">#基于外观信息，计算tracks和detections的余弦距离代价矩阵</span>
+    <span class="n">cost_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+    <span class="c1">#基于马氏距离，过滤掉代价矩阵中一些不合适的项 (将其设置为一个较大的值)</span>
+    <span class="n">cost_matrix</span> <span class="o">=</span> <span class="n">linear_assignment</span><span class="o">.</span><span class="n">gate_cost_matrix</span><span class="p">(</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">kf</span><span class="p">,</span> <span class="n">cost_matrix</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">dets</span><span class="p">,</span> <span class="n">track_indices</span><span class="p">,</span>
+      <span class="n">detection_indices</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cost_matrix</span>
+  <span class="c1">#区分confirmed tracks和UNconfirmed tracks</span>
+  <span class="n">confirmed_tracks</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">)</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">is_confirmed</span><span class="p">()]</span>
+  <span class="n">unconfirmed_tracks</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">is_confirmed</span><span class="p">()]</span>
+  <span class="c1"># 对confirmd tracks进行级联匹配</span>
+  <span class="n">matches_a</span><span class="p">,</span> <span class="n">unmatched_tracks_a</span><span class="p">,</span> <span class="n">unmatched_detections</span> <span class="o">=</span> \
+  <span class="n">linear_assignment</span><span class="o">.</span><span class="n">matching_cascade</span><span class="p">(</span>
+    <span class="n">gated_metric</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">matching_threshold</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_age</span><span class="p">,</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">,</span> <span class="n">detections</span><span class="p">,</span> <span class="n">confirmed_tracks</span><span class="p">)</span>
+  
+  <span class="c1"># 对级联匹配中未匹配的tracks和unconfirmed tracks中time_since_update为1的tracks进行IOU匹配</span>
+  <span class="n">iou_track_candidates</span> <span class="o">=</span> <span class="n">unconfirmed_tracks</span> <span class="o">+</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">unmatched_tracks_a</span> <span class="k">if</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">time_since_update</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+  <span class="n">unmatched_tracks_a</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">unmatched_tracks_a</span> <span class="k">if</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">time_since_update</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">]</span>
+  <span class="n">matches_b</span><span class="p">,</span> <span class="n">unmatched_tracks_b</span><span class="p">,</span> <span class="n">unmatched_detections</span> <span class="o">=</span> \
+  <span class="n">linear_assignment</span><span class="o">.</span><span class="n">min_cost_matching</span><span class="p">(</span>
+    <span class="n">iou_matching</span><span class="o">.</span><span class="n">iou_cost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iou_distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">,</span>
+    <span class="n">detections</span><span class="p">,</span> <span class="n">iou_track_candidates</span><span class="p">,</span> <span class="n">unmatched_detections</span><span class="p">)</span>
+  <span class="c1"># 整合所有的匹配对和未匹配的tracks</span>
+  <span class="n">matches</span> <span class="o">=</span> <span class="n">matches_a</span> <span class="o">+</span> <span class="n">matches_b</span>
+  <span class="n">unmatched_tracks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">unmatched_tracks_a</span> <span class="o">+</span> <span class="n">unmatched_tracks_b</span><span class="p">))</span>
+
+  <span class="k">return</span> <span class="n">matches</span><span class="p">,</span> <span class="n">unmatched_tracks</span><span class="p">,</span> <span class="n">unmatched_detections</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 级联匹配源码  linear_assignment.py</span>
+<span class="k">def</span> <span class="nf">matching_cascade</span><span class="p">(</span><span class="n">distance_metric</span><span class="p">,</span> <span class="n">max_distance</span><span class="p">,</span> <span class="n">cascade_depth</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">detections</span><span class="p">,</span> 
+                     <span class="n">track_indices</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">detection_indices</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="n">unmatched_detections</span> <span class="o">=</span> <span class="n">detection_indice</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># 由小到大依次对每个level的tracks做匹配</span>
+    <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cascade_depth</span><span class="p">):</span>
+	<span class="c1"># 如果没有detections，退出循环</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unmatched_detections</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  
+            <span class="k">break</span>
+	<span class="c1"># 当前level的所有tracks索引</span>
+        <span class="n">track_indices_l</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">track_indices</span> <span class="k">if</span> 
+                           <span class="n">tracks</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">time_since_update</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">level</span><span class="p">]</span>
+	<span class="c1"># 如果当前level没有track，继续</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">track_indices_l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> 
+            <span class="k">continue</span>
+		
+	<span class="c1"># 匈牙利匹配</span>
+        <span class="n">matches_l</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">unmatched_detections</span> <span class="o">=</span> <span class="n">min_cost_matching</span><span class="p">(</span><span class="n">distance_metric</span><span class="p">,</span><span class="n">max_distance</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">detections</span><span class="p">,</span> <span class="n">track_indices_l</span><span class="p">,</span> <span class="n">unmatched_detections</span><span class="p">)</span>
+        
+	<span class="n">matches</span> <span class="o">+=</span> <span class="n">matches_l</span>
+	<span class="n">unmatched_tracks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">track_indices</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">matches</span><span class="p">,</span> <span class="n">unmatched_tracks</span><span class="p">,</span> <span class="n">unmatched_detections</span></code></pre></div>
+<p><strong>卡尔曼滤波更新阶段</strong></p>
+
+<p>对于每个匹配成功的track，用其对应的detection进行更新，并处理未匹配tracks和detections：</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1">#  tracker.py</span>
+<span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detections</span><span class="p">):</span>
+    <span class="s2">&#34;&#34;&#34;Perform measurement update and track management.
+</span><span class="s2">    Parameters
+</span><span class="s2">    ----------
+</span><span class="s2">    detections: List[deep_sort.detection.Detection]
+</span><span class="s2">                A list of detections at the current time step.
+</span><span class="s2">    &#34;&#34;&#34;</span>
+    <span class="c1"># 得到匹配对、未匹配的tracks、未匹配的dectections</span>
+    <span class="n">matches</span><span class="p">,</span> <span class="n">unmatched_tracks</span><span class="p">,</span> <span class="n">unmatched_detections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_match</span><span class="p">(</span><span class="n">detections</span><span class="p">)</span>
+
+    <span class="c1"># 对于每个匹配成功的track，用其对应的detection进行更新</span>
+    <span class="k">for</span> <span class="n">track_idx</span><span class="p">,</span> <span class="n">detection_idx</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="n">track_idx</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kf</span><span class="p">,</span> <span class="n">detections</span><span class="p">[</span><span class="n">detection_idx</span><span class="p">])</span>
+    
+	<span class="c1"># 对于未匹配的成功的track，将其标记为丢失</span>
+		<span class="k">for</span> <span class="n">track_idx</span> <span class="ow">in</span> <span class="n">unmatched_tracks</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="n">track_idx</span><span class="p">]</span><span class="o">.</span><span class="n">mark_missed</span><span class="p">()</span>
+	
+    <span class="c1"># 对于未匹配成功的detection，初始化为新的track</span>
+    <span class="k">for</span> <span class="n">detection_idx</span> <span class="ow">in</span> <span class="n">unmatched_detections</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initiate_track</span><span class="p">(</span><span class="n">detections</span><span class="p">[</span><span class="n">detection_idx</span><span class="p">])</span></code></pre></div>]]></content>
+		</item>
+		
+		<item>
+			<title>FCOS Paper notes</title>
+			<link>https://wuhongyui.github.io/posts/fcos/</link>
+			<pubDate>Mon, 16 Mar 2020 14:00:10 +0800</pubDate>
+			
+			<guid>https://wuhongyui.github.io/posts/fcos/</guid>
+			<description>1.摘要 提出了一种全卷积的单级目标检测器（FCOS），这是一种逐像素预测的方式解决目标检测问题，类似于语义分割。近年来一些最先进的目标检测算法，如RetinaNet，SSD，YOLOv3，Faster R-CNN都依赖于预定义的锚框，相反，FCOS提出的检测器算法是无锚框的(anchor free)，也就是无建议(proposal free)，通过取消预定义锚框的设定，FCOS完全避免了与锚框相关的复杂计算，如在训练过程中计算重叠，更重要的是，FCOS还避免了所有与锚框相关的超参数，这些超参数会对最终的检测结果非常敏感。由于只有后处理非最大抑制 ( NMS )，我们的检测器 FCOS 比以前的基于锚框的单级检测器具有更简单的优点。首次提出了一种简单灵活的检测框架，提高了检测精度。
+2.Introduction 目标检测是计算机视觉中的一项基本而又具有挑战性的任务，它要求算法为图像中感兴趣的每个实例预测一个带有类别标签的边界框。如 Faster R-CNN [20]、SSD [15]、YOLOv2、v3 都依赖于一组预定义的锚框，长期以来人们认为锚框的使用是检测器成功的关键。尽管它们取得了巨大的成功，但值得注意的是，基于锚框的检测器存在一些缺陷：
+ 检测器的性能对锚框的尺寸、长宽比和数量敏感，例如，RetinaNet中，在COCO数据集基准上，改变这些超参数会导致4%的AP的性能变化，因此，在基于锚框预测的模型中，这些超参数需要细心的调整 尽管精心的超参数调整，由于锚框的尺寸和长宽比是固定的，检测器在处理形状变化较大的候选对象较为困难，特别是对于小对象，预定义锚框还限制了检测器的泛化能力，因为它们需要针对不同对象大小或纵横比的新检测任务重新设计 为了获得较高的召回率，需要一个基于锚框的检测器将框密集地放置在输入图像上 ( 例如，对于短边为 800 的图像，在特征金字塔网络 ( FPN ) 中放置超过 180K 个锚框)。在训练过程中，这些锚框大多被标记为负样本。负样本数量过多加剧了训练中正样本与负样本之间的不平衡。 训练过程中，当计算所有锚框和地面真实框（ground-truth boxes）之间的交并集 ( intersectionover-union, IOU ) 得分时，锚框数量过多也会显著增加计算量和内存占用。  近年来，全卷积网络在语义分割、深度估计、关键点检测、计数等密集预测任务中取得了巨大的成功。目标检测作为高级视觉任务之一，可能是唯一一个偏离纯卷积逐像素预测框架的任务，这主要是由于锚框的使用。思考这样一个问题：我们能否以简洁的逐像素的预测方式来解决对象检测问题，例如，类似用于语义分割的FCN，FCOS算法首次证明了基于 FCN 的检测器比基于锚框的检测器具有更好的性能。
+在一些文献中，一些文章一些文章试图利用FCN的框架进行目标检测，例如DenseBox和UnitBox，具体地说，这些基于 FCN 的框架直接预测了特征图（feature maps）级别上每个空间位置上的一个 4D 向量加上一个类的类别。由下图(左图)所示，4D向量描述了一个边界框到该位置的四个边的相对偏移量，这些框架类似于用于语义分割的 FCNs，只是每个位置都需要回归一个 4D 连续向量。但是，为了处理不同大小的边界框，DenseBox 将训练图像调整为固定的比例。因此，DenseBox 必须对图像金字塔进行检测，这与 FCN 一次计算所有卷积的思想是相悖的。此外，更重要的是，这些方法主要用于特殊领域的目标检测，如场景文本检测或人脸检测，因为人们认为这些方法不适用于具有高度重叠边界框的一般对象检测。如图所示(右图)，高度重叠的边界框导致了训练过程中难以处理的模糊性：对于重叠区域中的像素，不清楚 w.r.t 应该回归到哪个边界框。
+
+在后续中，我们将进一步研究这个问题，并说明使用 FPN 可以在很大程度上消除这种模糊性。结果表明，该方法与传统的基于锚框的检测方法具有相当的检测精度。此外，我们注意到我们的方法可能会在远离目标对象中心的位置产生大量低质量的预测边界框。为了抑制这些低质量的检测，我们引入了一个新的 “ 中心度（center-ness）” 分支(只有一层)来预测一个像素到其相应边界框中心的偏移，如公式所定义。然后，该分数用于降低低质量检测边界框的权重，并将检测结果合并到NMS中。简单而有效的中心度分支允许基于 FCN 的检测器在完全相同的训练和测试设置下胜过基于锚框的检测器。 \( centerness* = \sqrt {\frac{min(l*, r*)}{max(l*, r*)}\times \frac{min(t*, b*)}{max(t*,b*)} } \) 这种新型检测器架构有一下几种优点：</description>
+			<content type="html"><![CDATA[<h4 id="1摘要">1.摘要</h4>
+
+<p>提出了一种全卷积的单级目标检测器（FCOS），这是一种逐像素预测的方式解决目标检测问题，类似于语义分割。近年来一些最先进的目标检测算法，如RetinaNet，SSD，YOLOv3，Faster R-CNN都依赖于预定义的锚框，相反，FCOS提出的检测器算法是无锚框的(anchor free)，也就是无建议(proposal free)，通过取消预定义锚框的设定，FCOS完全避免了与锚框相关的复杂计算，如在训练过程中计算重叠，更重要的是，FCOS还避免了所有与锚框相关的超参数，这些超参数会对最终的检测结果非常敏感。由于只有后处理非最大抑制 ( NMS )，我们的检测器 FCOS 比以前的基于锚框的单级检测器具有更简单的优点。首次提出了一种简单灵活的检测框架，提高了检测精度。</p>
+
+<h4 id="2introduction">2.Introduction</h4>
+
+<p>目标检测是计算机视觉中的一项基本而又具有挑战性的任务，它要求算法为图像中感兴趣的每个实例预测一个带有类别标签的边界框。如 Faster R-CNN [20]、SSD [15]、YOLOv2、v3 都依赖于一组预定义的锚框，长期以来人们认为锚框的使用是检测器成功的关键。尽管它们取得了巨大的成功，但值得注意的是，基于锚框的检测器存在一些缺陷：</p>
+
+<ol>
+<li>检测器的性能对锚框的尺寸、长宽比和数量敏感，例如，RetinaNet中，在COCO数据集基准上，改变这些超参数会导致4%的AP的性能变化，因此，在基于锚框预测的模型中，这些超参数需要细心的调整</li>
+<li>尽管精心的超参数调整，由于锚框的尺寸和长宽比是固定的，检测器在处理形状变化较大的候选对象较为困难，特别是对于小对象，预定义锚框还限制了检测器的泛化能力，因为它们需要针对不同对象大小或纵横比的新检测任务重新设计</li>
+<li>为了获得较高的召回率，需要一个基于锚框的检测器将框密集地放置在输入图像上 ( 例如，对于短边为 800 的图像，在特征金字塔网络 ( FPN ) 中放置超过 180K 个锚框)。在训练过程中，这些锚框大多被标记为负样本。负样本数量过多加剧了训练中正样本与负样本之间的不平衡。</li>
+<li>训练过程中，当计算所有锚框和地面真实框（ground-truth boxes）之间的交并集 ( intersectionover-union, IOU ) 得分时，锚框数量过多也会显著增加计算量和内存占用。</li>
+</ol>
+
+<p>近年来，全卷积网络在语义分割、深度估计、关键点检测、计数等密集预测任务中取得了巨大的成功。目标检测作为高级视觉任务之一，可能是唯一一个偏离纯卷积逐像素预测框架的任务，这主要是由于锚框的使用。思考这样一个问题：我们能否以简洁的逐像素的预测方式来解决对象检测问题，例如，类似用于语义分割的FCN，FCOS算法首次证明了基于 FCN 的检测器比基于锚框的检测器具有更好的性能。</p>
+
+<p>在一些文献中，一些文章一些文章试图利用FCN的框架进行目标检测，例如DenseBox和UnitBox，具体地说，<strong>这些基于 FCN 的框架直接预测了特征图（feature maps）级别上每个空间位置上的一个 4D 向量加上一个类的类别。</strong>由下图(左图)所示，4D向量描述了一个边界框到该位置的四个边的相对偏移量，这些框架类似于用于语义分割的 FCNs，只是每个位置都需要回归一个 4D 连续向量。但是，为了处理不同大小的边界框，DenseBox 将训练图像调整为固定的比例。因此，DenseBox 必须对图像金字塔进行检测，这与 FCN 一次计算所有卷积的思想是相悖的。此外，更重要的是，这些方法主要用于特殊领域的目标检测，如场景文本检测或人脸检测，因为人们认为这些方法不适用于具有高度重叠边界框的一般对象检测。如图所示(右图)，<strong>高度重叠的边界框导致了训练过程中难以处理的模糊性：对于重叠区域中的像素，不清楚 w.r.t 应该回归到哪个边界框。</strong></p>
+
+<p><figure><img src="/images/FCOS1.png" alt=""></figure></p>
+
+<p>在后续中，我们将进一步研究这个问题，并说明使用 FPN 可以在很大程度上消除这种模糊性。结果表明，该方法与传统的基于锚框的检测方法具有相当的检测精度。此外，我们注意到我们的方法可能会在远离目标对象中心的位置产生大量低质量的预测边界框。为了抑制这些低质量的检测，我们引入了一个<strong>新的 “ 中心度（center-ness）” 分支(只有一层)来预测一个像素到其相应边界框中心的偏移</strong>，如公式所定义。然后，该分数用于降低低质量检测边界框的权重，并将检测结果合并到NMS中。简单而有效的中心度分支允许基于 FCN 的检测器在完全相同的训练和测试设置下胜过基于锚框的检测器。
+<span  class="math">\(
+centerness* = \sqrt {\frac{min(l*, r*)}{max(l*, r*)}\times \frac{min(t*, b*)}{max(t*,b*)}  }
+\)</span>
+这种新型检测器架构有一下几种优点：</p>
+
+<ol>
+<li>现在检测与许多其他使用 FCN 解决的任务(如语义分割)统一起来，从而更容易重复利用这些算法中的思想。</li>
+<li>检测变为无建议、无锚框，大大减少了设计参数的数量。</li>
+<li>此外，通过消除锚框，我们的新检测器完全避免了训练过程中锚框与真值框之间复杂的 IOU 计算和匹配，并将总训练内存占用降低了 2 倍左右。</li>
+<li>在没有附加条件的情况下，我们在单级检测器中实现了最先进的结果。我们还证明了所提出的 FCOS 可以在两级检测器中作为一个区域建议网络（Region Proposal Networks）使用，并且与基于锚框的 RPN 相比，可以获得更好的性能。</li>
+</ol>
+
+<h4 id="3-related-work">3. Related Work</h4>
+
+<h5 id="1anchorbased-detector">(1)Anchor-based Detector</h5>
+
+<p>基于锚框的检测器可以看做继承了传统的滑动窗口和基于建议（proposal）的检测器 ( 如 Fast R-CNN ) 的思想。在基于锚框的检测器中，锚框可以看作是预先定义的滑动窗口或 proposal ，这些窗口或 proposal 被划分为正补丁（positive patches）或负补丁（negative patches），通过额外的偏移量回归来细化边界框位置的预测。因此，这些检测器中的锚框可以看作是训练样本。与之前的 Fast R-CNN 等检测器反复计算每个滑动窗口 / proposal 的图像特征不同，锚框利用卷积神经网络 ( CNNs ) 的特征图，避免了重复的特征计算，大大加快了检测过程。Faster R-CNN 中的 RPNs 、SSD 和 YOLOv2 推广了锚框的设计，成为现代检测器的惯例。</p>
+
+<p>然而，如上所述，锚框会导致过多的超参数，通常需要仔细调整这些超参数才能获得良好的性能。除了上述锚框形状的超参数外，基于锚框的检测器还需要其他超参数将每个锚框标记为正样本、忽略样本或负样本。在之前的工作中，他们经常使用锚框和 ground truth 框之间的交并集（intersection over union，IOU）来标记它们 ( 例如，如果锚框的 IOU 在 [0.5, 1]，记作正样本)。这些超参数对最终的精度影响很大，需要进行启发式调优（heuristic tuning）。同时，这些超参数是针对检测任务的，使得检测任务偏离了语义分割等其他密集预测任务中使用的简洁的全卷积网络架构。</p>
+
+<h5 id="2anchorfree-detector">(2)Anchor-free Detector</h5>
+
+<p>最流行的无锚检测器可能是 YOLOv1。YOLOv1没有使用锚框，而是预测在靠近对象中心的点上的边界框。只使用中心附近的点，因为它们被认为能够产生更高的质量检测。然而，由于仅使用靠近中心的点来预测边界框， YOLOv1 的召回率较低，正如 YOLOv2 中所述。于是，YOLOv2 也使用了锚框。与 YOLOv1 相比，FCOS 利用 ground truth 边界框中的所有点来预测边界盒，并通过提出的 “ 中心度 ” 分支抑制检测到的低质量的边界框。因此，FCOS 能够提供与基于锚框的检测器相当的召回率。</p>
+
+<p><strong>CornerNet</strong> [10]是最近提出的一种单级无锚框检测器，它检测边界框的一对角，并将它们分组形成最终检测到的边界框。CornerNet 需要更复杂的后处理来对属于同一实例的角对进行分组。为了分组，我们学习了一个额外的距离度量。</p>
+
+<p>另一类无锚框检测器是基于 DenseBox的。由于难以处理重叠的边界框，且召回率较低，该检测器系列已被认为不适合通用目标检测。在这项工作中，我们证明了多级 FPN 预测可以很大程度上缓解这两个问题。此外，与我们提出的中心度分支一起指出的是，相对于基于锚框的检测器，更简单的检测器可以实现更好的检测性能。</p>
+
+<h4 id="4-paper-approach">4. Paper Approach</h4>
+
+<h5 id="1fully-convolutional-onestage-object-detector">（1）Fully Convolutional One-Stage Object Detector</h5>
+
+<p>设<span  class="math">\(F_i \in \mathbb{R}^{H\times W \times C}\)</span>为主干CNNs的第i层feature map，s为该层的总步长，输入图像的ground-truth边界框定义为<span  class="math">\({B_i}\)</span>其中<span  class="math">\(B_i = (x_0^{(i)},y_0^{(i)},x_1^{(i)},y_1^{(i)},c^{(i)}) \in \mathbb{R^4 \times {(1,2,3,\cdots,C)}}\)</span> ，这里的<span  class="math">\((x_0^{(i)},y_0^{(i)})\)</span>和<span  class="math">\((x_1^{(i)},y_1^{(i)})\)</span>表示边界框左上角坐标和右下角坐标，<span  class="math">\(c^i\)</span>是边界框中的对象所属的类别，<span  class="math">\(C\)</span>是类的数量，例如MS-COCO数据集就是80个类</p>
+
+<p>对于特征图<span  class="math">\(F_i\)</span>上的位置<span  class="math">\((x, y)\)</span>可以将其映射回输入图像位置<span  class="math">\((x, y)\)</span>的接受域中心的<span  class="math">\((\left\lfloor \frac{S}{2} \right \rfloor+xs,\left\lfloor \frac{S}{2} \right \rfloor+ys)\)</span>。与基于锚框的检测器不同，基于锚框的检测器将输入图像上的位置作为锚框的中心，并对这些锚框的目标边界框进行回归，我们直接对每个位置的目标边界框进行回归。也就是说，我们的检测器直接将位置看作训练样本，而不是在基于锚框的检测器中将锚框看作训练样本，这与在用于语义分割的 FCNs 中是一样的。</p>
+
+<p>具体来说，如果位置<span  class="math">\((x, y)\)</span>落在任意一个 ground-truth 边界框中则被认为是正样本，并且这个位置的类标签<span  class="math">\(c^*\)</span>就是<span  class="math">\(B_i\)</span>的类标签，否则就是负样本，并且为背景类<span  class="math">\(c^*=0\)</span>，除了用于分类的标签之外，我们还有一个 4D 实向量<span  class="math">\((l^*,t^*,r^*,b^*)\)</span>这里的<span  class="math">\(l^*,t^*,r^*,b^*\)</span>是位置距离边框四边的距离，如果一个位置落在多个边界框中，它被认为是一个模糊的样本。当前，我们简单地选择面积最小的边界框作为其回归目标。在下一节中，我们将展示使用多级预测，可以显著减少模糊样本的数量。如果位置<span  class="math">\((x,y)\)</span> 与一个边界框 <span  class="math">\(B_i\)</span>相关联，该位置的训练回归目标可以表示为：
+<span  class="math">\(
+l^*=x-x_0^{(i)},t^*=y-y_0^{(i)}\\r^*=x_1^{(i)}-x,b^*=y_1^{(i)}-y
+\)</span>
+值得注意的是，FCOS 可以利用尽可能多的前景样本来训练回归器。与基于锚框的检测器不同，基于锚框的检测器只考虑与 ground-truth boxes 具有足够高的 IOU 的锚框作为正样本。我们认为这可能是 FCOS 优于基于锚框的同类产品的原因之一。</p>
+
+<h4 id="5-multilevel-prediction-with-fpn-for-fcos">5. Multi-level Prediction with FPN for FCOS</h4>
+
+<p>在这里我们展示了使用FPN的多级预解决提出的FCOS的可能两个问题：</p>
+
+<p>1）CNN中的最后feature map的大步长可能导致相对较低的最佳可能召回(best possible recall)。对于基于锚框的检测器，由于较大的步长而导致的低召回率，可以通过降低正锚框所需的 IOU 分数来在一定程度上得到补偿。对于 FCOS，乍一看，人们可能认为 BPR 比基于锚框的检测器获得的要低得多，因为不可能召回一个由于步长很大在最终的特征图上没有位置编码的对象。在这里，我们通过实验证明，即使步长很大，基于 FCN 的 FCOS 仍然能够产生良好的 BPR，甚至可以优于官方实现检测器中基于 anchor 的 RetinaNet 检测器的 BPR ( 见表1 )。因此，BPR 实际上不是 FCOS 的问题。此外，利用多级 FPN 预测，可以进一步改进 BPR，使其达到基于锚框的 RetinaNet 检测器可获得的最好的 BPR。</p>
+
+<p>2）ground-truth框中的重叠会在训练过程中造成难以处理的歧义，即，w.r.t.，一个位置应该回归到重叠区域内的哪个边界框 ? 这种模糊性导致基于 FCN 的检测器性能下降。结果表明，采用多级预测方法可以有效地解决模糊问题，与基于锚框的检测器相比，基于 FCN 的检测器具有相当甚至更好的性能。</p>
+
+<p>根据FPN，我们在不同大小的feature map上检测不同大小的对象，具体的说使用了定义为<span  class="math">\({P_3,P_4,P_5,P_6,P_7}\)</span>的五个层次的特征图，P3、P4、P5 由主干 CNNs 的特征图 C3、C4、C5 生成，后面是一个[11]中1×1的卷积层，横向连接，如图2所示。P6 和 P7 分别在 P5 和 P6 上应用一个 stride 为 2 的卷积层生成。</p>
+
+<p><figure><img src="/images/FCOS2.png" alt=""></figure></p>
+
+<h5 id="补充">补充</h5>
+
+<ol>
+<li>RPN的整个流程</li>
+</ol>
+
+<p>首先原图经过一系列的卷积操作，得到一个公共特征图，假设大小是N X 16 X 16，进入RPN的阶段经过一个<span  class="math">\(3\times3\)</span>的卷积操作，得到一个<span  class="math">\(256\times16\times16\)</span>的特征图，也可以看做一个16 X 16个256维的特征向量，然后经过1 X 1的卷积操作，如果预先设定9种组和的anchor就得到18 X 16 X 16和一个36 X 16 X 16的特征图，也就是16 X 16 X 9个结果，每个结果分别包含2个分数和4个坐标，再结合预先设定的Anchor就得到复选框，结合懒人元博客的图理解：</p>
+
+<p><figure><img src="/images/FCOS3.png" alt=""></figure></p>
+
+<ol start="2">
+<li>FPN金字塔网络</li>
+</ol>
+
+<p>首先FPN的网络架构是基于ResNet50，输入图像首先经过Bottom-up操作，Bottom-up操作是基于Resnet的网络结构，这样得到不同大小的特征图<span  class="math">\({C2, C3, C4, C5}\)</span>，之后得到的特征图<span  class="math">\({C2, C3, C4, C5}\)</span>中<span  class="math">\(C5\)</span>经过侧边连接层将特征通道数降为256，例如C5通过降维之后得到特征图P5，又将P5经过上采样层将特征图大小放大再与C4经过侧边连接层进行通道降维操作后的特征图特征相加得到P4；P3，P2，特征图以此类推，最后将得到的P4，P3，P2特征图经过Smooth Layer得到最后的特征图。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>Learning YOLO detection algorithm</title>
+			<link>https://wuhongyui.github.io/posts/yolo/</link>
+			<pubDate>Wed, 08 Jan 2020 20:31:44 +0800</pubDate>
+			
+			<guid>https://wuhongyui.github.io/posts/yolo/</guid>
+			<description>一、Yolo的思想 ​ 简单来说目标检测算法的思想首先就分为两个步骤，第一个任务是定位、第二个任务则是分类。目标检测就是要找出图片中的物体，并且使用bounding box将物体框出来。而bounding box可以使用左上角的坐标\((x,y)\)与矩形的宽和高\((h,w)\)表示。直观的想法是将一张图片喂给神经网络，然后输出\((x, y, h, w)\)四个值就好，但是，在一张图片中有两个或者多个物体，此时网络的输出维度则没法固定，因此直观的方法是行不通的。
+​ 既然输出需要固定维度，yolo采用了一个固定的输出维度，使其足够大可以包含图片中所有的检测物体，yolo固定维度的办法是把模型的输出划分成网格形状，每个网格中的cell（格子）都可以输出物体的类别和bounding box的坐标，如下图所示：
+
+设置模型的训练目标，将输入图像按照模型的输出网格（比如7x7大小）进行划分，划分之后就有很多小cell了。我们再看图片中物体的中心是落在哪个cell里面，落在哪个cell哪个cell就负责预测这个物体。比如下图中，狗的中心落在了红色cell内，则这个cell负责预测狗。
+假设你需要检测20个类\((C=20)\)，则将图像划分成\(S\times S\)个网格，每个cell预测两个bounding box\((B = 2)\)每个bounding box有五个参数值\(x,y,w,h,confidence\space sorce\)，因此模型的输出则是一个\(S\times S\times (B*5 + C)\)的Tensor。
+
+分两个阶段来设置“目标中心落在哪个cell，就用哪个cell来检测”：
+ 训练阶段，如果物体中心落在这个cell，那么就给这个cell打上这个物体的label（包括xywh和类别）。也就是说我们是通过这种方式来设置训练的label的。换言之，我们在训练阶段，就教会cell要预测图像中的哪个物体。 测试阶段。因为你在训练阶段已经教会了cell去预测中心落在该cell中的物体，那么cell自然也会这么做。  以上就是yolo的核心思想，也就是说在训练阶段给模型中的各个cell打上label，在训练阶段告诉模型需要预测什么，然后测试阶段才能按照你训练阶段教它的去做。
+二、模型的架构 模型的网络架构见下图：
+
+从图中可以看到，yolo网络的输出的网格是7x7大小的，另外，输出的channel数目为30。一个cell内，前20个元素是类别概率值，然后2个元素是边界框confidence，最后8个元素是边界框的 \((x, y,w,h) \)。
+
+也就是说，每个cell有两个predictor，每个predictor分别预测一个bounding box的xywh和相应的confidence。但分类部分的预测却是共享的。正因为这个，同个cell是没办法预测多个目标的。yolov2则解决了这个问题，需要预测两个bounding box的原因是？这个还是要从训练阶段怎么给两个predictor安排训练目标来说。在训练的时候会在线地计算每个predictor预测的bounding box和ground truth的IOU，计算出来的IOU大的那个predictor，就会负责预测这个物体，另外一个则不预测。
+三、模型的输出 confidence预测 confidence表示：在cell预测的bounding box包含某一物体的置信度有多高，并且该bounding box预测的准确度有多大，用公式表示就是：\(Pr(Object)*IOU^{truth}_{pred}\)
+分两个阶段来解释confidence公式：
+ 在训练阶段，我们需要给每一个输出bounding box的confidence打上label，也就是，如果一个cell中包含一个物体的中心，就把\(Pr(Object)=1\)，因此confidence就变成了\(1\times IOU^{truth}_{pred}\)注意这个IOU是在训练过程中不断计算出来的，网络在训练过程中预测的bounding box每次都不一样，所以和ground truth计算出来的IOU每次也会不一样。若一个cell中不包含一个物体的中心，则\(Pr(Object)=0\)，因此confidence的值为0. 在预测阶段，因为训练时给的label就是一个值，因此预测是模型只吐出一个confidence的值。  bounding box预测 bounding box预测包括了\(x,y,w,h\)，\(x, y\)表示bounding box中心相对于cell左上角坐标的偏移量---通过偏移量公式计算:\((X*S/width-cell_x, Y*S/height-cell_y)\)，宽高都相对于整张图片的宽高进行归一化。
+xywh为什么要这么表示呢？实际上经过这么表示之后，xywh都归一化了，它们的值都是在0-1之间。我们通常做回归问题的时候都会将输出进行归一化，否则可能导致各个输出维度的取值范围差别很大，进而导致训练的时候，网络更关注数值大的维度。因为数值大的维度，算loss相应会比较大，为了让这个loss减小，那么网络就会尽量学习让这个维度loss变小，最终导致区别对待。
+类别预测 除以上两个预测输出之外，还有物体类别概率输出，物体类别是一个条件概率\(Pr(Class_i|Object)\)也可以分两个阶段来看：
+ 对于训练阶段，也就是打label阶段，怎么打label呢？对于一个cell，如果物体的中心落在了这个cell，那么我们给它打上这个物体的类别label，并设置概率为1。换句话说，这个概率是存在一个条件的，这个条件就是cell存在物体。 对于预测阶段，网络直接输出\(Pr(Class_i|Object)\)，代表了cell中有物体的条件下的概率，论文中还将这个值乘上了confidence，即\(Pr(Class_i|Object)\times Pr(Object)*IOU^{truth}_{pred}\)。这样保证了即使cell中不存在某个物体，类别预测的概率值可能为\(Pr(Class_i|Object)=0.</description>
+			<content type="html"><![CDATA[<h3 id="一yolo的思想">一、Yolo的思想</h3>
+
+<p>​   简单来说目标检测算法的思想首先就分为两个步骤，第一个任务是定位、第二个任务则是分类。目标检测就是要找出图片中的物体，并且使用bounding box将物体框出来。而bounding box可以使用左上角的坐标<span  class="math">\((x,y)\)</span>与矩形的宽和高<span  class="math">\((h,w)\)</span>表示。直观的想法是将一张图片喂给神经网络，然后输出<span  class="math">\((x, y, h, w)\)</span>四个值就好，但是，在一张图片中有两个或者多个物体，此时网络的输出维度则没法固定，因此直观的方法是行不通的。</p>
+
+<p>​   既然输出需要固定维度，yolo采用了一个固定的输出维度，使其足够大可以包含图片中所有的检测物体，yolo固定维度的办法是把模型的输出划分成网格形状，每个网格中的cell（格子）都可以输出物体的类别和bounding box的坐标，如下图所示：</p>
+
+<p><figure><img src="/images/yolo1.jpg" alt=""></figure></p>
+
+<p>设置模型的训练目标，将输入图像按照模型的输出网格（比如7x7大小）进行划分，划分之后就有很多小cell了。我们再看图片中物体的中心是落在哪个cell里面，落在哪个cell哪个cell就负责预测这个物体。比如下图中，狗的中心落在了红色cell内，则这个cell负责预测狗。</p>
+
+<p>假设你需要检测20个类<span  class="math">\((C=20)\)</span>，则将图像划分成<span  class="math">\(S\times S\)</span>个网格，每个cell预测两个bounding box<span  class="math">\((B = 2)\)</span>每个bounding box有五个参数值<span  class="math">\(x,y,w,h,confidence\space sorce\)</span>，因此模型的输出则是一个<span  class="math">\(S\times S\times (B*5 + C)\)</span>的Tensor。</p>
+
+<p><figure><img src="/images/yolo2.jpg" alt=""></figure></p>
+
+<p>分两个阶段来设置“目标中心落在哪个cell，就用哪个cell来检测”：</p>
+
+<ol>
+<li>训练阶段，如果物体中心落在这个cell，那么就给这个cell打上这个物体的label（包括xywh和类别）。也就是说我们是通过这种方式来设置训练的label的。换言之，我们在训练阶段，就教会cell要预测图像中的哪个物体。</li>
+<li>测试阶段。因为你在训练阶段已经教会了cell去预测中心落在该cell中的物体，那么cell自然也会这么做。</li>
+</ol>
+
+<p>以上就是yolo的核心思想，也就是说在训练阶段给模型中的各个cell打上label，在训练阶段告诉模型需要预测什么，然后测试阶段才能按照你训练阶段教它的去做。</p>
+
+<h3 id="二模型的架构">二、模型的架构</h3>
+
+<p>模型的网络架构见下图：</p>
+
+<p><figure><img src="/images/yolo3.jpg" alt=""></figure></p>
+
+<p>从图中可以看到，yolo网络的输出的网格是7x7大小的，另外，输出的channel数目为30。一个cell内，前20个元素是类别概率值，然后2个元素是边界框confidence，最后8个元素是边界框的 <span  class="math">\((x, y,w,h) \)</span>。</p>
+
+<p><figure><img src="/images/yolo4.jpg" alt=""></figure></p>
+
+<p>也就是说，每个cell有两个predictor，每个predictor分别预测一个bounding box的xywh和相应的confidence。但分类部分的预测却是共享的。正因为这个，同个cell是没办法预测多个目标的。yolov2则解决了这个问题，需要预测两个bounding box的原因是？<strong>这个还是要从训练阶段怎么给两个predictor安排训练目标来说。在训练的时候会在线地计算每个predictor预测的bounding box和ground truth的IOU，计算出来的IOU大的那个predictor，就会负责预测这个物体，另外一个则不预测。</strong></p>
+
+<h3 id="三模型的输出">三、模型的输出</h3>
+
+<h4 id="confidence预测">confidence预测</h4>
+
+<p>confidence表示：在cell预测的bounding box包含某一物体的置信度有多高，并且该bounding box预测的准确度有多大，用公式表示就是：<span  class="math">\(Pr(Object)*IOU^{truth}_{pred}\)</span></p>
+
+<p>分两个阶段来解释confidence公式：</p>
+
+<ol>
+<li>在训练阶段，我们需要给每一个输出bounding box的confidence打上label，也就是，如果一个cell中包含一个物体的中心，就把<span  class="math">\(Pr(Object)=1\)</span>，因此confidence就变成了<span  class="math">\(1\times IOU^{truth}_{pred}\)</span>注意这个IOU是在训练过程中不断计算出来的，网络在训练过程中预测的bounding box每次都不一样，所以和ground truth计算出来的IOU每次也会不一样。若一个cell中不包含一个物体的中心，则<span  class="math">\(Pr(Object)=0\)</span>，因此confidence的值为0.</li>
+<li>在预测阶段，因为训练时给的label就是一个值，因此预测是模型只吐出一个confidence的值。</li>
+</ol>
+
+<h4 id="bounding-box预测">bounding box预测</h4>
+
+<p>bounding box预测包括了<span  class="math">\(x,y,w,h\)</span>，<span  class="math">\(x, y\)</span>表示bounding box中心相对于cell左上角坐标的偏移量---通过偏移量公式计算:<span  class="math">\((X*S/width-cell_x, Y*S/height-cell_y)\)</span>，宽高都相对于整张图片的宽高进行归一化。</p>
+
+<p>xywh为什么要这么表示呢？实际上经过这么表示之后，xywh都归一化了，它们的值都是在0-1之间。我们通常做回归问题的时候都会将输出进行归一化，否则可能导致各个输出维度的取值范围差别很大，进而导致训练的时候，网络更关注数值大的维度。因为数值大的维度，算loss相应会比较大，为了让这个loss减小，那么网络就会尽量学习让这个维度loss变小，最终导致区别对待。</p>
+
+<h4 id="类别预测">类别预测</h4>
+
+<p>除以上两个预测输出之外，还有物体类别概率输出，物体类别是一个条件概率<span  class="math">\(Pr(Class_i|Object)\)</span>也可以分两个阶段来看：</p>
+
+<ol>
+<li>对于训练阶段，也就是打label阶段，怎么打label呢？对于一个cell，如果物体的中心落在了这个cell，那么我们给它打上这个物体的类别label，并设置概率为1。换句话说，这个概率是存在一个条件的，这个条件就是cell存在物体。</li>
+<li>对于预测阶段，网络直接输出<span  class="math">\(Pr(Class_i|Object)\)</span>，代表了cell中有物体的条件下的概率，论文中还将这个值乘上了confidence，即<span  class="math">\(Pr(Class_i|Object)\times Pr(Object)*IOU^{truth}_{pred}\)</span>。这样保证了即使cell中不存在某个物体，类别预测的概率值可能为<span  class="math">\(Pr(Class_i|Object)=0.9\)</span>，但与<span  class="math">\(confidence=0\)</span>相乘之后便为0，这个是很合理的，因为你得确保cell中有物体（即confidence大），你算类别概率才有意义。</li>
+</ol>
+
+<h4 id="loss-function">Loss Function</h4>
+
+<p><figure><img src="/images/yolo5.jpg" alt=""></figure></p>
+
+<p>yolo的损失函数，定位误差和分类误差的权重不应该相同，由于图像中，有许多网格不包含物体，他们的confidence score为0，这样那些包含物体的cell的梯度则有很大优势，导致模型的不稳定，yolo增加了bounding box的坐标预测权重减少了不包含物体对象confidence的权重，因此设定了两个参数<span  class="math">\(\lambda_{coord}=5\)</span>和<span  class="math">\(\lambda=0.5\)</span>，同时，我们的loss应该能够体现出相同的误差对于big box及small box的重要性不同。 为了解决这个问题，YOLO使用w，h的平方根误差来减少这种差异性。</p>
+
+<h3 id="四总结">四、总结</h3>
+
+<ul>
+<li>YOLO是一个统一的unified(标准的)实时目标检测方法，它是一个单一的网络(one­ stage)，所以它可以根据检测性能进行端到端的优化。</li>
+<li>之前的方法都是重新调整分类器来进行检测，然而YOLO不同于之前的方法，它是将目标检测作为一个回归问题来构造空间上分离的BBoxes和相关类概率 YOLO作为一个实时算法非常快，基础模型能达到实时45帧每秒，fast YOLO可以达到155帧 每秒，同时能够达到其他实时算法mAP的两倍。</li>
+<li>相较于现有的目标检测算法，YOLO会产生更多的定位误差(localization errors)，但是不太可能产生对于背景的误报(圈出错误的背景)。 所以YOLO学习了非常一般的表示。但是当从自然图像推广到其他领域(艺术品、风格化图 像)时，YOLO方法优于其他方法，灵活性比较强。</li>
+
+<li><p>由于YOLO是对图像进行网格划分，对于每个网格单元产生固定数量的bounding box，并且之 预测一个类概率集合，这就样的空间约束就限制了model能够够预测的相邻目标的数目。而且 YOLO目前目标检测的难题是如何预测成群出现的小目标的问题(相邻很近的多个小目标)， 比如一群鸟。</p></li>
+
+<li><p>由于model从数据中预测bounding box，它面临对于新的、特殊的长宽比或者配置的目标的 bounding box大小的概括。</p></li>
+
+<li><p>而且，对于loss function, YOLO的损失误差主要来自于定位误差，应该解决对于不同大小 bounding box的定位误差的重要性的不同。(big box 与 small box)</p></li>
+</ul>
+
+<h5 id="缺点">缺点:</h5>
+
+<ol>
+<li>YOLO的物体检测精度低于其他state­-of­-the­-art的物体检测系统。</li>
+<li>YOLO容易产生物体的定位错误。</li>
+<li>YOLO对小物体的检测效果不好(尤其是密集的小物体，因为一个 cell只能预测2个物体)。</li>
+</ol>
+
+<h3 id="五yolov2">五、YOLOV2</h3>
+
+<h4 id="motivation">motivation</h4>
+
+<ul>
+<li>虽然YOLOV1的检测速度很快，但在精度上比不上R-CNN一系列的检测方法，YOLOV2通过8种方法来改进YOLO模型的定位准确率和召回率，在保证检测速度的情况下，从而提高mAP</li>
+<li>在YOLOV2的基础上提出了一种将检测数据集与分类数据集进行联合训练的方法，使用这种联合训练的方法在COCO检测数据集和ImageNet分类数据集上训练出了YOLO9000模型，能够检测超过9000类物体。</li>
+<li>YOLOV2致力于检测精度和速度之间的平衡，提出了一个新的multi-scale training method（多尺度训练模型），这样使得相同的YOLOV2模型能够在不同大小的图像（不同尺度）上运行。可以输出不同分辨率的图像。</li>
+</ul>
+
+<h4 id="tricks">Tricks</h4>
+
+<ol>
+<li>Batch Normalization（BN 批标准化）</li>
+</ol>
+
+<p>BN可以提升模型的收敛速度，而且可以起到一定正则化的效果，降低模型的过拟合。在YOLOV2中，每个卷积层后都添加了Batch Normalization层，并且不再使用dropout。使用Batch Normalization后，YOLOV2模型的mAP提升了2.4%</p>
+
+<ol start="2">
+<li>High Resolution Classifier</li>
+</ol>
+
+<p>目前大部分检测模型都会在ImageNet分类数据集上训练模型的主体部分，ImageNet分类模型基本采用大小224x224的图片输入，分辨率较低，不利于检测，YOLOV2将与训练分成两步：先用224x224的输入训练模型，大概跑160个epoch，然后在将输入调整到448x448，再训练10个epoch，这两步都是在ImageNet分类数据集上操作，最后在检测数据集上fine-tuning，也就是detection的时候用448x448的图像作为输入就可以顺利过渡。</p>
+
+<ol start="3">
+<li>Convolutionlal With Anchor Boxes</li>
+</ol>
+
+<p>在YOLOv1中，输入图片最终被划分为7x7网格，每个网格单元预测两个bounding box。YOLOV1最 后采用的是全连接层直接对bounding box进行预测，其中边界框的宽与高是相对整张图片大小的， 而由于各个图片中存在不同尺度和长宽比(scales and ratios)的物体，YOLOV1在训练过程中学习 适应不同物体的形状是比较困难的，这也导致YOLOV1在精确定位方面表现较差。</p>
+
+<p>YOLOv2移除了YOLOV1中的全连接层而采用了卷积和anchor boxes来预测边界框。为了使检测所用的特征图分辨率更高，移除最后一个pool层。为了使模型输出特征图为13x13，因此选择检测输入图片为416x416，这样对检测单个大的物体效果比较好。同时，更细的格子也可以预测更小的物体，使用了anchor boxes来预测之后，每一个位置的各个anchor box都单独预测一套分类的概率值，并且可以预测上千个13x13xnumanchor边界框，使得召回率大大提升。</p>
+
+<ol start="4">
+<li>Dimension Clusters</li>
+</ol>
+
+<p>采用了anchor boxes来预测边界框，在Faster中K=9，在YOLOV2中作者通过K-Means聚类的方法在VOC和COCO数据集上的聚类分析结果，随着聚类中心数目的增加，平均IOU值(各 个边界框与聚类中心的IOU的平均值)是增加的，但是综合考虑模型复杂度和召回率，作者最终选 取5个聚类中心作为先验框，其相对于图片的大小如下图所示。</p>
+
+<p><figure><img src="/images/yolo6.jpg" alt=""></figure></p>
+
+<p>注：K-Means采用的距离函数为：
+   <span  class="math">\(
+   d(box, centroid)=1-IOU(box, centroid)
+   \)</span>
+   作者实验发现，5种boxes的Avg IOU(61.0)就和Faster R-CNN的9种Avg IOU(60.9)相当。 说明K-means方法的生成的boxes更具有代表性。</p>
+
+<ol start="5">
+<li>Direct location prediction</li>
+</ol>
+
+<p>使用Anchor Boxes回归会导致模型不稳定，因为该公式没有任何约束，中心点会出现在图像中任意位置，这就可能导致回归过程震荡，甚至无法收敛：
+   <span  class="math">\(
+   t_x=(x-x_a)/w_a,\space t_y=(y-y_a)/h_a,\\
+   t_w=log(w/w_a),\space t_h=log(h/h_a)
+   \)</span>
+   在RPN中计算中心点坐标的公式：
+   <span  class="math">\(
+   x=(t_x*w_a)-x_a,\\
+   y=(t_y*h_a)-y_a
+   \)</span>
+   由此计算的预测框中心点坐标，当<span  class="math">\(t_x=1\)</span>时，预测框将会向右移动一个anchor box的距离，当<span  class="math">\(t_x=-1\)</span>时，预测框将会向左移动一个anchor box的距离，因此使预测框十分不稳定。针对这个问题，yolov2采用了强约束的方法：</p>
+
+<ol>
+<li>对应 Cell 距离左上角的边距为<span  class="math">\(（C_x，C_y）\)</span>，<span  class="math">\(σ\)</span>定义为sigmoid激活函数，将函数值约束到［0，1］，用来预测相对于该Cell 中心的偏移（不会偏离cell）；</li>
+<li>预定Anchor（文中描述为bounding box prior）对应的宽高为<span  class="math">\(（P_w，P_h）\)</span>，预测 Location 是相对于Anchor的宽高乘以系数得到；</li>
+</ol>
+
+<p>如下图：</p>
+
+<p><figure><img src="/images/yolo7.jpg" alt=""></figure></p>
+
+<ol start="6">
+<li><p>Fine-Grained Features</p>
+
+<p>SSD通过不同Scale的Feature Map来预测Box来实现多尺度，而YOLO v2则采用了另一种思路：添加一个passthrough layer，来获取上一层26x26的特征，并将该特征同最后输出特征（13*13）相结合，以此来提高对小目标的检测能力。</p></li>
+</ol>
+
+<p>通过Passthrough 把26 * 26 * 512的特征图叠加成13 * 13 * 2048的特征图，与原生的深层特征图相连接。</p>
+
+<p>YOLO v2 使用扩展后的的特征图（add passthrough），将mAP提高了了1%。</p>
+
+<p>PS：这里实际上是有个Trick，网络最后一层是13x13，相对原来7x7的网络来讲，细粒度的处理目标已经double了，再加上上一层26*26的Feature共同决策，这两层的贡献等价于SSD的4层以上，但计算量其实并没有增加多少。</p>
+
+<ol start="7">
+<li>Multi-Scale Training</li>
+</ol>
+
+<p>YOLOV2采用了多尺度训练的方法，因为网络的骨架是全卷积神级网络，因此可以输入任意大小的图片，这个时候网络输出的grid大小就不是固定的，如果是416x416的图片输入，那么网络的输出的grid是13x13大小，输入图像大小变化，相应的grid大小也会变化，在训练过程中每10个batch采用就从不同的图片大小选择一种大小进行训练，这样强制网络去学习不同尺度的图片。</p>
+
+<h4 id="训练过程">训练过程</h4>
+
+<h5 id="a预训练训练分类网络training-for-classification">a）预训练-训练分类网络（Training for classification）</h5>
+
+<p>​      采用随机梯度下降法SGD，在ImageNet分类数据集上训练了160个epoch，参数设定为：</p>
+
+<pre><code>     初始学习率 - starting learning rate：0.1
+
+   多项式速率衰减 - polynomial rate decay：4的幂次
+
+   权值衰减 - weight decay：0.0005
+
+   动量 - momentum：0.9
+</code></pre>
+
+<h5 id="b采用数据增广的方法data-augmentation">b采用数据增广的方法（data augmentation）</h5>
+
+<p>​      采用了常见的数据增广的方法：随机剪裁，旋转- random crops、rotations</p>
+
+<p>​                                                           色调、饱和度、曝光偏移 - hue、saturation、exposure shifts</p>
+
+<h5 id="c多分辨率训练">c）多分辨率训练</h5>
+
+<p>​   通过初始的224 * 224训练后，把分辨率上调到了448 * 448，同样的参数又训练了10个epochs，然后将学习率调整到了<span  class="math">\(10^{-3}\)</span>。</p>
+
+<h5 id="d训练检测网络--training-for-detection">d）训练检测网络 - Training for detection</h5>
+
+<p>​      把分类网络改成检测网络，去掉原网络最后一个卷积层，增加了三个 3 * 3 （1024 ﬁlters）的卷积层，并且在每一个卷积层后面跟一个1 * 1的卷积层，输出个数是检测所需要的数量。</p>
+
+<pre><code> 初始学习率为$$10^{-3}$$，训练了160个epochs（划分为60 | 10 | 90），权值衰减 与 momentum参数与前面一样。
+</code></pre>
+
+<h3 id="六yolov3">六、YOLOV3</h3>
+
+<p>YOLOv3结构图：</p>
+
+<p><figure><img src="/images/yolo8.jpeg" alt=""></figure></p>
+
+<p>DBL:  如图1左下角所示，也就是代码中的Darknetconv2d_BN_Leaky，是yolo_v3的基本组件。就是卷积+BN+Leaky relu。对于v3来说，BN和leaky relu已经是和卷积层不可分离的部分了(最后一层卷积除外)，共同构成了最小组件。
+resn：n代表数字，有res1，res2, … ,res8等等，表示这个res_block里含有多少个res_unit。这是yolo_v3的大组件，yolo_v3开始借鉴了ResNet的残差结构，使用这种结构可以让网络结构更深(从v2的darknet-19上升到v3的darknet-53，前者没有残差结构)。对于res_block的解释，可以在图1的右下角直观看到，其基本组件也是DBL。
+concat：张量拼接。将darknet中间层和后面的某一层的上采样进行拼接。拼接的操作和残差层add的操作是不一样的，拼接会扩充张量的维度，而add只是直接相加不会导致张量维度的改变。</p>
+
+<h5 id="1-backbone">1. backbone</h5>
+
+<p>在整个yolov3的结构中没有池化层和全连接层的。所以在前向传播的过程中，张量的尺寸变换是通过改变卷积核的步长来实现的。</p>
+
+<h5 id="2-output">2. output</h5>
+
+<p>YOLOv3输出了三个不同尺度的feature map，这也就是论文中提到为数不多的改进点：<strong>predictions across scales</strong></p>
+
+<p>这个借鉴了FPN(feature pyramid networks)，采用多尺度来对不同size的目标进行检测，越精细的grid cell就可以检测出越精细的物体。y1,y2和y3的深度都是255，边长的规律是13:26:52</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>Ubuntu18.04 DeepLearning Environment Setup</title>
+			<link>https://wuhongyui.github.io/posts/ubuntu18.04/</link>
+			<pubDate>Mon, 30 Dec 2019 20:04:40 +0800</pubDate>
+			
+			<guid>https://wuhongyui.github.io/posts/ubuntu18.04/</guid>
+			<description>安装Ubuntu18.04后应该做的事 安装ubuntu18.04后，参考该博客进行相关的配置。
+NIVDIA Driver  sudo apt purge nvidia-*移除原有老驱动； sudo add-apt-repository ppa:graphics-drivers/ppa安装相关依赖文件； sudo apt update &amp;amp;&amp;amp; sudo apt upgrade ubuntu-drivers devices查看支持的驱动版本； sudo apt install nvidia-driver-440安装440版本驱动； 重启后sudo reboot检查安装nvidia-smiorwatch -n 0.1 nvidia-smi 使用sudo apt-mark hold nvidia-driver-440 来保证驱动不会自动更新； 进行以上步骤可能出现安装不成功的问题，一般在网络正常的情况下可以正常安装，也可以选择手动安装，进入官网根据显卡型号下载适配驱动Nvidia官网参考这里进行手动安装  CUDA 下载cuda_10.2.89_440.33.01_linux.run或者下载其他的版本other version
+ 运行sudo sh cuda_10.2.89_440.33.01_linux.run
+ 最好不要安装OpenGL相关的，选择不要安装NVIDIA Accelerate driver；
+ 添加环境变量，使用sudo gedit ~/.bashrcorsudo vim ~/.bashrc加入如下：
+export CUDA_HOME=/usr/local/cuda export PATH=$PATH:$CUDA_HOME/bin export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}  source ~/.bashrc之后使用nvcc -V查看是否安转成功；
+  Cudnn 下载cudnn或者其他版本other version</description>
+			<content type="html"><![CDATA[
+
+<h3 id="安装ubuntu18-04后应该做的事">安装Ubuntu18.04后应该做的事</h3>
+
+<p>安装ubuntu18.04后，参考<a href="https://blog.csdn.net/hymanjack/article/details/80285400">该博客</a>进行相关的配置。</p>
+
+<h4 id="nivdia-driver">NIVDIA Driver</h4>
+
+<ul>
+<li><code>sudo apt purge nvidia-*</code>移除原有老驱动；</li>
+<li><code>sudo add-apt-repository ppa:graphics-drivers/ppa</code>安装相关依赖文件；</li>
+<li><code>sudo apt update &amp;&amp; sudo apt upgrade</code></li>
+<li><code>ubuntu-drivers devices</code>查看支持的驱动版本；</li>
+<li><code>sudo apt install nvidia-driver-440</code>安装440版本驱动；</li>
+<li>重启后<code>sudo reboot</code>检查安装<code>nvidia-smi</code>or<code>watch -n 0.1 nvidia-smi</code></li>
+<li>使用<code>sudo apt-mark hold nvidia-driver-440</code> 来保证驱动不会自动更新；</li>
+<li>进行以上步骤可能出现安装不成功的问题，一般在网络正常的情况下可以正常安装，也可以选择手动安装，进入官网根据显卡型号下载适配驱动<a href="https://www.nvidia.com/Download/Find.aspx?lang=en-us">Nvidia官网</a>参考<a href="https://juejin.im/post/5c83abb4f265da2da67c6173">这里</a>进行手动安装</li>
+</ul>
+
+<h4 id="cuda">CUDA</h4>
+
+<p>下载<a href="http://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda_10.2.89_440.33.01_linux.run">cuda_10.2.89_440.33.01_linux.run</a>或者下载其他的版本<a href="https://developer.nvidia.com/cuda-zone">other version</a></p>
+
+<ul>
+<li><p>运行<code>sudo sh cuda_10.2.89_440.33.01_linux.run</code></p></li>
+
+<li><p>最好不要安装OpenGL相关的，选择不要安装NVIDIA Accelerate driver；</p></li>
+
+<li><p>添加环境变量，使用<code>sudo gedit ~/.bashrc</code>or<code>sudo vim ~/.bashrc</code>加入如下：</p>
+
+<pre><code>export CUDA_HOME=/usr/local/cuda 
+export PATH=$PATH:$CUDA_HOME/bin 
+export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+</code></pre></li>
+
+<li><p><code>source ~/.bashrc</code>之后使用<code>nvcc -V</code>查看是否安转成功；</p></li>
+</ul>
+
+<h4 id="cudnn">Cudnn</h4>
+
+<p>下载<a href="https://developer.download.nvidia.cn/compute/machine-learning/cudnn/secure/7.6.4.38/Production/10.1_20190923/Ubuntu18_04-x64/libcudnn7_7.6.4.38-1%2Bcuda10.1_amd64.deb?XIOjTklrMRSKeWpzrq57CqC4VJbpfZXuE3MUYRpqq016geGzGJT9i1mvX-QbSug8h2AAI3MaTiKKba0yWhtorl7hrd8ROXMLRklSRplZ_MgjbIOl-djrCJQs1e5BLkgm6lp2IbWam-TaUEZFZMLcA5dGco_b1VVK-Kcng8O-0mKOxYbBk5nEwxmpH1rgk4qUHzHCSQxzbFCac445DJ0uCD8t6_pqDXu3NSzbzUkOFzYXt8MMi3D2fm3T-_5oZqYs">cudnn</a>或者其他版本<a href="https://developer.nvidia.com/rdp/cudnn-archive">other version</a></p>
+
+<p>运行如下命令：</p>
+
+<pre><code>tar -zxvf cudnn-10.0-linux-x64-v7.5.0.56.solitairetheme8
+sudo cp cuda/include/cudnn.h /usr/local/cuda/include/ 
+sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64/ 
+sudo chmod a+r /usr/local/cuda/include/cudnn.h 
+sudo chmod a+r /usr/local/cuda/lib64/libcudnn*
+cat /usr/local/cuda/include/cudnn.h | grep CUDNN_MAJOR -A 2
+</code></pre>
+
+<h4 id="pytorch">pytorch</h4>
+
+<p>进入官网<a href="https://pytorch.org/get-started/locally/">https://pytorch.org/get-started/locally/</a></p>
+
+<p>或者使用.whl安装</p>
+
+<pre><code>pip install torch-1.1.0-cp36-cp36m-linux_x86_64.whl
+pip install torchvision-0.3.0-cp36-cp36m-linux_x86_64.whl
+</code></pre>
+
+<p>检查安装：</p>
+
+<pre><code>In [1]: import torch
+In [2]: torch.__version__
+Out[2]: '1.1.0'
+In [3]: torch.cuda.is_available()
+Out[3]: True
+</code></pre>
+
+<h4 id="tensorflow2-0-beta">tensorflow2.0-beta</h4>
+
+<p>通过pip安装</p>
+
+<pre><code>pip install tensorflow==2.0.0-beta0  # cpu
+pip install tensorflow-gpu==2.0.0-beta0  # gpu
+</code></pre>
+
+<p>测试安装</p>
+
+<pre><code>In [1]: import tensorflow as tf
+In [2]: tf.__version__
+Out[2]: '2.0.0-beta0'
+In [3]: tf.test.is_gpu_available()
+Out[3]: True
+</code></pre>
+
+<h4 id="mxnet">mxnet</h4>
+
+<pre><code>pip install mxnet
+</code></pre>
+
+<h4 id="pycharm">pycharm</h4>
+
+<ul>
+<li><p><code>tar -zxvf pycharm-community-{your version}.tar.gz</code></p></li>
+
+<li><p><code>sudo mv pycharm-community-{your version} /opt/</code></p></li>
+
+<li><p><code>sudo gedit /usr/share/applications/pycharm.desktop</code>写入如下代码：</p>
+
+<pre><code>[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Pycharm
+Icon=/opt/pycharm-community-2019.1.3/bin/pycharm.png
+Exec=/opt/pycharm-community-2019.1.3/bin/pycharm.sh
+MimeType=application/x-py;
+Name[en_US]=pycharm
+</code></pre></li>
+
+<li><p><code>sudo chmod u+x /usr/share/applications/pycharm.desktop</code></p></li>
+</ul>
+
+<h4 id="sougou-pinyin">Sougou Pinyin</h4>
+
+<ul>
+<li><code>sudo apt-get install fcitx-bin      *#安装fcitx-bin*</code></li>
+<li><code>sudo apt-get update --fix-missing   *#修复fcitx-bin安装失败的情况*</code></li>
+<li><code>sudo apt-get install fcitx-bin      *#重新安装fcitx-bin*</code></li>
+<li><code>sudo apt-get install fcitx-table    *#安装fcitx-table*</code></li>
+</ul>
+
+<p>然后到<a href="https://pinyin.sogou.com/linux/">搜狗拼音Linux官网</a>下载64bit的<code>.deb</code>文件</p>
+
+<ul>
+<li><code>sudo dpkg -i sogoupinyin*.deb       *#安装搜狗拼音*</code></li>
+<li><code>sudo apt-get install -f             *#修复搜狗拼音安装的错误*</code></li>
+<li><code>sudo dpkg -i sogoupinyin*.deb       *#重新安装搜狗拼音*</code></li>
+</ul>
+
+<p>之后一定要重启！</p>
+
+<p>在Show Application中，找到fcitx configure，点击进入：</p>
+
+<p><img src="/images/sougou1.png" alt="" /></p>
+
+<p>点击+号，进入下面的菜单；</p>
+
+<p><img src="/images/sougou2.png" alt="" /></p>
+
+<p>将Only Show Current Language前面的勾给去掉，在下面搜索sougou，然后加入。</p>
+
+<h4 id="视频与音频">视频与音频</h4>
+
+<p>安转解码器</p>
+
+<p><code>sudo apt-get install ubuntu-restricted-extras</code></p>
+
+<p>安装VLC视频播放器</p>
+
+<p><code>sudo apt-get install vlc browser-plugin-vlc</code></p>
+
+<p>另一款比较好的播放器SMPlayer也不错</p>
+
+<pre><code>sudo apt-add-repository ppa:rvm/smplayer
+sudo apt-get update
+sudo apt-get install smplayer smplayer-skins smplayer-themes 
+</code></pre>
+
+<h4 id="支持exfat">支持exfat</h4>
+
+<p><code>sudo apt-get install exfat-fuse exfat-utils</code></p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>How to build blog by Hugo</title>
+			<link>https://wuhongyui.github.io/posts/buildblog/</link>
+			<pubDate>Sat, 21 Dec 2019 16:17:36 +0800</pubDate>
+			
+			<guid>https://wuhongyui.github.io/posts/buildblog/</guid>
+			<description>Hugo 简介 ​ Hugo是一个用Go语言编写的静态站点生成器，hugo的易操作性和其拥有大量的主题库使其备受技术博客博主喜爱。记录一些自己亲手搭建博客的经验之谈。本文操作基于macos 下
+如何安装Hugo 如果你是macOs 用户可以使用homebrew 来安装：
+brew install hugo 如果你是Ubuntu 或者其他linux 用户可以使用apt 来安装：
+sudo apt-get install hugo  如果是Windows 用户，使用scoop 快速安装：
+scoop install hugo  使用包管理工具，基本上可以实现一条代码快速安装，具体可以参考Hugo官网
+Hugo官网
+生成博客文件 自己选择合适的文件夹下使用终端输入命令：
+hugo new site myblog  此命令会在当前文件夹下建立一个名叫myblog的文件夹；
+接下来就是选择你喜爱的主题hugo主题可以随意挑一个自己喜爱的主题使用，也可以在github中搜索你想要的主题库，使用命令：
+cd themes git clone https://github.com/Track3/hermit.git themes/hermit  myblog/content文件夹是存放你博客文章的地方，在此新建.md文件
+hugo new posts/XXXX.md  可以在XXXX.md文件中使用markdown格式编写一些博客内容，使用命令：
+hugo server -t 主题名 -D  进行主题预览
+配置主题，打开myblog/config.toml每个主题有不同的配置：
+baseURL = &amp;quot;https://wuhongyui.github.io&amp;quot; languageCode = &amp;quot;en-us&amp;quot; defaultContentLanguage = &amp;quot;en&amp;quot; title = &amp;quot;拿了橘子跑&amp;quot; theme = &amp;quot;hermit&amp;quot; # enableGitInfo = true pygmentsCodefences = true pygmentsUseClasses = true # hasCJKLanguage = true # If Chinese/Japanese/Korean is your main content language, enable this to make wordCount works right.</description>
+			<content type="html"><![CDATA[<h2 id="hugo-简介">Hugo 简介</h2>
+
+<p>​   Hugo是一个用Go语言编写的静态站点生成器，hugo的易操作性和其拥有大量的主题库使其备受技术博客博主喜爱。记录一些自己亲手搭建博客的经验之谈。本文操作基于<code>macos</code> 下</p>
+
+<h3 id="如何安装hugo">如何安装Hugo</h3>
+
+<p>如果你是<code>macOs</code> 用户可以使用<code>homebrew</code> 来安装：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">brew install hugo</code></pre></div>
+<p>如果你是<code>Ubuntu</code> 或者其他<code>linux</code> 用户可以使用<code>apt</code> 来安装：</p>
+
+<pre><code>sudo apt-get install hugo
+</code></pre>
+
+<p>如果是<code>Windows</code> 用户，使用<code>scoop</code> 快速安装：</p>
+
+<pre><code>scoop install hugo
+</code></pre>
+
+<p>使用包管理工具，基本上可以实现一条代码快速安装，具体可以参考Hugo官网</p>
+
+<p><a href="https://gohugo.io/getting-started/installing">Hugo官网</a></p>
+
+<h3 id="生成博客文件">生成博客文件</h3>
+
+<p>自己选择合适的文件夹下使用终端输入命令：</p>
+
+<pre><code>hugo new site myblog
+</code></pre>
+
+<p>此命令会在当前文件夹下建立一个名叫<code>myblog</code>的文件夹；</p>
+
+<p>接下来就是选择你喜爱的主题<a href="https://themes.gohugo.io/">hugo主题</a>可以随意挑一个自己喜爱的主题使用，也可以在github中搜索你想要的主题库，使用命令：</p>
+
+<pre><code>cd themes
+git clone https://github.com/Track3/hermit.git themes/hermit
+</code></pre>
+
+<p><code>myblog/content</code>文件夹是存放你博客文章的地方，在此新建<code>.md</code>文件</p>
+
+<pre><code>hugo new posts/XXXX.md
+</code></pre>
+
+<p>可以在<code>XXXX.md</code>文件中使用<code>markdown</code>格式编写一些博客内容，使用命令：</p>
+
+<pre><code>hugo server -t 主题名 -D
+</code></pre>
+
+<p>进行主题预览</p>
+
+<p>配置主题，打开<code>myblog/config.toml</code>每个主题有不同的配置：</p>
+
+<pre><code>baseURL = &quot;https://wuhongyui.github.io&quot;
+languageCode = &quot;en-us&quot;
+defaultContentLanguage = &quot;en&quot;
+title = &quot;拿了橘子跑&quot;
+theme = &quot;hermit&quot;
+# enableGitInfo = true
+pygmentsCodefences  = true
+pygmentsUseClasses  = true
+# hasCJKLanguage = true  # If Chinese/Japanese/Korean is your main content language, enable this to make wordCount works right.
+rssLimit = 10  # Maximum number of items in the RSS feed.
+copyright = &quot;This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.&quot; # This message is only used by the RSS template.
+enableEmoji = true  # Shorthand emojis in content files - https://gohugo.io/functions/emojify/
+# googleAnalytics = &quot;UA-123-45&quot;
+# disqusShortname = &quot;yourdiscussshortname&quot;
+
+[author]
+  name = &quot;拿了橘子跑&quot;
+
+[blackfriday]
+  # hrefTargetBlank = true
+  # noreferrerLinks = true
+  # nofollowLinks = true
+
+[taxonomies]
+  tag = &quot;tags&quot;
+  # Categories are disabled by default.
+
+[params]
+  dateform        = &quot;Jan 2, 2006&quot;
+  dateformShort   = &quot;Jan 2&quot;
+  dateformNum     = &quot;2006-01-02&quot;
+  dateformNumTime = &quot;2006-01-02 15:04 -0700&quot;
+
+  # Metadata mostly used in document's head
+  # description = &quot;&quot;
+  # images = [&quot;&quot;]
+  themeColor = &quot;#494f5c&quot;
+
+  homeSubtitle = &quot;Stay hungry, Stay foolish!&quot;
+  footerCopyright = ' &amp;#183; &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;CC BY-NC 4.0&lt;/a&gt;'
+  # bgImg = &quot;&quot;  # Homepage background-image URL
+
+  # Prefix of link to the git commit detail page. GitInfo must be enabled.
+  # gitUrl = &quot;https://github.com/username/repository/commit/&quot;
+
+  # Toggling this option needs to rebuild SCSS, requires Hugo extended version
+  justifyContent = false  # Set &quot;text-align: justify&quot; to `.content`.
+
+  relatedPosts = false  # Add a related content section to all single posts page
+
+  code_copy_button = true # Turn on/off the code-copy-button for code-fields
+
+  # Add custom css
+  # customCSS = [&quot;css/foo.css&quot;, &quot;css/bar.css&quot;]
+
+  # Social Icons
+  # Check https://github.com/Track3/hermit#social-icons for more info.
+  [[params.social]]
+    name = &quot;twitter&quot;
+    url = &quot;https://twitter.com/&quot;
+
+  [[params.social]]
+    name = &quot;instagram&quot;
+    url = &quot;https://instagram.com/&quot;
+
+  [[params.social]]
+    name = &quot;github&quot;
+    url = &quot;https://github.com/wuhongyui&quot;
+
+[menu]
+
+  [[menu.main]]
+    name = &quot;Article&quot;
+    url = &quot;posts/&quot;
+    weight = 10
+
+  [[menu.main]]
+    name = &quot;About&quot;
+    url = &quot;about-hugo/&quot;
+    weight = 20
+
+</code></pre>
+
+<h3 id="博客文章内的配置">博客文章内的配置</h3>
+
+<p>打开<code>myblog/archetypes/default.md</code>可添加以下默认选项：</p>
+
+<pre><code>title: &quot;{{ replace .Name &quot;-&quot; &quot; &quot; | title }}&quot;
+date: {{ .Date }}
+draft: true  #设置为false既可以编译成html，ture为本地修改
+comments: false
+images:
+markup: mmark
+</code></pre>
+
+<p>注意：许多博客上的配置语句是用等号，有可能会导致主题文件编译的时候出现错误，建议使用<code>:</code>来分隔</p>
+
+<h3 id="hugo上数学公式显示问题">Hugo上数学公式显示问题</h3>
+
+<p>​   在markdown里编写的数学公式正常显示，到HTML网页中会出现不适配的现象，网上一般才用MathJax来进行渲染，但亲测配置起来麻烦，还不一定有效。建议在写包含数学公式的博文时使用 Mmark．只需要在 markdown 文件的 front matter 里加上一行：</p>
+
+<pre><code>markup: mmark
+</code></pre>
+
+<p>即可切换到 Mmark．推荐使用 Mmark 的原因只要是无需更多的配置就可以开始写数学公式了，数学公式全部用<strong>两个美元</strong>符号包围起来，就像这样 <code>$$ f(x) = \lim_{n \to \infty}x_n $$</code> 变可以在行内显示公式 <span  class="math">\( f(x) = \lim_{n \to \infty}x_n \)</span>  行间公式与行内公式是一样的，区别在于行间公式前后加上一个空行，这样就可以让 Mmark 自动判断你需要的是行内公式还是行间公式了，行间公式的例子：</p>
+
+<pre><code>$$
+f(x) = \lim_{n \to \infty}x_n
+$$
+</code></pre>
+
+<p>显示效果为：
+<span  class="math">\(
+f(x) = \lim_{n \to \infty}x_n
+\)</span></p>
+
+<h3 id="在hugo中设置">在Hugo中设置</h3>
+
+<p>这个很简单，只需要在 hugo 的主题目录里，加上一行代码到你的博文页面一定会包含的文件里即可．一般可以选择加入到 <code>themes/hermit/layouts/partials/footer.html</code> 里，这里的<code>hermit</code>是我使用的 hugo 主题名称．需要添加的一行代码为：</p>
+
+<pre><code>&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG&quot;&gt;&lt;/script&gt;
+
+</code></pre>
+
+<p>这样便可以顺利在hugo界面中愉快的输入数学公式啦！</p>
+
+<h3 id="将blog推送到github上">将Blog推送到GitHub上</h3>
+
+<p>使用<code>hugo server -D</code>预览页面无误之后，可以正式发布网站供大家浏览，需要将blog文章里的<code>draft</code>改为<code>false</code>使用命令：</p>
+
+<pre><code>hugo --theme=hermit  --baseUrl=&quot;https://wuhongyui.github.io/&quot; --buildDrafts
+</code></pre>
+
+<p>可以在当前目录生成一个<code>/public</code>文件夹，只需要使用如下命令将<code>public</code>文件夹推送到GitHub上的<code>Repository</code>即可：</p>
+
+<pre><code>git init
+git add .
+git commit -m &quot;commit message&quot;
+git remote add origin https://github.com/ShaneTian/ShaneTian.github.io.git
+git push -u origin master
+</code></pre>
+
+<p>推送失败时使用<code>git push -u origin master -f</code>强制覆盖git仓库。</p>
+
+<h3 id="在博客中插入图片">在博客中插入图片</h3>
+
+<p>使用markdown编写的博客文章中插入的图片并不能直接显示在博客网页里，因此需要在博客文件中手动新建文件夹<code>/myblog/static/images</code>来保存图片文件。</p>
+
+<p>在使用hugo命令生成博客网页时便会将图片文件添加到<code>public</code>文件夹下。</p>
+
+<pre><code>├── config.toml
+├── content
+│   ├── about
+│   ├── archives.md
+│   └── posts
+├── public
+│   ├── about
+│   ├── archives
+│   ├── categories
+│   ├── css
+│   ├── images # 这里就是static/imags目录下的文件
+│   ├── index.html
+│   ├── js
+│   ├── page
+│   ├── posts
+│   ├── tags
+│   └── true
+├── resources
+│   └── _gen
+├── static
+│   └── images  # 这个是新增的
+└── themes
+    └── hermit
+</code></pre>
+
+<p>线上怎么引入<code>pulic/images</code>中的图片，在你的博客文章中<code>content/posts/xxx.md</code>文章中使用路径<code>![](/images/xxx.jpg)</code>便可以在博客网站中显示引入的图片。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>Tracking</title>
+			<link>https://wuhongyui.github.io/posts/tracking/</link>
+			<pubDate>Thu, 19 Dec 2019 20:22:22 +0800</pubDate>
+			
+			<guid>https://wuhongyui.github.io/posts/tracking/</guid>
+			<description>摘要 1.多目标跟踪的关键方向 2.现有技术所属的不同方向的讨论 3.检验现有公开的实验并且总结主流数据集上的实验结果，再进行量化的对比 4.提供MOT研究中会遇到的问题
+介绍 多目标跟踪(Multiple Object Tracking or Multiple Target Tracking, MOT or MTT)主要任务是在给定视频中同时对多个感兴趣的目标进行定位，并且维持他们的ID、记录他们的轨迹。 单目标跟踪(Single Object Tracking, SOT)主要集中在设计复杂的外观模型和/或运动模式，解决具有挑战性的问题如尺度变化，出平面旋转和光照变化，而多目标跟踪还有额外的两个任务需要解决：确定目标的数量（通常随时间变化），和维持各自的ID。除了SOT和MOT的共同问题外，MOT还需要处理更复杂的关键问题包括： 1）频繁遮挡；2）轨道初始化和终止；3）相似的外观；4）多目标间的相互影响。
+MOT问题 多目标跟踪可以任务是多变量的估计问题，给定一个图像序列，\(S_t^i\) 表示第 \(t\) 帧第i个目标的状态，\(S_t = \left\{S_t^i, S_t^2, \cdots, S_t^{M_t}\right\}\),表示所有的目标 \(M_t\) 的状态序列。 \(S_{1:t} = \left\{S_1, S_2, \cdots, S_t\right\}\) 表示所有目标从第一帧到第t帧的状态序列。
+\(O_t^i\)表示第t帧第i个观测目标，\(O_t = \left\{O_t^i, O_t^2, \cdots, O_t^{M_t}\right\}\)，表示所有的观测目标\(M_t\)的状态序列。 \(O_{1:t} = \left\{O_1, O_2, \cdots, O_t\right\}\)表示所有观测目标从第一帧到第t帧的状态序列。 多目标跟踪的目的是为了找到一个“最好的”状态序列，可以基于MAP估计泛化建模得到： \(\hat{S_{1:t}} = argmaxP({S_{1:t}}|{O_{1:t}})\)
+MOT分类 初始化方法 DBT：首先检测目标，然后链接到轨迹中，给定一个序列，在每帧中进行特定类型的目标检测或运动检测（基于背景建模，得到目标假设， 然后进行顺序或批量跟踪，将检测假设连接到轨迹中。有两个问题值得注意：第一，由于提前训练目标检测器，DBT大部分关注特定的目标类型，如行人、车辆或人脸。第二，DBT的性能非常依赖于所采用的目标检测器的性能。 DFT：需要在第一帧手动初始化一定数量的目标，然后在后续帧定位这些物体。相对来说，DBT更受欢迎，因为它可以自动发现新目标、自动终止消失的目标。而DFT就不能处理新目标出现的情况，但它不需要提前训练目标探测器。
+处理模式 Online跟踪：图像序列是一步步处理的因此该跟踪方式也称序列跟踪 Offline跟踪：利用一组帧来处理数据
+输出类型 这个标准根据输出的随机性将MOT方法分成基于决策的和基于概率的。基于决策的跟踪输出是恒定的无论运行方法多少次，而基于概率的跟踪每次运行都可能产生不同输出结果。
+MOT测评 对于给定的MOT方法，需要根据评分指标和数据集定量地评估其性能。这尤关重要，一方面，必须测量不同组成成分和参数对整体性能的影响，才能设计出最佳的系统。另一方面，可以与其他方法直接比较。而性能评估往往并不简单。
+指标 MOT指标通常反应了，目标检测性能以及跟踪性能</description>
+			<content type="html"><![CDATA[<h1 id="摘要">摘要</h1>
+
+<p>1.多目标跟踪的关键方向
+2.现有技术所属的不同方向的讨论
+3.检验现有公开的实验并且总结主流数据集上的实验结果，再进行量化的对比
+4.提供MOT研究中会遇到的问题</p>
+
+<h2 id="介绍">介绍</h2>
+
+<p>多目标跟踪(Multiple Object Tracking or Multiple Target Tracking, MOT or MTT)主要任务是在给定视频中同时对多个感兴趣的目标进行定位，并且维持他们的ID、记录他们的轨迹。
+单目标跟踪(Single Object Tracking, SOT)主要集中在设计复杂的外观模型和/或运动模式，解决具有挑战性的问题如尺度变化，出平面旋转和光照变化，而多目标跟踪还有额外的两个任务需要解决：确定目标的数量（通常随时间变化），和维持各自的ID。除了SOT和MOT的共同问题外，MOT还需要处理更复杂的关键问题包括：
+1）频繁遮挡；2）轨道初始化和终止；3）相似的外观；4）多目标间的相互影响。</p>
+
+<h2 id="mot问题">MOT问题</h2>
+
+<p><strong>多目标跟踪可以任务是多变量的估计问题</strong>，给定一个图像序列，<span  class="math">\(S_t^i\)</span> 表示第 <span  class="math">\(t\)</span> 帧第i个目标的状态，<span  class="math">\(S_t = \left\{S_t^i, S_t^2, \cdots, S_t^{M_t}\right\}\)</span>,表示所有的目标 <span  class="math">\(M_t\)</span> 的状态序列。
+ <span  class="math">\(S_{1:t} = \left\{S_1, S_2, \cdots, S_t\right\}\)</span> 表示所有目标从第一帧到第t帧的状态序列。</p>
+
+<p><span  class="math">\(O_t^i\)</span>表示第t帧第i个观测目标，<span  class="math">\(O_t = \left\{O_t^i, O_t^2, \cdots, O_t^{M_t}\right\}\)</span>，表示所有的观测目标<span  class="math">\(M_t\)</span>的状态序列。
+<span  class="math">\(O_{1:t} = \left\{O_1, O_2, \cdots, O_t\right\}\)</span>表示所有观测目标从第一帧到第t帧的状态序列。
+多目标跟踪的目的是为了找到一个“最好的”状态序列，可以基于MAP估计泛化建模得到： <span  class="math">\(\hat{S_{1:t}} = argmaxP({S_{1:t}}|{O_{1:t}})\)</span></p>
+
+<h2 id="mot分类">MOT分类</h2>
+
+<h5 id="初始化方法">初始化方法</h5>
+
+<p><strong>DBT</strong>：首先检测目标，然后链接到轨迹中，给定一个序列，在每帧中进行特定类型的目标检测或运动检测（基于背景建模，得到目标假设， 然后进行顺序或批量跟踪，将检测假设连接到轨迹中。有两个问题值得注意：第一，由于提前训练目标检测器，DBT大部分关注特定的目标类型，如行人、车辆或人脸。第二，DBT的性能非常依赖于所采用的目标检测器的性能。
+<strong>DFT</strong>：需要在第一帧手动初始化一定数量的目标，然后在后续帧定位这些物体。相对来说，DBT更受欢迎，因为它可以自动发现新目标、自动终止消失的目标。而DFT就不能处理新目标出现的情况，但它不需要提前训练目标探测器。</p>
+
+<h5 id="处理模式">处理模式</h5>
+
+<p><strong>Online</strong>跟踪：图像序列是一步步处理的因此该跟踪方式也称序列跟踪
+<strong>Offline</strong>跟踪：利用一组帧来处理数据</p>
+
+<h5 id="输出类型">输出类型</h5>
+
+<p>这个标准根据输出的随机性将MOT方法分成基于决策的和基于概率的。基于决策的跟踪输出是恒定的无论运行方法多少次，而基于概率的跟踪每次运行都可能产生不同输出结果。</p>
+
+<h2 id="mot测评">MOT测评</h2>
+
+<p>对于给定的MOT方法，需要根据评分指标和数据集定量地评估其性能。这尤关重要，一方面，必须测量不同组成成分和参数对整体性能的影响，才能设计出最佳的系统。另一方面，可以与其他方法直接比较。而性能评估往往并不简单。</p>
+
+<h6 id="指标">指标</h6>
+
+<p>MOT指标通常反应了，目标检测性能以及跟踪性能</p>
+
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Description</th>
+<th>note</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Recall</td>
+<td>Retio of correctly  matched detections to ground-truth detection</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+
+<tr>
+<td>Precision</td>
+<td>Retio of correctly  matched detections to total result detection</td>
+<td><span  class="math">\(\uparrow \)</span></td>
+</tr>
+
+<tr>
+<td>FAP/FPPI</td>
+<td>Number of false alarms per frame averaged of the sequence</td>
+<td><span  class="math">\(\downarrow\)</span></td>
+</tr>
+
+<tr>
+<td>MODA</td>
+<td>Combines missed detections and FAP</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+
+<tr>
+<td>MODP</td>
+<td>Average overlap between true positive and ground truth</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+
+<tr>
+<td>MOTA</td>
+<td>Combines false negative, false positive and mismatch rate</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+
+<tr>
+<td>IDS</td>
+<td>Number of times that a tracked trajectory changes its matched ground-truth identity</td>
+<td><span  class="math">\(\downarrow\)</span></td>
+</tr>
+
+<tr>
+<td>MOTP</td>
+<td>Overlap between the estimated positions and the ground truth averaged over the matched</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+
+<tr>
+<td>TDE</td>
+<td>Distance between the ground-truth annotation and the tracking result</td>
+<td><span  class="math">\(\downarrow\)</span></td>
+</tr>
+
+<tr>
+<td>OSPA</td>
+<td>Cardinality error and spatial distance between ground truth and tracking result</td>
+<td><span  class="math">\(\downarrow\)</span></td>
+</tr>
+
+<tr>
+<td>MT</td>
+<td>Percentage of ground truth trajectories which covered by tracker output for more than 80% for their length</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+
+<tr>
+<td>ML</td>
+<td>Percentage of ground truth trajectories which covered by tracker output for more than 20% for their length</td>
+<td><span  class="math">\(\downarrow\)</span></td>
+</tr>
+
+<tr>
+<td>FM</td>
+<td>Number of times that a tracked trajectory is interrupted in the traking result</td>
+<td><span  class="math">\(\downarrow\)</span></td>
+</tr>
+
+<tr>
+<td>RS</td>
+<td>Ratio of track which are correctly recovered from short occlusion</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+
+<tr>
+<td>RL</td>
+<td>Ratio of track which are correctly recovered from length occlusion</td>
+<td><span  class="math">\(\uparrow\)</span></td>
+</tr>
+</tbody>
+</table>
+
+<h5 id="检测指标">检测指标</h5>
+
+<p><strong>准确度(Accuracy)</strong>：常用召回率和精度指标以及每帧平均误报率(False Alarms per Frame, FAF)作为MOT指标[1]。[63]使用False Positive Per Image(FPPI)评价检测性能。多目标检测的准确性(Multiple Object Detection Accuracy, MODA)，一个全面的评估标准，将误检和漏检的相对数纳入考虑范围，由[135]提出。</p>
+
+<p><strong>精度(Precision)</strong>：多目标检测精度(Multiple Object Detection Precision, MODP)测量的是检测目标和ground truths之间的误差[135]。</p>
+
+<h5 id="跟踪指标">跟踪指标</h5>
+
+<p><strong>准确度(Accuracy)</strong>：它度量算法跟踪目标的准确程度。ID Switches[80]则统计MOT算法在目标之间切换的次数。多目标跟踪的准确性(MOTA)【136】将false positive率、false negative率和错配(mismatch)率结合成一个单独的数，对整体的跟踪性给出一个比较合理评估。尽管仍有一些弊端，但这是目前最普及的MOT评估方法。</p>
+
+<p><strong>精度(Precision)</strong>：三个指标，多目标跟踪精度(MOTP)，跟踪距离误差(TDE)[36]和OSPA[137]。它们描述了通过bounding box重叠和/或距离来测量目标跟踪的精确程度。具体而言，在[137]中还考虑了基数(cardinality)错误。</p>
+
+<p><strong>完整性(Completeness)</strong>：完整性度量指的是ground truth trajectories被跟踪的完整度。大多数跟踪(Mostly Tracked, MT)、部分跟踪(Partly Tracked, PT)、大部分丢失(Mostly Lost, ML)和分段(Fragmentation, FM)[40]的数量属于这一组。</p>
+
+<p><strong>鲁棒性(Robustness)</strong>：通过从遮挡中恢复出来的能力来评估MOT算法的度量标准，包括在[51]中的从短期遮挡恢复(Recopver from Short-term occlusion, RS)和长期遮挡恢复(RL)。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>Yolov3 training own dataset</title>
+			<link>https://wuhongyui.github.io/posts/yolov3/</link>
+			<pubDate>Tue, 17 Dec 2019 22:03:31 +0800</pubDate>
+			
+			<guid>https://wuhongyui.github.io/posts/yolov3/</guid>
+			<description>一、搭建环境 搭建环境和验证环境，确保tensorflow，cuda，cudnn，opencv等环境配置完毕。
+二、数据准备 使用YOLOv3训练自己的数据集时一共需要修改6个文件
+   文件名 文件路径 文件说明     makefile darknet 编译成可执行程序的文件，在其中指定是否使用GPU和Cuda，是否使用摄像头，OpenCV等   train.txt 自定义 用来保存训练图片的路径，每一行是一张图片的完整路径，找不到图片的错误一般是路径不对   label 文件夹 整个文件夹存放所有图片的标注信息，标注信息用txt文档保存   .cfg文件 darknet-master/cfg .cfg文件指定了网络结构和其他超参数   .names文件 自定义 该文件指定了训练的标签，如：person，car等，一个标签占一行   .data文件 自定义 该文件的内容指示了上述train.txt,.name和模型的保存的位置等    1.修改makefile文件，makefile文件一共修改四处 1.修改开始几行的内容，0表示否，1表示是 2.修改运算架构，自己显卡支持什么架构可以自己查询，按需修改，也可以使用默认值。
+ARCH= -gencode arch=compute_30,code=sm_30 \ -gencode arch=compute_35,code=sm_35 \ -gencode arch=compute_50,code=[sm_50,compute_50] \ -gencode arch=compute_52,code=[sm_52,compute_52] -gencode arch=compute_20,code=[sm_20,sm_21] \ This one is deprecated?  3.修改NVCC值：NVCC=nvcc， 改为你cuda路径下的nvcc，也可不改 4.</description>
+			<content type="html"><![CDATA[
+
+<h3 id="一-搭建环境">一、搭建环境</h3>
+
+<p>搭建环境和验证环境，确保tensorflow，cuda，cudnn，opencv等环境配置完毕。</p>
+
+<h3 id="二-数据准备">二、数据准备</h3>
+
+<p>使用YOLOv3训练自己的数据集时一共需要修改6个文件</p>
+
+<table>
+<thead>
+<tr>
+<th>文件名</th>
+<th align="left">文件路径</th>
+<th align="center">文件说明</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>makefile</td>
+<td align="left">darknet</td>
+<td align="center">编译成可执行程序的文件，在其中指定是否使用GPU和Cuda，是否使用摄像头，OpenCV等</td>
+</tr>
+
+<tr>
+<td>train.txt</td>
+<td align="left">自定义</td>
+<td align="center">用来保存训练图片的路径，每一行是一张图片的完整路径，找不到图片的错误一般是路径不对</td>
+</tr>
+
+<tr>
+<td>label</td>
+<td align="left">文件夹</td>
+<td align="center">整个文件夹存放所有图片的标注信息，标注信息用txt文档保存</td>
+</tr>
+
+<tr>
+<td>.cfg文件</td>
+<td align="left">darknet-master/cfg</td>
+<td align="center">.cfg文件指定了网络结构和其他超参数</td>
+</tr>
+
+<tr>
+<td>.names文件</td>
+<td align="left">自定义</td>
+<td align="center">该文件指定了训练的标签，如：person，car等，一个标签占一行</td>
+</tr>
+
+<tr>
+<td>.data文件</td>
+<td align="left">自定义</td>
+<td align="center">该文件的内容指示了上述train.txt,.name和模型的保存的位置等</td>
+</tr>
+</tbody>
+</table>
+
+<h5 id="1-修改makefile文件-makefile文件一共修改四处">1.修改makefile文件，makefile文件一共修改四处</h5>
+
+<p>1.修改开始几行的内容，0表示否，1表示是
+2.修改运算架构，自己显卡支持什么架构可以自己查询，按需修改，也可以使用默认值。</p>
+
+<pre><code>ARCH= -gencode arch=compute_30,code=sm_30 \
+      -gencode arch=compute_35,code=sm_35 \
+      -gencode arch=compute_50,code=[sm_50,compute_50] \
+      -gencode arch=compute_52,code=[sm_52,compute_52]
+	  -gencode arch=compute_20,code=[sm_20,sm_21] \ This one is deprecated?
+</code></pre>
+
+<p>3.修改NVCC值：NVCC=nvcc， 改为你cuda路径下的nvcc，也可不改
+4.修改cuda路径值：48行处</p>
+
+<pre><code>ifeq ($(GPU), 1)
+COMMON+= -DGPU -I/usr/local/cuda/include/
+CFLAGS+= -DGPU
+LDFLAGS+= -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lcurand
+endif
+</code></pre>
+
+<p>此处路径为你安装cuda的路径，一般只需要把cuda换成chuda9.0或其他版本</p>
+
+<h6 id="2-生成train-txt">2.生成train.txt</h6>
+
+<p>train.txt的生成，需要自己写脚本生成，python推荐os.listdir()遍历一个文件夹里的所有文件。</p>
+
+<h6 id="3-制作标签文件夹">3.制作标签文件夹</h6>
+
+<p>总原则：每张训练图片生成一个以图片名命名的txt标签文档，假设有：1.jpg，2.jpg，3.jpg三张训练图片，那你就需要生成1.txt，2.txt，3.txt三个标签文档，同时train.txt中一定是三行内容，其中：
+<img src="https://img-blog.csdn.net/20181023205132850?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3BoaW5vbw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="Alt" />
+每一行表示该图片中一个矩形框的信息
+第一列表示该矩形框中对象的类别索引号，这个类别索引号与.name文件有关，从上到下，索引号从0开始
+第二列表示该矩形框的中心点的x坐标值。
+第三列表示该矩形框的中心点的y坐标值。
+第四列表示该矩形框的宽度值，第五列表示该矩形框的高度值
+<strong>注意</strong>：第2-5列的值都是归一化后的值，x和宽度值相对与图片的宽度归一化，y值和高度值相对与图片的高度归一化。</p>
+
+<h5 id="4-修改-cfg的内容">4.修改.cfg的内容</h5>
+
+<p>Darknet中的.cfg文件</p>
+
+<pre><code>[net]              	 //[xxx]开始的行表示网络的一层，其后内容为该层的参数配置，[net]为特殊的层，配置整个网络
+#Testing          	 //带#号为注释行，在解析cfg文件时会忽略该行
+#batch=1
+#subdivisions=1
+#Training
+batch=64			//这里的batch与机器学习中的batch有少许差别，仅表示网络累计多少个样本后进行一次BP
+subdivisions=16		//表示将一个batch中的图片分sub次完成前向传播
+					//在Darknet中，batch和sub是结合使用的，例如：batch=64，subdivisions=16表示训练过程中将
+					一次性加载64张图片进内存，然后分16次完成前向传播，意思是每次4张，前向传播过程中累加loss求平均，
+					待64张图片都完成前向传播后，再一次性后传更新参数
+					//调参经验：sub一般设置16，不能太大或太小，且为8的倍数，没有硬性规定，batch的值可以自行根据显存的大小情况动态调整，一次性加减一个sub大小即可，
+					通常情况下batch越大越好，但是在test时，batch和sub都设置为1，避免发生神秘错误！
+width=608			//网络输入的宽width
+height=608			//网络输入的高height
+channels=3			//网络输入的通道数channels
+					//注意：width和height一定要为32的倍数，否则不能加载网络
+					//提示：width也可以设置为不等于height，通常情况下width和height值越大对小目标的检测效果越好，
+					但受到显存但限制。
+momentum=0.9		//动量 DeepLearning中最优化方法中但动量参数，这个值影响着梯度下降到最优值的速度
+decay=0.0005		//权重衰减正则项，防止过拟合
+
+angle=0				//数据增强参数，通过旋转角度来生成更多的训练样本
+saturation = 1.5	//数据增强参数，通过调整图片饱和度来生成更多训练样本
+exposure = 1.5		//数据增强参数，通过调整图片曝光量来生成更多训练样本
+hue=.1				//数据增强参数，通过调整色调来生成更多训练样本
+
+learning_rate=0.001	//学习率决定着权值的更新速度，设置太大会导致结果超过最优值，太小会使下降速度过慢，
+					如果仅靠人为干预调整参数，需要不断更改学习率。刚开始训练可以将学习率设置的高一点，
+					而一定轮数之后，将其减小在训练过程中，一般根据训练的轮数来动态更新学习率刚开始训练时：学习率以 0.01 ~ 0.001 为宜。
+					一定轮数过后：逐渐减缓。接近训练结束：学习速率的衰减应该在100倍以上。学习率的调整参考https://blog.csdn.net/qq_33485434/article/details/80452941
+					//学习率调整一定不要太死，实际训练过程中根据loss的变化和其他指标动态调整，手动ctrl+c结
+                     束此次训练后，修改学习率，再加载刚才保存的模型继续训练即可完成手动调参，调整的依据是根据训练
+                     日志来，如果loss波动太大，说明学习率过大，适当减小，变为1/5，1/10均可，如果loss几乎不变，
+                     可能网络已经收敛或者陷入了局部极小，此时可以适当增大学习率，注意每次调整学习率后一定要训练久一点，充分观察，调参是个细活，慢慢琢磨
+					//说明：实际学习率与GPU的个数有关，例如你的学习率设置为0.001，如果你有4块GPU，那真实学习率为0.001/4
+
+burn_in=1000		//在迭代次数小于burn_in时，其学习率的更新有一种方式，大于burn_in时，才采用policy的更新方式
+max_batches = 500200//训练次数达到max_batches后停止学习，一次为跑完一个batch
+
+policy=steps		//学习率调整的策略：constant, steps, exp, poly, step, sig, RANDOM，constant等方式参考https://nanfei.ink/2018/01/23/YOLOv2%E8%B0%83%E5%8F%82%E6%80%BB%E7%BB%93/#more
+
+steps=400000,450000//steps和scale是设置学习率的变化，比如迭代到400000次时，学习率衰减十倍，45000次迭代时，学习率又会在前一个学习率的基础上衰减十倍
+scales=.1,.1
+
+[convolutional]		//一层卷积层的配置说明
+batch_normalize=1	//是否进行BN处理，0为否，1为是
+filters=32			//卷积核的个数也是输出通道数
+size=3				//卷积核尺寸
+stride=1			//卷积核步长
+pad=1				//卷积时是否进行padding，padding的个数和卷积核尺寸有关，为size/2向下取整，如3/2=1
+activation=leaky	//网络层的激活函数
+
+#downsample
+[convolutional]		//下采样配置说明
+batch_normalize=1
+filters=64
+size=3
+stride=2
+pad=1
+activation=leaky	//卷积核尺寸大小为3*3时，配合padding且步长为2时，featrue map变为原来图片尺寸一半大小。
+
+[shortcut]			//shortcut层配置说明
+from=-3				//与前面的多少层进行融合，-3表示前面的第三层
+activation=linear	//层激活函数
+......
+......
+[convolutional]		//yolo层前面一层卷积配置说明
+size=1
+stride=1
+pad=1
+filters=255			//filters=num(预测框个数)*(classes + 5)，5表示4个坐标值加一个置信率，论文中的tx，ty，th，tw，c，classes为类别数，
+					COCO数据集个数为80，num表示YOLO中每个cell中的预测框个数，YLOLOv3中为3
+					//自行使用时，此处的值一定要根据自己的数据集进行修改，例如识别5个类，则：
+					filters=3*（5 + 5）= 30，三个filters都需要修改
+activation=linear
+
+[yolo]				//YOLO层的配置说明
+mask = 0,1,2		//使用anchor的索引，0， 1， 2 表示下面定义的anchors中的前三个
+anchors = 10,13,  16,30,  33,23,  30,61,  62,45,  59,119,  116,90,  156,198,  373,326
+classes=80			//类别数目
+num=9				//每个grid cell总共预测多少个box，和anchors的数量一至，想要使用更多anchors时需要调大num
+jitter=.3			//数据增强手段，jitter为随机调整宽高比的范围
+ignore_thresh = .7
+truth_thresh = 1	//参与计算的IOU阈值大小，当预测的检测框与ground true的IOU大于ignore_thresh时，参与loss的计算，否则，检测框不参与损失的计算。
+					//理解：目的是控制参与loss计算的检测框的规模，当ignore_thresh过于大，接近于1的时候，那么参与
+					检测框回归loss的个数就会比较少，同时也容易造成过拟合；而如果ignore_thresh设置的过于小，
+					那么参与计算的会数量规模就会很大。同时也容易在进行检测框回归的时候造成欠拟合。
+					//参数设置：一般选取0.5-0.7之间的一个值，之前的计算基础都是小尺度（13*13）用的是0.7，（26*26）用的是0.5。
+					这次先将0.5更改为0.7。参考：https://www.e-learn.cn/content/qita/804953
+
+random=1			//为1打开随机多尺度训练，为0则关闭
+					//提示：当打开随机多尺度训练时，前面设置的网络输入尺寸width和height其实就不起作用了，width会在320到608之间随机取值，
+					且width=height，没10轮随机改变一次，一般建议可以根据自己需要修改随机尺度训练的范围，这样可以增大batch。
+
+</code></pre>
+
+<p>##### 5.学习率的设定规律</p>
+
+<p>在训练过程中，一般根据训练轮数设置动态变化的学习率</p>
+
+<ul>
+<li>刚开始训练时：学习率以0.01～0.001为宜。</li>
+<li>一定轮数之后：逐渐减缓</li>
+<li>接近训练结束时：学习速率的衰减该在100倍以上
+<img src="https://img-blog.csdn.net/20180202222601241?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSk5pbmdXZWk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="在这里插入图片描述" />
+1.曲线 初始时 上扬 [红线]：
+Solution：初始 学习率过大 导致 振荡，应减小学习率，并 从头 开始训练 。
+2.曲线 初始时 强势下降 没多久 归于水平 [紫线]：
+Solution：后期 学习率过大 导致 无法拟合，应减小学习率，并 重新训练 后几轮 。
+3.曲线 全程缓慢 [黄线]：
+Solution：初始 学习率过小 导致 收敛慢，应增大学习率，并 从头 开始训练 。</li>
+</ul>
+
+<h5 id="6-修改-names内容">6.修改.names内容</h5>
+
+<p>其为标签名称，每一个标签占一行，根据自己的需要进行修改：</p>
+
+<pre><code>//这是voc.names文件中的标签名称
+aeroplane
+bicycle
+bird
+boat
+bottle
+bus
+car
+cat
+chair
+cow
+......
+</code></pre>
+
+<h5 id="7-修改-data文件的内容">7.修改.data文件的内容</h5>
+
+<pre><code>classes= 20
+train  = /home/pjreddie/data/voc/train.txt
+valid  = /home/pjreddie/data/voc/2007_test.txt
+names = data/voc.names
+backup = backup
+</code></pre>
+
+<p>1.Classes表示数据集的类别数目
+2.train表示生成train.txt文件的文件路径，也就是图片绝对路径的存储文件
+3.valid表示验证数据图片路径存储的位置
+4.names表示刚刚处理过的.names文件的位置
+5.backup表示训模型保存的位置，该位置一定要存在，如果不存在可以新创建</p>
+]]></content>
+		</item>
+		
+	</channel>
+</rss>

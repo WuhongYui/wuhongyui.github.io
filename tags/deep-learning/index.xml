@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Deep Learning on 拿了橘子跑</title>
+    <link>https://wuhongyui.github.io/tags/deep-learning/</link>
+    <description>Recent content in Deep Learning on 拿了橘子跑</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Tue, 17 Dec 2019 22:03:31 +0800</lastBuildDate>
+    
+	<atom:link href="https://wuhongyui.github.io/tags/deep-learning/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Yolov3 training own dataset</title>
+      <link>https://wuhongyui.github.io/posts/yolov3/</link>
+      <pubDate>Tue, 17 Dec 2019 22:03:31 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/yolov3/</guid>
+      <description>一、搭建环境 搭建环境和验证环境，确保tensorflow，cuda，cudnn，opencv等环境配置完毕。
+二、数据准备 使用YOLOv3训练自己的数据集时一共需要修改6个文件
+   文件名 文件路径 文件说明     makefile darknet 编译成可执行程序的文件，在其中指定是否使用GPU和Cuda，是否使用摄像头，OpenCV等   train.txt 自定义 用来保存训练图片的路径，每一行是一张图片的完整路径，找不到图片的错误一般是路径不对   label 文件夹 整个文件夹存放所有图片的标注信息，标注信息用txt文档保存   .cfg文件 darknet-master/cfg .cfg文件指定了网络结构和其他超参数   .names文件 自定义 该文件指定了训练的标签，如：person，car等，一个标签占一行   .data文件 自定义 该文件的内容指示了上述train.txt,.name和模型的保存的位置等    1.修改makefile文件，makefile文件一共修改四处 1.修改开始几行的内容，0表示否，1表示是 2.修改运算架构，自己显卡支持什么架构可以自己查询，按需修改，也可以使用默认值。
+ARCH= -gencode arch=compute_30,code=sm_30 \ -gencode arch=compute_35,code=sm_35 \ -gencode arch=compute_50,code=[sm_50,compute_50] \ -gencode arch=compute_52,code=[sm_52,compute_52] -gencode arch=compute_20,code=[sm_20,sm_21] \ This one is deprecated?  3.修改NVCC值：NVCC=nvcc， 改为你cuda路径下的nvcc，也可不改 4.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Ubuntu18.04 DeepLearning Environment Setup">
+<meta itemprop="description" content="安装Ubuntu18.04后应该做的事 安装ubuntu18.04后，参考该博客进行相关的配置。
+NIVDIA Driver  sudo apt purge nvidia-*移除原有老驱动； sudo add-apt-repository ppa:graphics-drivers/ppa安装相关依赖文件； sudo apt update &amp;&amp; sudo apt upgrade ubuntu-drivers devices查看支持的驱动版本； sudo apt install nvidia-driver-440安装440版本驱动； 重启后sudo reboot检查安装nvidia-smiorwatch -n 0.1 nvidia-smi 使用sudo apt-mark hold nvidia-driver-440 来保证驱动不会自动更新； 进行以上步骤可能出现安装不成功的问题，一般在网络正常的情况下可以正常安装，也可以选择手动安装，进入官网根据显卡型号下载适配驱动Nvidia官网参考这里进行手动安装  CUDA 下载cuda_10.2.89_440.33.01_linux.run或者下载其他的版本other version
+ 运行sudo sh cuda_10.2.89_440.33.01_linux.run
+ 最好不要安装OpenGL相关的，选择不要安装NVIDIA Accelerate driver；
+ 添加环境变量，使用sudo gedit ~/.bashrcorsudo vim ~/.bashrc加入如下：
+export CUDA_HOME=/usr/local/cuda export PATH=$PATH:$CUDA_HOME/bin export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64${LD_LIBRARY_PATH:&#43;:${LD_LIBRARY_PATH}}  source ~/.bashrc之后使用nvcc -V查看是否安转成功；
+  Cudnn 下载cudnn或者其他版本other version">
+
+
+<meta itemprop="datePublished" content="2019-12-30T20:04:40&#43;08:00" />
+<meta itemprop="dateModified" content="2019-12-30T20:04:40&#43;08:00" />
+<meta itemprop="wordCount" content="249">
+
+
+
+<meta itemprop="keywords" content="untagged," />
+<meta property="og:title" content="Ubuntu18.04 DeepLearning Environment Setup" />
+<meta property="og:description" content="安装Ubuntu18.04后应该做的事 安装ubuntu18.04后，参考该博客进行相关的配置。
+NIVDIA Driver  sudo apt purge nvidia-*移除原有老驱动； sudo add-apt-repository ppa:graphics-drivers/ppa安装相关依赖文件； sudo apt update &amp;&amp; sudo apt upgrade ubuntu-drivers devices查看支持的驱动版本； sudo apt install nvidia-driver-440安装440版本驱动； 重启后sudo reboot检查安装nvidia-smiorwatch -n 0.1 nvidia-smi 使用sudo apt-mark hold nvidia-driver-440 来保证驱动不会自动更新； 进行以上步骤可能出现安装不成功的问题，一般在网络正常的情况下可以正常安装，也可以选择手动安装，进入官网根据显卡型号下载适配驱动Nvidia官网参考这里进行手动安装  CUDA 下载cuda_10.2.89_440.33.01_linux.run或者下载其他的版本other version
+ 运行sudo sh cuda_10.2.89_440.33.01_linux.run
+ 最好不要安装OpenGL相关的，选择不要安装NVIDIA Accelerate driver；
+ 添加环境变量，使用sudo gedit ~/.bashrcorsudo vim ~/.bashrc加入如下：
+export CUDA_HOME=/usr/local/cuda export PATH=$PATH:$CUDA_HOME/bin export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64${LD_LIBRARY_PATH:&#43;:${LD_LIBRARY_PATH}}  source ~/.bashrc之后使用nvcc -V查看是否安转成功；
+  Cudnn 下载cudnn或者其他版本other version" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuhongyui.github.io/posts/ubuntu18.04/" />
+<meta property="article:published_time" content="2019-12-30T20:04:40+08:00" />
+<meta property="article:modified_time" content="2019-12-30T20:04:40+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Ubuntu18.04 DeepLearning Environment Setup"/>
+<meta name="twitter:description" content="安装Ubuntu18.04后应该做的事 安装ubuntu18.04后，参考该博客进行相关的配置。
+NIVDIA Driver  sudo apt purge nvidia-*移除原有老驱动； sudo add-apt-repository ppa:graphics-drivers/ppa安装相关依赖文件； sudo apt update &amp;&amp; sudo apt upgrade ubuntu-drivers devices查看支持的驱动版本； sudo apt install nvidia-driver-440安装440版本驱动； 重启后sudo reboot检查安装nvidia-smiorwatch -n 0.1 nvidia-smi 使用sudo apt-mark hold nvidia-driver-440 来保证驱动不会自动更新； 进行以上步骤可能出现安装不成功的问题，一般在网络正常的情况下可以正常安装，也可以选择手动安装，进入官网根据显卡型号下载适配驱动Nvidia官网参考这里进行手动安装  CUDA 下载cuda_10.2.89_440.33.01_linux.run或者下载其他的版本other version
+ 运行sudo sh cuda_10.2.89_440.33.01_linux.run
+ 最好不要安装OpenGL相关的，选择不要安装NVIDIA Accelerate driver；
+ 添加环境变量，使用sudo gedit ~/.bashrcorsudo vim ~/.bashrc加入如下：
+export CUDA_HOME=/usr/local/cuda export PATH=$PATH:$CUDA_HOME/bin export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64${LD_LIBRARY_PATH:&#43;:${LD_LIBRARY_PATH}}  source ~/.bashrc之后使用nvcc -V查看是否安转成功；
+  Cudnn 下载cudnn或者其他版本other version"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Ubuntu18.04 DeepLearning Environment Setup</title>
+	<link rel="stylesheet" href="https://wuhongyui.github.io/css/style.min.657bcb7af31123e4156b1a3d2ff60a636717e54ead74f882136b5114cf72b55e.css" integrity="sha256-ZXvLevMRI+QVaxo9L/YKY2cX5U6tdPiCE2tRFM9ytV4=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://wuhongyui.github.io/">拿了橘子跑</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://wuhongyui.github.io/posts/">Article</a>
+				<a href="https://wuhongyui.github.io/about-hugo/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://twitter.com/" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="https://instagram.com/" target="_blank" rel="noopener me" title="Instagram"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg></a><a href="https://github.com/wuhongyui" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://wuhongyui.github.io/posts/">Article</a></li>
+			<li><a href="https://wuhongyui.github.io/about-hugo/">About</a></li>
+		</ul>
+	</div>
+
+
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Dec 30, 2019</span></div>
+				<h1>Ubuntu18.04 DeepLearning Environment Setup</h1>
+			</header>
+			<div class="content">
+				
+
+<h3 id="安装ubuntu18-04后应该做的事">安装Ubuntu18.04后应该做的事<a href="#安装ubuntu18-04后应该做的事" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>安装ubuntu18.04后，参考<a href="https://blog.csdn.net/hymanjack/article/details/80285400">该博客</a>进行相关的配置。</p>
+
+<h4 id="nivdia-driver">NIVDIA Driver<a href="#nivdia-driver" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<ul>
+<li><code>sudo apt purge nvidia-*</code>移除原有老驱动；</li>
+<li><code>sudo add-apt-repository ppa:graphics-drivers/ppa</code>安装相关依赖文件；</li>
+<li><code>sudo apt update &amp;&amp; sudo apt upgrade</code></li>
+<li><code>ubuntu-drivers devices</code>查看支持的驱动版本；</li>
+<li><code>sudo apt install nvidia-driver-440</code>安装440版本驱动；</li>
+<li>重启后<code>sudo reboot</code>检查安装<code>nvidia-smi</code>or<code>watch -n 0.1 nvidia-smi</code></li>
+<li>使用<code>sudo apt-mark hold nvidia-driver-440</code> 来保证驱动不会自动更新；</li>
+<li>进行以上步骤可能出现安装不成功的问题，一般在网络正常的情况下可以正常安装，也可以选择手动安装，进入官网根据显卡型号下载适配驱动<a href="https://www.nvidia.com/Download/Find.aspx?lang=en-us">Nvidia官网</a>参考<a href="https://juejin.im/post/5c83abb4f265da2da67c6173">这里</a>进行手动安装</li>
+</ul>
+
+<h4 id="cuda">CUDA<a href="#cuda" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>下载<a href="http://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda_10.2.89_440.33.01_linux.run">cuda_10.2.89_440.33.01_linux.run</a>或者下载其他的版本<a href="https://developer.nvidia.com/cuda-zone">other version</a></p>
+
+<ul>
+<li><p>运行<code>sudo sh cuda_10.2.89_440.33.01_linux.run</code></p></li>
+
+<li><p>最好不要安装OpenGL相关的，选择不要安装NVIDIA Accelerate driver；</p></li>
+
+<li><p>添加环境变量，使用<code>sudo gedit ~/.bashrc</code>or<code>sudo vim ~/.bashrc</code>加入如下：</p>
+
+<pre><code>export CUDA_HOME=/usr/local/cuda 
+export PATH=$PATH:$CUDA_HOME/bin 
+export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+</code></pre></li>
+
+<li><p><code>source ~/.bashrc</code>之后使用<code>nvcc -V</code>查看是否安转成功；</p></li>
+</ul>
+
+<h4 id="cudnn">Cudnn<a href="#cudnn" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>下载<a href="https://developer.download.nvidia.cn/compute/machine-learning/cudnn/secure/7.6.4.38/Production/10.1_20190923/Ubuntu18_04-x64/libcudnn7_7.6.4.38-1%2Bcuda10.1_amd64.deb?XIOjTklrMRSKeWpzrq57CqC4VJbpfZXuE3MUYRpqq016geGzGJT9i1mvX-QbSug8h2AAI3MaTiKKba0yWhtorl7hrd8ROXMLRklSRplZ_MgjbIOl-djrCJQs1e5BLkgm6lp2IbWam-TaUEZFZMLcA5dGco_b1VVK-Kcng8O-0mKOxYbBk5nEwxmpH1rgk4qUHzHCSQxzbFCac445DJ0uCD8t6_pqDXu3NSzbzUkOFzYXt8MMi3D2fm3T-_5oZqYs">cudnn</a>或者其他版本<a href="https://developer.nvidia.com/rdp/cudnn-archive">other version</a></p>
+
+<p>运行如下命令：</p>
+
+<pre><code>tar -zxvf cudnn-10.0-linux-x64-v7.5.0.56.solitairetheme8
+sudo cp cuda/include/cudnn.h /usr/local/cuda/include/ 
+sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64/ 
+sudo chmod a+r /usr/local/cuda/include/cudnn.h 
+sudo chmod a+r /usr/local/cuda/lib64/libcudnn*
+cat /usr/local/cuda/include/cudnn.h | grep CUDNN_MAJOR -A 2
+</code></pre>
+
+<h4 id="pytorch">pytorch<a href="#pytorch" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>进入官网<a href="https://pytorch.org/get-started/locally/">https://pytorch.org/get-started/locally/</a></p>
+
+<p>或者使用.whl安装</p>
+
+<pre><code>pip install torch-1.1.0-cp36-cp36m-linux_x86_64.whl
+pip install torchvision-0.3.0-cp36-cp36m-linux_x86_64.whl
+</code></pre>
+
+<p>检查安装：</p>
+
+<pre><code>In [1]: import torch
+In [2]: torch.__version__
+Out[2]: '1.1.0'
+In [3]: torch.cuda.is_available()
+Out[3]: True
+</code></pre>
+
+<h4 id="tensorflow2-0-beta">tensorflow2.0-beta<a href="#tensorflow2-0-beta" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>通过pip安装</p>
+
+<pre><code>pip install tensorflow==2.0.0-beta0  # cpu
+pip install tensorflow-gpu==2.0.0-beta0  # gpu
+</code></pre>
+
+<p>测试安装</p>
+
+<pre><code>In [1]: import tensorflow as tf
+In [2]: tf.__version__
+Out[2]: '2.0.0-beta0'
+In [3]: tf.test.is_gpu_available()
+Out[3]: True
+</code></pre>
+
+<h4 id="mxnet">mxnet<a href="#mxnet" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<pre><code>pip install mxnet
+</code></pre>
+
+<h4 id="pycharm">pycharm<a href="#pycharm" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<ul>
+<li><p><code>tar -zxvf pycharm-community-{your version}.tar.gz</code></p></li>
+
+<li><p><code>sudo mv pycharm-community-{your version} /opt/</code></p></li>
+
+<li><p><code>sudo gedit /usr/share/applications/pycharm.desktop</code>写入如下代码：</p>
+
+<pre><code>[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Pycharm
+Icon=/opt/pycharm-community-2019.1.3/bin/pycharm.png
+Exec=/opt/pycharm-community-2019.1.3/bin/pycharm.sh
+MimeType=application/x-py;
+Name[en_US]=pycharm
+</code></pre></li>
+
+<li><p><code>sudo chmod u+x /usr/share/applications/pycharm.desktop</code></p></li>
+</ul>
+
+<h4 id="sougou-pinyin">Sougou Pinyin<a href="#sougou-pinyin" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<ul>
+<li><code>sudo apt-get install fcitx-bin      *#安装fcitx-bin*</code></li>
+<li><code>sudo apt-get update --fix-missing   *#修复fcitx-bin安装失败的情况*</code></li>
+<li><code>sudo apt-get install fcitx-bin      *#重新安装fcitx-bin*</code></li>
+<li><code>sudo apt-get install fcitx-table    *#安装fcitx-table*</code></li>
+</ul>
+
+<p>然后到<a href="https://pinyin.sogou.com/linux/">搜狗拼音Linux官网</a>下载64bit的<code>.deb</code>文件</p>
+
+<ul>
+<li><code>sudo dpkg -i sogoupinyin*.deb       *#安装搜狗拼音*</code></li>
+<li><code>sudo apt-get install -f             *#修复搜狗拼音安装的错误*</code></li>
+<li><code>sudo dpkg -i sogoupinyin*.deb       *#重新安装搜狗拼音*</code></li>
+</ul>
+
+<p>之后一定要重启！</p>
+
+<p>在Show Application中，找到fcitx configure，点击进入：</p>
+
+<p><img src="/images/sougou1.png" alt="" /></p>
+
+<p>点击+号，进入下面的菜单；</p>
+
+<p><img src="/images/sougou2.png" alt="" /></p>
+
+<p>将Only Show Current Language前面的勾给去掉，在下面搜索sougou，然后加入。</p>
+
+<h4 id="视频与音频">视频与音频<a href="#视频与音频" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>安转解码器</p>
+
+<p><code>sudo apt-get install ubuntu-restricted-extras</code></p>
+
+<p>安装VLC视频播放器</p>
+
+<p><code>sudo apt-get install vlc browser-plugin-vlc</code></p>
+
+<p>另一款比较好的播放器SMPlayer也不错</p>
+
+<pre><code>sudo apt-add-repository ppa:rvm/smplayer
+sudo apt-get update
+sudo apt-get install smplayer smplayer-skins smplayer-themes 
+</code></pre>
+
+<h4 id="支持exfat">支持exfat<a href="#支持exfat" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p><code>sudo apt-get install exfat-fuse exfat-utils</code></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://wuhongyui.github.io/tags/untagged">untagged</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>249 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2019-12-30 20:04 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://wuhongyui.github.io/posts/yolo/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Learning YOLO detection algorithm</span>
+			</a>
+			<a class="prev-post" href="https://wuhongyui.github.io/posts/buildblog/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>How to build blog by Hugo</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+</div>
+	</main>
+
+<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2021 <a href="https://wuhongyui.github.io/">拿了橘子跑</a> &#183; <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Wuen</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://wuhongyui.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+
+
+
+
+	<script src="https://wuhongyui.github.io/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js" integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>

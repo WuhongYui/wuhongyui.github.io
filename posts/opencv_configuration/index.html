@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Opencv Configuration on MacOS">
+<meta itemprop="description" content="1.下载OpenCV  可以到OpenCV官网下载安装文件，根据需要下载对应的版本 Cmake，官网下载，然后安装，进行配置 在MacOS下，Xcode的是必须安装的  Opencv安装命令 下载解压资源包后，找到一个文件目录放置，在解压好的文件如：opencv-4.3.0下创建一个新文件目录，命名为release，在终端中进入到这个文件目录，输入以下命令：
+$cmake -G “Unix Makefiles” .. (如果提示权限问题，加sudo) $make (可以加-j2；-j4；-j8等表示多线程编译) $sudo make install 安装成功后在/usr/local/lib下会有关于libopencvXXX.dylib文件，在/usr/local/include下会有opencv4、opencv2目录
+通过Homebrew安装  下载Homebrew，Homebrew是Mac上的一个包管理软件，相当于linux上的apt-get，wget等，根据Homebrew官网的教程下载不出意外是会失败的  第一步，获取install文件 通过如下代码把官网的脚本拿下来
+curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install &gt;&gt; brew_install 第二步，更改脚本中的资源链接，替换成清华大学的镜像 就是把这两句
+BREW_REPO = “https://github.com/Homebrew/brew“.freeze CORE_TAP_REPO = “https://github.com/Homebrew/homebrew-core“.freeze 替换成
+BREW_REPO = “https://mirrors.ustc.edu.cn/brew.git “.freeze CORE_TAP_REPO = “https://mirrors.ustc.edu.cn/homebrew-core.git“.freeze 如果镜像有问题，可以换成其他的镜像源，接着执行脚本文件
+ruby brew_install 出现报错是因为源不通，更换为其他的国内镜像源
+git clone git://mirrors.ustc.edu.cn/homebrew-core.git/ /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core --depth=1 然后把homebrew-core的镜像地址也设为中科院的国内镜像
+git remote set-url origin https://mirrors.ustc.edu.cn/brew.git cd &#34;$(brew --repo)/Library/Taps/homebrew/homebrew-core&#34; # 替换核心软件仓库 git remote set-url origin https://mirrors.">
+
+
+<meta itemprop="datePublished" content="2020-05-24T17:14:06&#43;08:00" />
+<meta itemprop="dateModified" content="2020-05-24T17:14:06&#43;08:00" />
+<meta itemprop="wordCount" content="220">
+
+
+
+<meta itemprop="keywords" content="untagged," />
+<meta property="og:title" content="Opencv Configuration on MacOS" />
+<meta property="og:description" content="1.下载OpenCV  可以到OpenCV官网下载安装文件，根据需要下载对应的版本 Cmake，官网下载，然后安装，进行配置 在MacOS下，Xcode的是必须安装的  Opencv安装命令 下载解压资源包后，找到一个文件目录放置，在解压好的文件如：opencv-4.3.0下创建一个新文件目录，命名为release，在终端中进入到这个文件目录，输入以下命令：
+$cmake -G “Unix Makefiles” .. (如果提示权限问题，加sudo) $make (可以加-j2；-j4；-j8等表示多线程编译) $sudo make install 安装成功后在/usr/local/lib下会有关于libopencvXXX.dylib文件，在/usr/local/include下会有opencv4、opencv2目录
+通过Homebrew安装  下载Homebrew，Homebrew是Mac上的一个包管理软件，相当于linux上的apt-get，wget等，根据Homebrew官网的教程下载不出意外是会失败的  第一步，获取install文件 通过如下代码把官网的脚本拿下来
+curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install &gt;&gt; brew_install 第二步，更改脚本中的资源链接，替换成清华大学的镜像 就是把这两句
+BREW_REPO = “https://github.com/Homebrew/brew“.freeze CORE_TAP_REPO = “https://github.com/Homebrew/homebrew-core“.freeze 替换成
+BREW_REPO = “https://mirrors.ustc.edu.cn/brew.git “.freeze CORE_TAP_REPO = “https://mirrors.ustc.edu.cn/homebrew-core.git“.freeze 如果镜像有问题，可以换成其他的镜像源，接着执行脚本文件
+ruby brew_install 出现报错是因为源不通，更换为其他的国内镜像源
+git clone git://mirrors.ustc.edu.cn/homebrew-core.git/ /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core --depth=1 然后把homebrew-core的镜像地址也设为中科院的国内镜像
+git remote set-url origin https://mirrors.ustc.edu.cn/brew.git cd &#34;$(brew --repo)/Library/Taps/homebrew/homebrew-core&#34; # 替换核心软件仓库 git remote set-url origin https://mirrors." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuhongyui.github.io/posts/opencv_configuration/" />
+<meta property="article:published_time" content="2020-05-24T17:14:06+08:00" />
+<meta property="article:modified_time" content="2020-05-24T17:14:06+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Opencv Configuration on MacOS"/>
+<meta name="twitter:description" content="1.下载OpenCV  可以到OpenCV官网下载安装文件，根据需要下载对应的版本 Cmake，官网下载，然后安装，进行配置 在MacOS下，Xcode的是必须安装的  Opencv安装命令 下载解压资源包后，找到一个文件目录放置，在解压好的文件如：opencv-4.3.0下创建一个新文件目录，命名为release，在终端中进入到这个文件目录，输入以下命令：
+$cmake -G “Unix Makefiles” .. (如果提示权限问题，加sudo) $make (可以加-j2；-j4；-j8等表示多线程编译) $sudo make install 安装成功后在/usr/local/lib下会有关于libopencvXXX.dylib文件，在/usr/local/include下会有opencv4、opencv2目录
+通过Homebrew安装  下载Homebrew，Homebrew是Mac上的一个包管理软件，相当于linux上的apt-get，wget等，根据Homebrew官网的教程下载不出意外是会失败的  第一步，获取install文件 通过如下代码把官网的脚本拿下来
+curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install &gt;&gt; brew_install 第二步，更改脚本中的资源链接，替换成清华大学的镜像 就是把这两句
+BREW_REPO = “https://github.com/Homebrew/brew“.freeze CORE_TAP_REPO = “https://github.com/Homebrew/homebrew-core“.freeze 替换成
+BREW_REPO = “https://mirrors.ustc.edu.cn/brew.git “.freeze CORE_TAP_REPO = “https://mirrors.ustc.edu.cn/homebrew-core.git“.freeze 如果镜像有问题，可以换成其他的镜像源，接着执行脚本文件
+ruby brew_install 出现报错是因为源不通，更换为其他的国内镜像源
+git clone git://mirrors.ustc.edu.cn/homebrew-core.git/ /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core --depth=1 然后把homebrew-core的镜像地址也设为中科院的国内镜像
+git remote set-url origin https://mirrors.ustc.edu.cn/brew.git cd &#34;$(brew --repo)/Library/Taps/homebrew/homebrew-core&#34; # 替换核心软件仓库 git remote set-url origin https://mirrors."/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Opencv Configuration on MacOS</title>
+	<link rel="stylesheet" href="https://wuhongyui.github.io/css/style.min.657bcb7af31123e4156b1a3d2ff60a636717e54ead74f882136b5114cf72b55e.css" integrity="sha256-ZXvLevMRI+QVaxo9L/YKY2cX5U6tdPiCE2tRFM9ytV4=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://wuhongyui.github.io/">拿了橘子跑</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://wuhongyui.github.io/posts/">Article</a>
+				<a href="https://wuhongyui.github.io/about-hugo/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://twitter.com/" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="https://instagram.com/" target="_blank" rel="noopener me" title="Instagram"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg></a><a href="https://github.com/wuhongyui" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://wuhongyui.github.io/posts/">Article</a></li>
+			<li><a href="https://wuhongyui.github.io/about-hugo/">About</a></li>
+		</ul>
+	</div>
+
+
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>May 24, 2020</span></div>
+				<h1>Opencv Configuration on MacOS</h1>
+			</header>
+			<div class="content">
+				
+
+<h4 id="1-下载opencv">1.下载OpenCV<a href="#1-下载opencv" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<ul>
+<li>可以到OpenCV<a href="https://opencv.org/">官网</a>下载安装文件，根据需要下载对应的版本</li>
+<li>Cmake，<a href="https://cmake.org">官网下载</a>，然后安装，进行配置</li>
+<li>在MacOS下，Xcode的是必须安装的</li>
+</ul>
+
+<h4 id="opencv安装命令">Opencv安装命令<a href="#opencv安装命令" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>下载解压资源包后，找到一个文件目录放置，在解压好的文件如：<code>opencv-4.3.0</code>下创建一个新文件目录，命名为release，在终端中进入到这个文件目录，输入以下命令：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">$cmake</span> -G “Unix Makefiles” .. <span class="o">(</span>如果提示权限问题，加sudo<span class="o">)</span>
+<span class="nv">$make</span> <span class="o">(</span>可以加-j2；-j4；-j8等表示多线程编译<span class="o">)</span>
+<span class="nv">$sudo</span> make install</code></pre></div>
+<p>安装成功后在/usr/local/lib下会有关于libopencvXXX.dylib文件，在/usr/local/include下会有opencv4、opencv2目录</p>
+
+<p><img src="/images/opencv1.png" alt="" /></p>
+
+<p><img src="/images/OpenCV2.png" alt="" /></p>
+
+<h4 id="通过homebrew安装">通过Homebrew安装<a href="#通过homebrew安装" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<ol>
+<li>下载Homebrew，Homebrew是Mac上的一个包管理软件，相当于linux上的apt-get，wget等，根据Homebrew官网的教程下载不出意外是会失败的</li>
+</ol>
+
+<h6 id="第一步-获取install文件">第一步，获取install文件<a href="#第一步-获取install文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h6>
+
+<p>通过如下代码把官网的脚本拿下来</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install &gt;&gt; brew_install</code></pre></div>
+<h6 id="第二步-更改脚本中的资源链接-替换成清华大学的镜像"><strong>第二步，更改脚本中的资源链接，替换成清华大学的镜像</strong><a href="#第二步-更改脚本中的资源链接-替换成清华大学的镜像" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h6>
+
+<p>就是把这两句</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">BREW_REPO</span> <span class="o">=</span> “https://github.com/Homebrew/brew“.freeze
+<span class="nv">CORE_TAP_REPO</span> <span class="o">=</span> “https://github.com/Homebrew/homebrew-core“.freeze</code></pre></div>
+<p>替换成</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">BREW_REPO</span> <span class="o">=</span> “https://mirrors.ustc.edu.cn/brew.git “.freeze
+<span class="nv">CORE_TAP_REPO</span> <span class="o">=</span> “https://mirrors.ustc.edu.cn/homebrew-core.git“.freeze</code></pre></div>
+<p>如果镜像有问题，可以换成其他的镜像源，接着执行脚本文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">ruby brew_install</code></pre></div>
+<p>出现报错是因为源不通，更换为其他的国内镜像源</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">git clone git://mirrors.ustc.edu.cn/homebrew-core.git/ /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core --depth<span class="o">=</span><span class="m">1</span></code></pre></div>
+<p>然后把homebrew-core的镜像地址也设为中科院的国内镜像</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">git remote set-url origin https://mirrors.ustc.edu.cn/brew.git
+
+<span class="nb">cd</span> <span class="s2">&#34;</span><span class="k">$(</span>brew --repo<span class="k">)</span><span class="s2">/Library/Taps/homebrew/homebrew-core&#34;</span>
+<span class="c1"># 替换核心软件仓库</span>
+git remote set-url origin https://mirrors.ustc.edu.cn/homebrew-core.git</code></pre></div>
+<p>执行更新，成功</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">brew update</code></pre></div>
+<p>最后用这个命令检查无错误：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">brew doctor</code></pre></div>
+<p>最后接着换源：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1">#替换 cask 软件仓库（提供 macOS 应用和大型二进制文件）</span>
+<span class="nb">cd</span> <span class="s2">&#34;</span><span class="k">$(</span>brew --repo<span class="k">)</span><span class="s2">&#34;</span>/Library/Taps/caskroom/homebrew-cask
+git remote set-url origin https://mirrors.ustc.edu.cn/homebrew-cask.git
+
+<span class="c1">#替换 Bottles 源（Homebrew 预编译二进制软件包）</span>
+bash（默认 shell）用户：
+<span class="nb">echo</span> <span class="s1">&#39;export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles&#39;</span> &gt;&gt; ~/.bash_profile
+<span class="nb">source</span> ~/.bash_profile
+
+zsh 用户：
+~ <span class="nb">echo</span> <span class="s1">&#39;export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles&#39;</span> &gt;&gt; ~/.zshrc
+~ <span class="nb">source</span> ~/.zshrc</code></pre></div>
+<p>执行完以上步骤，你就应该在Mac上安装好了Homebrew，并且可以用它来安装Cmake，OpenCV等</p>
+
+<h5 id="安装opencv">安装OpenCV<a href="#安装opencv" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<pre><code>brew install opencv
+</code></pre>
+
+<p>经过漫长的等待，OpenCV安装完成，可以在<code>/usr/local/Cellar/opencv/4.3.0_3/include</code>和<code>/usr/local/Cellar/opencv/4.3.0_3/lib</code>文件目录下分别找到头文件和库文件</p>
+
+<h5 id="在终端中运行">在终端中运行<a href="#在终端中运行" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>创建一个文件目录，创建CMakeLists.txt和main.cpp文件</p>
+
+<p>CMakeLists.txt</p>
+<div class="highlight"><pre class="chroma"><code class="language-cmake" data-lang="cmake"><span class="c">#版本  
+</span><span class="c"></span><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.15.1</span><span class="p">)</span>   <span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="c">#项目名称                                        
+</span><span class="c"></span><span class="nb">project</span><span class="p">(</span> <span class="s">test</span> <span class="p">)</span>       <span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="c">#设置OpenCV所在目录，为后面的find_package提供位置                                                      
+</span><span class="c">#OpenCV_DIR为OpenCV源码编译后得到的文件夹(如上面的release目录)                   
+</span><span class="c"></span><span class="nb">set</span><span class="p">(</span> <span class="s">OpenCV_DIR</span> <span class="s">/Users/hongyi/MyServers/opencv-3.3.1/release</span><span class="p">)</span>  <span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="c">#会在OpenCV所在目录查找配置文件OpenCVConfig.cmake  
+</span><span class="c"></span><span class="nb">find_package</span><span class="p">(</span> <span class="s">OpenCV</span> <span class="s">REQUIRED</span> <span class="p">)</span>    <span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="c">#向工程添加源文件                                         
+</span><span class="c"></span><span class="nb">add_executable</span><span class="p">(</span> <span class="s">test</span> <span class="s">main.cpp</span> <span class="p">)</span>    <span class="err">
+</span><span class="err">
+</span><span class="err"></span><span class="c">#添加链接库                                   
+</span><span class="c"></span><span class="nb">target_link_libraries</span><span class="p">(</span> <span class="s">test</span> <span class="o">${</span><span class="nv">OpenCV_LIBS</span><span class="o">}</span> <span class="p">)</span> </code></pre></div>
+<p>使用<code>Cmake --Version</code>可以查询Cmake版本，这里需要注意的是，<code>find_package</code>里一定要找到OpenCVConfig.cmake</p>
+
+<p>Main.cpp</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="cp">#include</span> <span class="cpf">&lt;opencv2/opencv.hpp&gt;  </span><span class="cp">
+</span><span class="cp"></span><span class="k">using</span> <span class="k">namespace</span> <span class="n">cv</span><span class="p">;</span>  
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>  
+    <span class="n">Mat</span> <span class="n">image</span><span class="p">;</span>  
+    <span class="n">image</span> <span class="o">=</span> <span class="n">imread</span><span class="p">(</span><span class="s">&#34;/Users/..&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>  <span class="c1">//输入正确的图片路径  
+</span><span class="c1"></span>    <span class="n">namedWindow</span><span class="p">(</span><span class="s">&#34;Display Image&#34;</span><span class="p">,</span> <span class="n">WINDOW_AUTOSIZE</span><span class="p">);</span>  
+    <span class="n">imshow</span><span class="p">(</span><span class="s">&#34;Display Image&#34;</span><span class="p">,</span> <span class="n">image</span><span class="p">);</span>  
+    <span class="n">waitKey</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>  
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>  
+<span class="p">}</span>  
+</code></pre></div>
+<p>在终端运行命令：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ cmake .
+$ make
+$ ./test  <span class="c1">#生成的二进制文件的文件名</span></code></pre></div>
+<ol>
+<li>在Clion中使用</li>
+</ol>
+
+<p>原理和在终端中运行一样，需要将新建项目里的CmakeLists.txt文件加上：</p>
+<div class="highlight"><pre class="chroma"><code class="language-cmake" data-lang="cmake"><span class="nb">find_package</span><span class="p">(</span><span class="s">OpenCV</span> <span class="s">REQUIRED</span><span class="p">)</span><span class="err">
+</span><span class="err"></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">test_opencv</span> <span class="o">${</span><span class="nv">OpenCV_LIBS</span><span class="o">}</span><span class="p">)</span></code></pre></div>
+<h5 id="在xcode中使用">在Xcode中使用<a href="#在xcode中使用" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<ul>
+<li>单击项目名，选择”Building Settings” -&gt; “Search Paths”,相应位置填上相应路径，在Header Search Paths里输入: <code>/usr/local/Cellar/opencv/4.3.0_3/include</code>头文件路径，在Library Search Paths里输入:<code>/usr/local/Cellar/opencv/4.3.0_3/lib</code>库文件路径</li>
+<li>在项目下创建一个lib group，将相应的lib文件，通过”Add to Files”拷贝进去，文件在上面安装时的库文件目录下，记住替身文件不用添加（就是左下角有箭头的）</li>
+</ul>
+
+<h4 id="运行时出现的错误">运行时出现的错误<a href="#运行时出现的错误" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>一开始运行就出现了，如下错误：</p>
+
+<p><img src="/images/OpenCV3.png" alt="" /></p>
+
+<p>大概意思就是动态库文件libopencore-amrnb.0.dylib未成功导入，于是就寻找这个文件</p>
+
+<p><img src="/images/OpenCV4.png" alt="OpenCV4" /></p>
+
+<p>发现果然没有，这里最开始我没看仔细把libopencore-amrwb.0.dylib当成了libopencore-amrnb.0.dylib，我就很疑惑，明明有文件为什么导入不了？于是就走上了岔路&hellip;</p>
+
+<p>最后发现opencore-amr是FFmpeg这个库的一项依赖，经过了解FFmpeg是一套可以用来记录、转换数字音频、视频，并能将其转化为流的开源计算机程序，具体OpenCV为什么要导入它我也不太清楚，最后经过，重新安装依赖</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ brew install opencore-amr</code></pre></div>
+<p>于是就把libopencore-amrnb.0.dylib这个库安装好了，最后运行</p>
+
+<p><img src="/images/opencv5.png" alt="" /></p>
+
+<h4 id="结束语">结束语<a href="#结束语" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>一定要看清楚报错信息，认真查看清楚再去搜索。</p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://wuhongyui.github.io/tags/untagged">untagged</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>220 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-05-24 17:14 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://wuhongyui.github.io/posts/swiftnet/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Note for paper SwiftNet</span>
+			</a>
+			<a class="prev-post" href="https://wuhongyui.github.io/posts/conda_install/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Conda virtual env</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+</div>
+	</main>
+
+<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2021 <a href="https://wuhongyui.github.io/">拿了橘子跑</a> &#183; <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Wuen</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://wuhongyui.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+
+
+
+
+	<script src="https://wuhongyui.github.io/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js" integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>

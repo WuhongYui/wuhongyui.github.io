@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="FCOS Paper notes">
+<meta itemprop="description" content="1.摘要 提出了一种全卷积的单级目标检测器（FCOS），这是一种逐像素预测的方式解决目标检测问题，类似于语义分割。近年来一些最先进的目标检测算法，如RetinaNet，SSD，YOLOv3，Faster R-CNN都依赖于预定义的锚框，相反，FCOS提出的检测器算法是无锚框的(anchor free)，也就是无建议(proposal free)，通过取消预定义锚框的设定，FCOS完全避免了与锚框相关的复杂计算，如在训练过程中计算重叠，更重要的是，FCOS还避免了所有与锚框相关的超参数，这些超参数会对最终的检测结果非常敏感。由于只有后处理非最大抑制 ( NMS )，我们的检测器 FCOS 比以前的基于锚框的单级检测器具有更简单的优点。首次提出了一种简单灵活的检测框架，提高了检测精度。
+2.Introduction 目标检测是计算机视觉中的一项基本而又具有挑战性的任务，它要求算法为图像中感兴趣的每个实例预测一个带有类别标签的边界框。如 Faster R-CNN [20]、SSD [15]、YOLOv2、v3 都依赖于一组预定义的锚框，长期以来人们认为锚框的使用是检测器成功的关键。尽管它们取得了巨大的成功，但值得注意的是，基于锚框的检测器存在一些缺陷：
+ 检测器的性能对锚框的尺寸、长宽比和数量敏感，例如，RetinaNet中，在COCO数据集基准上，改变这些超参数会导致4%的AP的性能变化，因此，在基于锚框预测的模型中，这些超参数需要细心的调整 尽管精心的超参数调整，由于锚框的尺寸和长宽比是固定的，检测器在处理形状变化较大的候选对象较为困难，特别是对于小对象，预定义锚框还限制了检测器的泛化能力，因为它们需要针对不同对象大小或纵横比的新检测任务重新设计 为了获得较高的召回率，需要一个基于锚框的检测器将框密集地放置在输入图像上 ( 例如，对于短边为 800 的图像，在特征金字塔网络 ( FPN ) 中放置超过 180K 个锚框)。在训练过程中，这些锚框大多被标记为负样本。负样本数量过多加剧了训练中正样本与负样本之间的不平衡。 训练过程中，当计算所有锚框和地面真实框（ground-truth boxes）之间的交并集 ( intersectionover-union, IOU ) 得分时，锚框数量过多也会显著增加计算量和内存占用。  近年来，全卷积网络在语义分割、深度估计、关键点检测、计数等密集预测任务中取得了巨大的成功。目标检测作为高级视觉任务之一，可能是唯一一个偏离纯卷积逐像素预测框架的任务，这主要是由于锚框的使用。思考这样一个问题：我们能否以简洁的逐像素的预测方式来解决对象检测问题，例如，类似用于语义分割的FCN，FCOS算法首次证明了基于 FCN 的检测器比基于锚框的检测器具有更好的性能。
+在一些文献中，一些文章一些文章试图利用FCN的框架进行目标检测，例如DenseBox和UnitBox，具体地说，这些基于 FCN 的框架直接预测了特征图（feature maps）级别上每个空间位置上的一个 4D 向量加上一个类的类别。由下图(左图)所示，4D向量描述了一个边界框到该位置的四个边的相对偏移量，这些框架类似于用于语义分割的 FCNs，只是每个位置都需要回归一个 4D 连续向量。但是，为了处理不同大小的边界框，DenseBox 将训练图像调整为固定的比例。因此，DenseBox 必须对图像金字塔进行检测，这与 FCN 一次计算所有卷积的思想是相悖的。此外，更重要的是，这些方法主要用于特殊领域的目标检测，如场景文本检测或人脸检测，因为人们认为这些方法不适用于具有高度重叠边界框的一般对象检测。如图所示(右图)，高度重叠的边界框导致了训练过程中难以处理的模糊性：对于重叠区域中的像素，不清楚 w.r.t 应该回归到哪个边界框。
+
+在后续中，我们将进一步研究这个问题，并说明使用 FPN 可以在很大程度上消除这种模糊性。结果表明，该方法与传统的基于锚框的检测方法具有相当的检测精度。此外，我们注意到我们的方法可能会在远离目标对象中心的位置产生大量低质量的预测边界框。为了抑制这些低质量的检测，我们引入了一个新的 “ 中心度（center-ness）” 分支(只有一层)来预测一个像素到其相应边界框中心的偏移，如公式所定义。然后，该分数用于降低低质量检测边界框的权重，并将检测结果合并到NMS中。简单而有效的中心度分支允许基于 FCN 的检测器在完全相同的训练和测试设置下胜过基于锚框的检测器。 \( centerness* = \sqrt {\frac{min(l*, r*)}{max(l*, r*)}\times \frac{min(t*, b*)}{max(t*,b*)} } \) 这种新型检测器架构有一下几种优点：">
+
+
+<meta itemprop="datePublished" content="2020-03-16T14:00:10&#43;08:00" />
+<meta itemprop="dateModified" content="2020-03-16T14:00:10&#43;08:00" />
+<meta itemprop="wordCount" content="315">
+
+
+
+<meta itemprop="keywords" content="untagged," />
+<meta property="og:title" content="FCOS Paper notes" />
+<meta property="og:description" content="1.摘要 提出了一种全卷积的单级目标检测器（FCOS），这是一种逐像素预测的方式解决目标检测问题，类似于语义分割。近年来一些最先进的目标检测算法，如RetinaNet，SSD，YOLOv3，Faster R-CNN都依赖于预定义的锚框，相反，FCOS提出的检测器算法是无锚框的(anchor free)，也就是无建议(proposal free)，通过取消预定义锚框的设定，FCOS完全避免了与锚框相关的复杂计算，如在训练过程中计算重叠，更重要的是，FCOS还避免了所有与锚框相关的超参数，这些超参数会对最终的检测结果非常敏感。由于只有后处理非最大抑制 ( NMS )，我们的检测器 FCOS 比以前的基于锚框的单级检测器具有更简单的优点。首次提出了一种简单灵活的检测框架，提高了检测精度。
+2.Introduction 目标检测是计算机视觉中的一项基本而又具有挑战性的任务，它要求算法为图像中感兴趣的每个实例预测一个带有类别标签的边界框。如 Faster R-CNN [20]、SSD [15]、YOLOv2、v3 都依赖于一组预定义的锚框，长期以来人们认为锚框的使用是检测器成功的关键。尽管它们取得了巨大的成功，但值得注意的是，基于锚框的检测器存在一些缺陷：
+ 检测器的性能对锚框的尺寸、长宽比和数量敏感，例如，RetinaNet中，在COCO数据集基准上，改变这些超参数会导致4%的AP的性能变化，因此，在基于锚框预测的模型中，这些超参数需要细心的调整 尽管精心的超参数调整，由于锚框的尺寸和长宽比是固定的，检测器在处理形状变化较大的候选对象较为困难，特别是对于小对象，预定义锚框还限制了检测器的泛化能力，因为它们需要针对不同对象大小或纵横比的新检测任务重新设计 为了获得较高的召回率，需要一个基于锚框的检测器将框密集地放置在输入图像上 ( 例如，对于短边为 800 的图像，在特征金字塔网络 ( FPN ) 中放置超过 180K 个锚框)。在训练过程中，这些锚框大多被标记为负样本。负样本数量过多加剧了训练中正样本与负样本之间的不平衡。 训练过程中，当计算所有锚框和地面真实框（ground-truth boxes）之间的交并集 ( intersectionover-union, IOU ) 得分时，锚框数量过多也会显著增加计算量和内存占用。  近年来，全卷积网络在语义分割、深度估计、关键点检测、计数等密集预测任务中取得了巨大的成功。目标检测作为高级视觉任务之一，可能是唯一一个偏离纯卷积逐像素预测框架的任务，这主要是由于锚框的使用。思考这样一个问题：我们能否以简洁的逐像素的预测方式来解决对象检测问题，例如，类似用于语义分割的FCN，FCOS算法首次证明了基于 FCN 的检测器比基于锚框的检测器具有更好的性能。
+在一些文献中，一些文章一些文章试图利用FCN的框架进行目标检测，例如DenseBox和UnitBox，具体地说，这些基于 FCN 的框架直接预测了特征图（feature maps）级别上每个空间位置上的一个 4D 向量加上一个类的类别。由下图(左图)所示，4D向量描述了一个边界框到该位置的四个边的相对偏移量，这些框架类似于用于语义分割的 FCNs，只是每个位置都需要回归一个 4D 连续向量。但是，为了处理不同大小的边界框，DenseBox 将训练图像调整为固定的比例。因此，DenseBox 必须对图像金字塔进行检测，这与 FCN 一次计算所有卷积的思想是相悖的。此外，更重要的是，这些方法主要用于特殊领域的目标检测，如场景文本检测或人脸检测，因为人们认为这些方法不适用于具有高度重叠边界框的一般对象检测。如图所示(右图)，高度重叠的边界框导致了训练过程中难以处理的模糊性：对于重叠区域中的像素，不清楚 w.r.t 应该回归到哪个边界框。
+
+在后续中，我们将进一步研究这个问题，并说明使用 FPN 可以在很大程度上消除这种模糊性。结果表明，该方法与传统的基于锚框的检测方法具有相当的检测精度。此外，我们注意到我们的方法可能会在远离目标对象中心的位置产生大量低质量的预测边界框。为了抑制这些低质量的检测，我们引入了一个新的 “ 中心度（center-ness）” 分支(只有一层)来预测一个像素到其相应边界框中心的偏移，如公式所定义。然后，该分数用于降低低质量检测边界框的权重，并将检测结果合并到NMS中。简单而有效的中心度分支允许基于 FCN 的检测器在完全相同的训练和测试设置下胜过基于锚框的检测器。 \( centerness* = \sqrt {\frac{min(l*, r*)}{max(l*, r*)}\times \frac{min(t*, b*)}{max(t*,b*)} } \) 这种新型检测器架构有一下几种优点：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuhongyui.github.io/posts/fcos/" />
+<meta property="article:published_time" content="2020-03-16T14:00:10+08:00" />
+<meta property="article:modified_time" content="2020-03-16T14:00:10+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="FCOS Paper notes"/>
+<meta name="twitter:description" content="1.摘要 提出了一种全卷积的单级目标检测器（FCOS），这是一种逐像素预测的方式解决目标检测问题，类似于语义分割。近年来一些最先进的目标检测算法，如RetinaNet，SSD，YOLOv3，Faster R-CNN都依赖于预定义的锚框，相反，FCOS提出的检测器算法是无锚框的(anchor free)，也就是无建议(proposal free)，通过取消预定义锚框的设定，FCOS完全避免了与锚框相关的复杂计算，如在训练过程中计算重叠，更重要的是，FCOS还避免了所有与锚框相关的超参数，这些超参数会对最终的检测结果非常敏感。由于只有后处理非最大抑制 ( NMS )，我们的检测器 FCOS 比以前的基于锚框的单级检测器具有更简单的优点。首次提出了一种简单灵活的检测框架，提高了检测精度。
+2.Introduction 目标检测是计算机视觉中的一项基本而又具有挑战性的任务，它要求算法为图像中感兴趣的每个实例预测一个带有类别标签的边界框。如 Faster R-CNN [20]、SSD [15]、YOLOv2、v3 都依赖于一组预定义的锚框，长期以来人们认为锚框的使用是检测器成功的关键。尽管它们取得了巨大的成功，但值得注意的是，基于锚框的检测器存在一些缺陷：
+ 检测器的性能对锚框的尺寸、长宽比和数量敏感，例如，RetinaNet中，在COCO数据集基准上，改变这些超参数会导致4%的AP的性能变化，因此，在基于锚框预测的模型中，这些超参数需要细心的调整 尽管精心的超参数调整，由于锚框的尺寸和长宽比是固定的，检测器在处理形状变化较大的候选对象较为困难，特别是对于小对象，预定义锚框还限制了检测器的泛化能力，因为它们需要针对不同对象大小或纵横比的新检测任务重新设计 为了获得较高的召回率，需要一个基于锚框的检测器将框密集地放置在输入图像上 ( 例如，对于短边为 800 的图像，在特征金字塔网络 ( FPN ) 中放置超过 180K 个锚框)。在训练过程中，这些锚框大多被标记为负样本。负样本数量过多加剧了训练中正样本与负样本之间的不平衡。 训练过程中，当计算所有锚框和地面真实框（ground-truth boxes）之间的交并集 ( intersectionover-union, IOU ) 得分时，锚框数量过多也会显著增加计算量和内存占用。  近年来，全卷积网络在语义分割、深度估计、关键点检测、计数等密集预测任务中取得了巨大的成功。目标检测作为高级视觉任务之一，可能是唯一一个偏离纯卷积逐像素预测框架的任务，这主要是由于锚框的使用。思考这样一个问题：我们能否以简洁的逐像素的预测方式来解决对象检测问题，例如，类似用于语义分割的FCN，FCOS算法首次证明了基于 FCN 的检测器比基于锚框的检测器具有更好的性能。
+在一些文献中，一些文章一些文章试图利用FCN的框架进行目标检测，例如DenseBox和UnitBox，具体地说，这些基于 FCN 的框架直接预测了特征图（feature maps）级别上每个空间位置上的一个 4D 向量加上一个类的类别。由下图(左图)所示，4D向量描述了一个边界框到该位置的四个边的相对偏移量，这些框架类似于用于语义分割的 FCNs，只是每个位置都需要回归一个 4D 连续向量。但是，为了处理不同大小的边界框，DenseBox 将训练图像调整为固定的比例。因此，DenseBox 必须对图像金字塔进行检测，这与 FCN 一次计算所有卷积的思想是相悖的。此外，更重要的是，这些方法主要用于特殊领域的目标检测，如场景文本检测或人脸检测，因为人们认为这些方法不适用于具有高度重叠边界框的一般对象检测。如图所示(右图)，高度重叠的边界框导致了训练过程中难以处理的模糊性：对于重叠区域中的像素，不清楚 w.r.t 应该回归到哪个边界框。
+
+在后续中，我们将进一步研究这个问题，并说明使用 FPN 可以在很大程度上消除这种模糊性。结果表明，该方法与传统的基于锚框的检测方法具有相当的检测精度。此外，我们注意到我们的方法可能会在远离目标对象中心的位置产生大量低质量的预测边界框。为了抑制这些低质量的检测，我们引入了一个新的 “ 中心度（center-ness）” 分支(只有一层)来预测一个像素到其相应边界框中心的偏移，如公式所定义。然后，该分数用于降低低质量检测边界框的权重，并将检测结果合并到NMS中。简单而有效的中心度分支允许基于 FCN 的检测器在完全相同的训练和测试设置下胜过基于锚框的检测器。 \( centerness* = \sqrt {\frac{min(l*, r*)}{max(l*, r*)}\times \frac{min(t*, b*)}{max(t*,b*)} } \) 这种新型检测器架构有一下几种优点："/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>FCOS Paper notes</title>
+	<link rel="stylesheet" href="https://wuhongyui.github.io/css/style.min.657bcb7af31123e4156b1a3d2ff60a636717e54ead74f882136b5114cf72b55e.css" integrity="sha256-ZXvLevMRI+QVaxo9L/YKY2cX5U6tdPiCE2tRFM9ytV4=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://wuhongyui.github.io/">拿了橘子跑</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://wuhongyui.github.io/posts/">Article</a>
+				<a href="https://wuhongyui.github.io/about-hugo/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://twitter.com/" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="https://instagram.com/" target="_blank" rel="noopener me" title="Instagram"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg></a><a href="https://github.com/wuhongyui" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://wuhongyui.github.io/posts/">Article</a></li>
+			<li><a href="https://wuhongyui.github.io/about-hugo/">About</a></li>
+		</ul>
+	</div>
+
+
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Mar 16, 2020</span></div>
+				<h1>FCOS Paper notes</h1>
+			</header>
+			<div class="content">
+				<h4 id="1摘要">1.摘要<a href="#1摘要" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>提出了一种全卷积的单级目标检测器（FCOS），这是一种逐像素预测的方式解决目标检测问题，类似于语义分割。近年来一些最先进的目标检测算法，如RetinaNet，SSD，YOLOv3，Faster R-CNN都依赖于预定义的锚框，相反，FCOS提出的检测器算法是无锚框的(anchor free)，也就是无建议(proposal free)，通过取消预定义锚框的设定，FCOS完全避免了与锚框相关的复杂计算，如在训练过程中计算重叠，更重要的是，FCOS还避免了所有与锚框相关的超参数，这些超参数会对最终的检测结果非常敏感。由于只有后处理非最大抑制 ( NMS )，我们的检测器 FCOS 比以前的基于锚框的单级检测器具有更简单的优点。首次提出了一种简单灵活的检测框架，提高了检测精度。</p>
+
+<h4 id="2introduction">2.Introduction<a href="#2introduction" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>目标检测是计算机视觉中的一项基本而又具有挑战性的任务，它要求算法为图像中感兴趣的每个实例预测一个带有类别标签的边界框。如 Faster R-CNN [20]、SSD [15]、YOLOv2、v3 都依赖于一组预定义的锚框，长期以来人们认为锚框的使用是检测器成功的关键。尽管它们取得了巨大的成功，但值得注意的是，基于锚框的检测器存在一些缺陷：</p>
+
+<ol>
+<li>检测器的性能对锚框的尺寸、长宽比和数量敏感，例如，RetinaNet中，在COCO数据集基准上，改变这些超参数会导致4%的AP的性能变化，因此，在基于锚框预测的模型中，这些超参数需要细心的调整</li>
+<li>尽管精心的超参数调整，由于锚框的尺寸和长宽比是固定的，检测器在处理形状变化较大的候选对象较为困难，特别是对于小对象，预定义锚框还限制了检测器的泛化能力，因为它们需要针对不同对象大小或纵横比的新检测任务重新设计</li>
+<li>为了获得较高的召回率，需要一个基于锚框的检测器将框密集地放置在输入图像上 ( 例如，对于短边为 800 的图像，在特征金字塔网络 ( FPN ) 中放置超过 180K 个锚框)。在训练过程中，这些锚框大多被标记为负样本。负样本数量过多加剧了训练中正样本与负样本之间的不平衡。</li>
+<li>训练过程中，当计算所有锚框和地面真实框（ground-truth boxes）之间的交并集 ( intersectionover-union, IOU ) 得分时，锚框数量过多也会显著增加计算量和内存占用。</li>
+</ol>
+
+<p>近年来，全卷积网络在语义分割、深度估计、关键点检测、计数等密集预测任务中取得了巨大的成功。目标检测作为高级视觉任务之一，可能是唯一一个偏离纯卷积逐像素预测框架的任务，这主要是由于锚框的使用。思考这样一个问题：我们能否以简洁的逐像素的预测方式来解决对象检测问题，例如，类似用于语义分割的FCN，FCOS算法首次证明了基于 FCN 的检测器比基于锚框的检测器具有更好的性能。</p>
+
+<p>在一些文献中，一些文章一些文章试图利用FCN的框架进行目标检测，例如DenseBox和UnitBox，具体地说，<strong>这些基于 FCN 的框架直接预测了特征图（feature maps）级别上每个空间位置上的一个 4D 向量加上一个类的类别。</strong>由下图(左图)所示，4D向量描述了一个边界框到该位置的四个边的相对偏移量，这些框架类似于用于语义分割的 FCNs，只是每个位置都需要回归一个 4D 连续向量。但是，为了处理不同大小的边界框，DenseBox 将训练图像调整为固定的比例。因此，DenseBox 必须对图像金字塔进行检测，这与 FCN 一次计算所有卷积的思想是相悖的。此外，更重要的是，这些方法主要用于特殊领域的目标检测，如场景文本检测或人脸检测，因为人们认为这些方法不适用于具有高度重叠边界框的一般对象检测。如图所示(右图)，<strong>高度重叠的边界框导致了训练过程中难以处理的模糊性：对于重叠区域中的像素，不清楚 w.r.t 应该回归到哪个边界框。</strong></p>
+
+<p><figure><img src="/images/FCOS1.png" alt=""></figure></p>
+
+<p>在后续中，我们将进一步研究这个问题，并说明使用 FPN 可以在很大程度上消除这种模糊性。结果表明，该方法与传统的基于锚框的检测方法具有相当的检测精度。此外，我们注意到我们的方法可能会在远离目标对象中心的位置产生大量低质量的预测边界框。为了抑制这些低质量的检测，我们引入了一个<strong>新的 “ 中心度（center-ness）” 分支(只有一层)来预测一个像素到其相应边界框中心的偏移</strong>，如公式所定义。然后，该分数用于降低低质量检测边界框的权重，并将检测结果合并到NMS中。简单而有效的中心度分支允许基于 FCN 的检测器在完全相同的训练和测试设置下胜过基于锚框的检测器。
+<span  class="math">\(
+centerness* = \sqrt {\frac{min(l*, r*)}{max(l*, r*)}\times \frac{min(t*, b*)}{max(t*,b*)}  }
+\)</span>
+这种新型检测器架构有一下几种优点：</p>
+
+<ol>
+<li>现在检测与许多其他使用 FCN 解决的任务(如语义分割)统一起来，从而更容易重复利用这些算法中的思想。</li>
+<li>检测变为无建议、无锚框，大大减少了设计参数的数量。</li>
+<li>此外，通过消除锚框，我们的新检测器完全避免了训练过程中锚框与真值框之间复杂的 IOU 计算和匹配，并将总训练内存占用降低了 2 倍左右。</li>
+<li>在没有附加条件的情况下，我们在单级检测器中实现了最先进的结果。我们还证明了所提出的 FCOS 可以在两级检测器中作为一个区域建议网络（Region Proposal Networks）使用，并且与基于锚框的 RPN 相比，可以获得更好的性能。</li>
+</ol>
+
+<h4 id="3-related-work">3. Related Work<a href="#3-related-work" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<h5 id="1anchorbased-detector">(1)Anchor-based Detector<a href="#1anchorbased-detector" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>基于锚框的检测器可以看做继承了传统的滑动窗口和基于建议（proposal）的检测器 ( 如 Fast R-CNN ) 的思想。在基于锚框的检测器中，锚框可以看作是预先定义的滑动窗口或 proposal ，这些窗口或 proposal 被划分为正补丁（positive patches）或负补丁（negative patches），通过额外的偏移量回归来细化边界框位置的预测。因此，这些检测器中的锚框可以看作是训练样本。与之前的 Fast R-CNN 等检测器反复计算每个滑动窗口 / proposal 的图像特征不同，锚框利用卷积神经网络 ( CNNs ) 的特征图，避免了重复的特征计算，大大加快了检测过程。Faster R-CNN 中的 RPNs 、SSD 和 YOLOv2 推广了锚框的设计，成为现代检测器的惯例。</p>
+
+<p>然而，如上所述，锚框会导致过多的超参数，通常需要仔细调整这些超参数才能获得良好的性能。除了上述锚框形状的超参数外，基于锚框的检测器还需要其他超参数将每个锚框标记为正样本、忽略样本或负样本。在之前的工作中，他们经常使用锚框和 ground truth 框之间的交并集（intersection over union，IOU）来标记它们 ( 例如，如果锚框的 IOU 在 [0.5, 1]，记作正样本)。这些超参数对最终的精度影响很大，需要进行启发式调优（heuristic tuning）。同时，这些超参数是针对检测任务的，使得检测任务偏离了语义分割等其他密集预测任务中使用的简洁的全卷积网络架构。</p>
+
+<h5 id="2anchorfree-detector">(2)Anchor-free Detector<a href="#2anchorfree-detector" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>最流行的无锚检测器可能是 YOLOv1。YOLOv1没有使用锚框，而是预测在靠近对象中心的点上的边界框。只使用中心附近的点，因为它们被认为能够产生更高的质量检测。然而，由于仅使用靠近中心的点来预测边界框， YOLOv1 的召回率较低，正如 YOLOv2 中所述。于是，YOLOv2 也使用了锚框。与 YOLOv1 相比，FCOS 利用 ground truth 边界框中的所有点来预测边界盒，并通过提出的 “ 中心度 ” 分支抑制检测到的低质量的边界框。因此，FCOS 能够提供与基于锚框的检测器相当的召回率。</p>
+
+<p><strong>CornerNet</strong> [10]是最近提出的一种单级无锚框检测器，它检测边界框的一对角，并将它们分组形成最终检测到的边界框。CornerNet 需要更复杂的后处理来对属于同一实例的角对进行分组。为了分组，我们学习了一个额外的距离度量。</p>
+
+<p>另一类无锚框检测器是基于 DenseBox的。由于难以处理重叠的边界框，且召回率较低，该检测器系列已被认为不适合通用目标检测。在这项工作中，我们证明了多级 FPN 预测可以很大程度上缓解这两个问题。此外，与我们提出的中心度分支一起指出的是，相对于基于锚框的检测器，更简单的检测器可以实现更好的检测性能。</p>
+
+<h4 id="4-paper-approach">4. Paper Approach<a href="#4-paper-approach" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<h5 id="1fully-convolutional-onestage-object-detector">（1）Fully Convolutional One-Stage Object Detector<a href="#1fully-convolutional-onestage-object-detector" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<p>设<span  class="math">\(F_i \in \mathbb{R}^{H\times W \times C}\)</span>为主干CNNs的第i层feature map，s为该层的总步长，输入图像的ground-truth边界框定义为<span  class="math">\({B_i}\)</span>其中<span  class="math">\(B_i = (x_0^{(i)},y_0^{(i)},x_1^{(i)},y_1^{(i)},c^{(i)}) \in \mathbb{R^4 \times {(1,2,3,\cdots,C)}}\)</span> ，这里的<span  class="math">\((x_0^{(i)},y_0^{(i)})\)</span>和<span  class="math">\((x_1^{(i)},y_1^{(i)})\)</span>表示边界框左上角坐标和右下角坐标，<span  class="math">\(c^i\)</span>是边界框中的对象所属的类别，<span  class="math">\(C\)</span>是类的数量，例如MS-COCO数据集就是80个类</p>
+
+<p>对于特征图<span  class="math">\(F_i\)</span>上的位置<span  class="math">\((x, y)\)</span>可以将其映射回输入图像位置<span  class="math">\((x, y)\)</span>的接受域中心的<span  class="math">\((\left\lfloor \frac{S}{2} \right \rfloor+xs,\left\lfloor \frac{S}{2} \right \rfloor+ys)\)</span>。与基于锚框的检测器不同，基于锚框的检测器将输入图像上的位置作为锚框的中心，并对这些锚框的目标边界框进行回归，我们直接对每个位置的目标边界框进行回归。也就是说，我们的检测器直接将位置看作训练样本，而不是在基于锚框的检测器中将锚框看作训练样本，这与在用于语义分割的 FCNs 中是一样的。</p>
+
+<p>具体来说，如果位置<span  class="math">\((x, y)\)</span>落在任意一个 ground-truth 边界框中则被认为是正样本，并且这个位置的类标签<span  class="math">\(c^*\)</span>就是<span  class="math">\(B_i\)</span>的类标签，否则就是负样本，并且为背景类<span  class="math">\(c^*=0\)</span>，除了用于分类的标签之外，我们还有一个 4D 实向量<span  class="math">\((l^*,t^*,r^*,b^*)\)</span>这里的<span  class="math">\(l^*,t^*,r^*,b^*\)</span>是位置距离边框四边的距离，如果一个位置落在多个边界框中，它被认为是一个模糊的样本。当前，我们简单地选择面积最小的边界框作为其回归目标。在下一节中，我们将展示使用多级预测，可以显著减少模糊样本的数量。如果位置<span  class="math">\((x,y)\)</span> 与一个边界框 <span  class="math">\(B_i\)</span>相关联，该位置的训练回归目标可以表示为：
+<span  class="math">\(
+l^*=x-x_0^{(i)},t^*=y-y_0^{(i)}\\r^*=x_1^{(i)}-x,b^*=y_1^{(i)}-y
+\)</span>
+值得注意的是，FCOS 可以利用尽可能多的前景样本来训练回归器。与基于锚框的检测器不同，基于锚框的检测器只考虑与 ground-truth boxes 具有足够高的 IOU 的锚框作为正样本。我们认为这可能是 FCOS 优于基于锚框的同类产品的原因之一。</p>
+
+<h4 id="5-multilevel-prediction-with-fpn-for-fcos">5. Multi-level Prediction with FPN for FCOS<a href="#5-multilevel-prediction-with-fpn-for-fcos" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>在这里我们展示了使用FPN的多级预解决提出的FCOS的可能两个问题：</p>
+
+<p>1）CNN中的最后feature map的大步长可能导致相对较低的最佳可能召回(best possible recall)。对于基于锚框的检测器，由于较大的步长而导致的低召回率，可以通过降低正锚框所需的 IOU 分数来在一定程度上得到补偿。对于 FCOS，乍一看，人们可能认为 BPR 比基于锚框的检测器获得的要低得多，因为不可能召回一个由于步长很大在最终的特征图上没有位置编码的对象。在这里，我们通过实验证明，即使步长很大，基于 FCN 的 FCOS 仍然能够产生良好的 BPR，甚至可以优于官方实现检测器中基于 anchor 的 RetinaNet 检测器的 BPR ( 见表1 )。因此，BPR 实际上不是 FCOS 的问题。此外，利用多级 FPN 预测，可以进一步改进 BPR，使其达到基于锚框的 RetinaNet 检测器可获得的最好的 BPR。</p>
+
+<p>2）ground-truth框中的重叠会在训练过程中造成难以处理的歧义，即，w.r.t.，一个位置应该回归到重叠区域内的哪个边界框 ? 这种模糊性导致基于 FCN 的检测器性能下降。结果表明，采用多级预测方法可以有效地解决模糊问题，与基于锚框的检测器相比，基于 FCN 的检测器具有相当甚至更好的性能。</p>
+
+<p>根据FPN，我们在不同大小的feature map上检测不同大小的对象，具体的说使用了定义为<span  class="math">\({P_3,P_4,P_5,P_6,P_7}\)</span>的五个层次的特征图，P3、P4、P5 由主干 CNNs 的特征图 C3、C4、C5 生成，后面是一个[11]中1×1的卷积层，横向连接，如图2所示。P6 和 P7 分别在 P5 和 P6 上应用一个 stride 为 2 的卷积层生成。</p>
+
+<p><figure><img src="/images/FCOS2.png" alt=""></figure></p>
+
+<h5 id="补充">补充<a href="#补充" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+
+<ol>
+<li>RPN的整个流程</li>
+</ol>
+
+<p>首先原图经过一系列的卷积操作，得到一个公共特征图，假设大小是N X 16 X 16，进入RPN的阶段经过一个<span  class="math">\(3\times3\)</span>的卷积操作，得到一个<span  class="math">\(256\times16\times16\)</span>的特征图，也可以看做一个16 X 16个256维的特征向量，然后经过1 X 1的卷积操作，如果预先设定9种组和的anchor就得到18 X 16 X 16和一个36 X 16 X 16的特征图，也就是16 X 16 X 9个结果，每个结果分别包含2个分数和4个坐标，再结合预先设定的Anchor就得到复选框，结合懒人元博客的图理解：</p>
+
+<p><figure><img src="/images/FCOS3.png" alt=""></figure></p>
+
+<ol start="2">
+<li>FPN金字塔网络</li>
+</ol>
+
+<p>首先FPN的网络架构是基于ResNet50，输入图像首先经过Bottom-up操作，Bottom-up操作是基于Resnet的网络结构，这样得到不同大小的特征图<span  class="math">\({C2, C3, C4, C5}\)</span>，之后得到的特征图<span  class="math">\({C2, C3, C4, C5}\)</span>中<span  class="math">\(C5\)</span>经过侧边连接层将特征通道数降为256，例如C5通过降维之后得到特征图P5，又将P5经过上采样层将特征图大小放大再与C4经过侧边连接层进行通道降维操作后的特征图特征相加得到P4；P3，P2，特征图以此类推，最后将得到的P4，P3，P2特征图经过Smooth Layer得到最后的特征图。</p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://wuhongyui.github.io/tags/untagged">untagged</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>315 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-03-16 14:00 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://wuhongyui.github.io/posts/deepsort/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Fundamentals of target tracking algorithm---DeepSort</span>
+			</a>
+			<a class="prev-post" href="https://wuhongyui.github.io/posts/yolo/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Learning YOLO detection algorithm</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+</div>
+	</main>
+
+<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2021 <a href="https://wuhongyui.github.io/">拿了橘子跑</a> &#183; <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Wuen</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://wuhongyui.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+
+
+
+
+	<script src="https://wuhongyui.github.io/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js" integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Ubuntu18.04 Openpose Environment configuration">
+<meta itemprop="description" content="Ubuntu18.04 人体姿态检测算法OpenPose环境配置 最近项目中需要实现一个人体姿态检测算法的需求，GitHub中也有Pytorch版本的OpenPose但是跑起视频来惨不忍睹，只有2-3FPS；于是就考虑使用CMU官方的代码，就进行了一波漫长的环境配置。
+资源的准备 首先在Github上获取OpenPose项目文件：
+git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose.git 根据网络情况可能有快有慢，还是建议挂一下梯子下载速度快一些。
+OpenPose的项目环境需要Caffe与OpenCV，于是先行安装OpenCV，可以从OpenCV官网下载OpenCV官网，也可以通过git：
+git clone https://github.com/Itseez/opencv.git git clone https://github.com/Itseez/opencv_contrib.git 下载成功后，可以在你的home目录下看见opencv和opencv_contrib两个文件夹，将opencv_contrib目录移到opencv目录下。
+在下载的过程中，我们可以添加opencv所需要的依赖库：
+sudo apt-get install build-essential sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev 安装build-essential可能会出现安装不上的问题，需要安装可以使用：
+apt depends build-essential 查看build-essential所需要的依赖。
+在各项依赖安装完成之后mkdir build在opencv目录下创建build目录，cd build进入build目录，执行：
+cmake -D CMAKE_INSTALL_PREFIX=/usr/local -D CMAKE_BUILD_TYPE=Release -D OPENCV_EXTRA_MODULES_PATH=../opencv_contrib/modules .. 注意：最后的两个点不能丢
+cmake编译成功出现Configuring done和Generating done，接下来进行下一步输入
+sudo make -j8 如果顺利的话就会出现
+这就意味着opencv编译成功了，如果出现了编译错误，那就需要找一找是否是有哪些依赖没有事先安装。">
+
+
+<meta itemprop="datePublished" content="2020-08-13T21:01:10&#43;08:00" />
+<meta itemprop="dateModified" content="2020-08-13T21:01:10&#43;08:00" />
+<meta itemprop="wordCount" content="468">
+
+
+
+<meta itemprop="keywords" content="untagged," />
+<meta property="og:title" content="Ubuntu18.04 Openpose Environment configuration" />
+<meta property="og:description" content="Ubuntu18.04 人体姿态检测算法OpenPose环境配置 最近项目中需要实现一个人体姿态检测算法的需求，GitHub中也有Pytorch版本的OpenPose但是跑起视频来惨不忍睹，只有2-3FPS；于是就考虑使用CMU官方的代码，就进行了一波漫长的环境配置。
+资源的准备 首先在Github上获取OpenPose项目文件：
+git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose.git 根据网络情况可能有快有慢，还是建议挂一下梯子下载速度快一些。
+OpenPose的项目环境需要Caffe与OpenCV，于是先行安装OpenCV，可以从OpenCV官网下载OpenCV官网，也可以通过git：
+git clone https://github.com/Itseez/opencv.git git clone https://github.com/Itseez/opencv_contrib.git 下载成功后，可以在你的home目录下看见opencv和opencv_contrib两个文件夹，将opencv_contrib目录移到opencv目录下。
+在下载的过程中，我们可以添加opencv所需要的依赖库：
+sudo apt-get install build-essential sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev 安装build-essential可能会出现安装不上的问题，需要安装可以使用：
+apt depends build-essential 查看build-essential所需要的依赖。
+在各项依赖安装完成之后mkdir build在opencv目录下创建build目录，cd build进入build目录，执行：
+cmake -D CMAKE_INSTALL_PREFIX=/usr/local -D CMAKE_BUILD_TYPE=Release -D OPENCV_EXTRA_MODULES_PATH=../opencv_contrib/modules .. 注意：最后的两个点不能丢
+cmake编译成功出现Configuring done和Generating done，接下来进行下一步输入
+sudo make -j8 如果顺利的话就会出现
+这就意味着opencv编译成功了，如果出现了编译错误，那就需要找一找是否是有哪些依赖没有事先安装。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuhongyui.github.io/posts/openpose/" />
+<meta property="article:published_time" content="2020-08-13T21:01:10+08:00" />
+<meta property="article:modified_time" content="2020-08-13T21:01:10+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Ubuntu18.04 Openpose Environment configuration"/>
+<meta name="twitter:description" content="Ubuntu18.04 人体姿态检测算法OpenPose环境配置 最近项目中需要实现一个人体姿态检测算法的需求，GitHub中也有Pytorch版本的OpenPose但是跑起视频来惨不忍睹，只有2-3FPS；于是就考虑使用CMU官方的代码，就进行了一波漫长的环境配置。
+资源的准备 首先在Github上获取OpenPose项目文件：
+git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose.git 根据网络情况可能有快有慢，还是建议挂一下梯子下载速度快一些。
+OpenPose的项目环境需要Caffe与OpenCV，于是先行安装OpenCV，可以从OpenCV官网下载OpenCV官网，也可以通过git：
+git clone https://github.com/Itseez/opencv.git git clone https://github.com/Itseez/opencv_contrib.git 下载成功后，可以在你的home目录下看见opencv和opencv_contrib两个文件夹，将opencv_contrib目录移到opencv目录下。
+在下载的过程中，我们可以添加opencv所需要的依赖库：
+sudo apt-get install build-essential sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev 安装build-essential可能会出现安装不上的问题，需要安装可以使用：
+apt depends build-essential 查看build-essential所需要的依赖。
+在各项依赖安装完成之后mkdir build在opencv目录下创建build目录，cd build进入build目录，执行：
+cmake -D CMAKE_INSTALL_PREFIX=/usr/local -D CMAKE_BUILD_TYPE=Release -D OPENCV_EXTRA_MODULES_PATH=../opencv_contrib/modules .. 注意：最后的两个点不能丢
+cmake编译成功出现Configuring done和Generating done，接下来进行下一步输入
+sudo make -j8 如果顺利的话就会出现
+这就意味着opencv编译成功了，如果出现了编译错误，那就需要找一找是否是有哪些依赖没有事先安装。"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Ubuntu18.04 Openpose Environment configuration</title>
+	<link rel="stylesheet" href="https://wuhongyui.github.io/css/style.min.657bcb7af31123e4156b1a3d2ff60a636717e54ead74f882136b5114cf72b55e.css" integrity="sha256-ZXvLevMRI+QVaxo9L/YKY2cX5U6tdPiCE2tRFM9ytV4=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://wuhongyui.github.io/">拿了橘子跑</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://wuhongyui.github.io/posts/">Article</a>
+				<a href="https://wuhongyui.github.io/about-hugo/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://twitter.com/" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="https://instagram.com/" target="_blank" rel="noopener me" title="Instagram"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg></a><a href="https://github.com/wuhongyui" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://wuhongyui.github.io/posts/">Article</a></li>
+			<li><a href="https://wuhongyui.github.io/about-hugo/">About</a></li>
+		</ul>
+	</div>
+
+
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Aug 13, 2020</span></div>
+				<h1>Ubuntu18.04 Openpose Environment configuration</h1>
+			</header>
+			<div class="content">
+				
+
+<h3 id="ubuntu18-04-人体姿态检测算法openpose环境配置">Ubuntu18.04 人体姿态检测算法OpenPose环境配置<a href="#ubuntu18-04-人体姿态检测算法openpose环境配置" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+
+<p>最近项目中需要实现一个人体姿态检测算法的需求，GitHub中也有Pytorch版本的OpenPose但是跑起视频来惨不忍睹，只有2-3FPS；于是就考虑使用CMU官方的代码，就进行了一波漫长的环境配置。</p>
+
+<h4 id="资源的准备">资源的准备<a href="#资源的准备" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>首先在Github上获取OpenPose项目文件：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose.git</code></pre></div>
+<p>根据网络情况可能有快有慢，还是建议挂一下梯子下载速度快一些。</p>
+
+<p>OpenPose的项目环境需要Caffe与OpenCV，于是先行安装OpenCV，可以从OpenCV官网下载<a href="https://github.com/opencv">OpenCV官网</a>，也可以通过git：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">git clone https://github.com/Itseez/opencv.git
+git clone https://github.com/Itseez/opencv_contrib.git</code></pre></div>
+<p>下载成功后，可以在你的home目录下看见opencv和opencv_contrib两个文件夹，将opencv_contrib目录移到opencv目录下。</p>
+
+<p>在下载的过程中，我们可以添加opencv所需要的依赖库：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo apt-get install build-essential
+sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev</code></pre></div>
+<p>安装build-essential可能会出现安装不上的问题，需要安装可以使用：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">apt depends build-essential</code></pre></div>
+<p>查看build-essential所需要的依赖。</p>
+
+<p>在各项依赖安装完成之后<code>mkdir build</code>在opencv目录下创建build目录，<code>cd build</code>进入build目录，执行：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">cmake -D <span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span>/usr/local -D <span class="nv">CMAKE_BUILD_TYPE</span><span class="o">=</span>Release -D <span class="nv">OPENCV_EXTRA_MODULES_PATH</span><span class="o">=</span>../opencv_contrib/modules ..</code></pre></div>
+<p>注意：最后的两个点不能丢</p>
+
+<p><img src="/images/OpenPose1.jpg" alt="OpenPose1" /></p>
+
+<p>cmake编译成功出现Configuring done和Generating done，接下来进行下一步输入</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo make -j8</code></pre></div>
+<p>如果顺利的话就会出现</p>
+
+<p><img src="/images/OpenPose2.jpg" alt="OpenPose2" /></p>
+
+<p>这就意味着opencv编译成功了，如果出现了编译错误，那就需要找一找是否是有哪些依赖没有事先安装。</p>
+
+<p>接下来运行：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo make install</code></pre></div>
+<p>可以在<code>/usr/local/lib</code>目录下看到一系列<code>libopencv_xxx.so</code>等这样的动态库，这样成功安装OpenCV，可以适用于各种语言。</p>
+
+<h4 id="caffe搭建">Caffe搭建<a href="#caffe搭建" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>安装相关依赖库</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo apt-get --assume-yes install build-essential
+ 
+sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev protobuf-compiler
+ 
+sudo apt-get install --no-install-recommends libboost-all-dev
+ 
+sudo apt-get install libopenblas-dev liblapack-dev libatlas-base-dev
+ 
+sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev
+ 
+sudo -H pip install --upgrade numpy protobuf</code></pre></div>
+<p>Caffe的下载</p>
+
+<p>可以直接从<code>OpenPose</code>的GitHub项目中的<code>3rdparty</code>的第三方目录中<code>Caffe</code>中获取：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">git clone https://github.com/CMU-Perceptual-Computing-Lab/caffe.git</code></pre></div>
+<p>将下载好的Caffe文件放在OpenPose项目的Caffe目录下进行编译，以免一些未知的错误，打开下载好的Caffe文件，目录下新建一个build目录</p>
+
+<p>修改<code>MakeFile.config</code>进入caffe，将 <code>Makefile.config.example</code> 文件复制一份并更名为<code>Makefile.config</code>，也可以在caffe目录下直接调用以下命令完成复制操作 ：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo cp Makefile.config.example Makefile.config</code></pre></div>
+<p>修改<code>Makefile.config</code>文件，在caffe目录下打开该文件：</p>
+<div class="highlight"><pre class="chroma"><code class="language-makefile" data-lang="makefile"><span class="err">...</span>
+<span class="err">将</span>
+<span class="c">#USE_CUDNN := 1
+</span><span class="c"></span><span class="err">修改成：</span> 
+<span class="nv">USE_CUDNN</span> <span class="o">:=</span> <span class="m">1</span>
+<span class="err">...</span>
+ 
+<span class="err">...</span>
+<span class="c">#如果此处是OpenCV2，则不用修改
+</span><span class="c"></span><span class="err">将</span>
+<span class="c">#OPENCV_VERSION := 3 
+</span><span class="c"></span><span class="err">修改为：</span> 
+<span class="nv">OPENCV_VERSION</span> <span class="o">:=</span> <span class="m">3</span>
+<span class="err">...</span>
+ 
+<span class="err">...</span>
+<span class="err">将</span>
+<span class="c">#WITH_PYTHON_LAYER := 1 
+</span><span class="c"></span><span class="err">修改为</span> 
+<span class="nv">WITH_PYTHON_LAYER</span> <span class="o">:=</span> <span class="m">1</span>
+<span class="err">...</span>
+ 
+<span class="err">...</span>
+<span class="nv">INCLUDE_DIRS</span> <span class="o">:=</span> <span class="k">$(</span>PYTHON_INCLUDE<span class="k">)</span> /usr/local/include
+<span class="nv">LIBRARY_DIRS</span> <span class="o">:=</span> <span class="k">$(</span>PYTHON_LIB<span class="k">)</span> /usr/local/lib /usr/lib 
+<span class="err">修改为：</span> 
+<span class="nv">INCLUDE_DIRS</span> <span class="o">:=</span> <span class="k">$(</span>PYTHON_INCLUDE<span class="k">)</span> /usr/local/include /usr/include/hdf5/serial
+<span class="nv">LIBRARY_DIRS</span> <span class="o">:=</span> <span class="k">$(</span>PYTHON_LIB<span class="k">)</span> /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/hdf5/serial       
+<span class="err">...</span>
+ 
+<span class="err">...</span>
+<span class="err">将</span>
+<span class="nv">CUDA_ARCH</span> <span class="o">:=</span> -gencode <span class="nv">arch</span><span class="o">=</span>compute_20,code<span class="o">=</span>sm_20 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_20,code<span class="o">=</span>sm_21 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_30,code<span class="o">=</span>sm_30 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_35,code<span class="o">=</span>sm_35 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_50,code<span class="o">=</span>sm_50 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_52,code<span class="o">=</span>sm_52 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_60,code<span class="o">=</span>sm_60 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_61,code<span class="o">=</span>sm_61 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_61,code<span class="o">=</span>compute_61
+<span class="err">修改为</span>
+<span class="nv">CUDA_ARCH</span> <span class="o">:=</span> -gencode <span class="nv">arch</span><span class="o">=</span>compute_30,code<span class="o">=</span>sm_30 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_35,code<span class="o">=</span>sm_35 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_50,code<span class="o">=</span>sm_50 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_52,code<span class="o">=</span>sm_52 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_60,code<span class="o">=</span>sm_60 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_61,code<span class="o">=</span>sm_61 <span class="se">\
+</span><span class="se"></span>		-gencode <span class="nv">arch</span><span class="o">=</span>compute_61,code<span class="o">=</span>compute_61
+<span class="err">...</span>
+</code></pre></div>
+<p>然后修改 Caffe 目录下的<code>Makefile</code> 文件：</p>
+<div class="highlight"><pre class="chroma"><code class="language-makefile" data-lang="makefile"><span class="err">...</span>
+<span class="err">将：</span>
+<span class="nv">NVCCFLAGS</span> <span class="o">+=</span>-ccbin<span class="o">=</span><span class="k">$(</span>CXX<span class="k">)</span> -Xcompiler-fPIC <span class="k">$(</span>COMMON_FLAGS<span class="k">)</span>
+<span class="err">替换为：</span>
+<span class="nv">NVCCFLAGS</span> <span class="o">+=</span> -D_FORCE_INLINES -ccbin<span class="o">=</span><span class="k">$(</span>CXX<span class="k">)</span> -Xcompiler -fPIC <span class="k">$(</span>COMMON_FLAGS<span class="k">)</span>
+<span class="err">...</span>
+ 
+<span class="err">...</span>
+<span class="err">将：</span>
+<span class="nv">LIBRARIES</span> <span class="o">+=</span> glog gflags protobuf boost_system boost_filesystem m hdf5_hl hdf5
+<span class="err">改为：</span>
+<span class="nv">LIBRARIES</span> <span class="o">+=</span> glog gflags protobuf boost_system boost_filesystem m hdf5_serial_hl hdf5_serial
+<span class="err">...</span>
+</code></pre></div>
+<p>然后修改<code>/usr/local/cuda/include/host_config.h</code>文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-c++" data-lang="c++"><span class="p">...</span>
+<span class="err">将</span>
+<span class="cp">#error-- unsupported GNU version! gcc versions later than 4.9 are not supported!
+</span><span class="cp"></span><span class="err">改为</span>
+<span class="c1">//#error-- unsupported GNU version! gcc versions later than 4.9 are not supported!
+</span><span class="c1"></span><span class="p">...</span>
+</code></pre></div>
+<p>编译 ,在caffe目录下执行：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo make all -j8</code></pre></div>
+<p>在编译的过程中遇到了：</p>
+
+<pre><code>libcudart.so.10.0: cannot open shared object file: No such file or directory
+</code></pre>
+
+<p>显示连接不上cuda的相关动态库，首先确认了环境变量<code>/etc/profile</code>与<code>~/.bashrc</code>中有含了：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/usr/local/cuda-10.0/bin
+<span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:/usr/local/cuda-10.0/lib64
+<span class="nb">export</span> <span class="nv">LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LIBRARY_PATH</span>:/usr/local/cuda-10.0/lib64</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">source</span> /etc/profile</code></pre></div>
+<p>使得配置文件生效之后在编译</p>
+
+<p>若仍提示相同的错误，则执行以下命令，将相应的库文件复制到<code>/usr/lib</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo cp /usr/local/cuda-8.0/lib64/libcudart.so.8.0 /usr/local/lib/libcudart.so.8.0 <span class="o">&amp;&amp;</span> sudo ldconfig
+sudo cp /usr/local/cuda-8.0/lib64/libcublas.so.8.0 /usr/local/lib/libcublas.so.8.0 <span class="o">&amp;&amp;</span> sudo ldconfig
+sudo cp /usr/local/cuda-8.0/lib64/libcurand.so.8.0 /usr/local/lib/libcurand.so.8.0 <span class="o">&amp;&amp;</span> sudo ldconfig</code></pre></div>
+<p>ldconfig命令是一个动态链接库管理命令，是为了让动态链接库为系统共享。</p>
+
+<p>然后重新进入Caffe目录下进行编译</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo make clean
+sudo make all -j8</code></pre></div>
+<p>再测试Caffe是否安装成功：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo make runtest -j8</code></pre></div>
+<p>测试时间较长，但是觉得还是有必要进行一下，因为如果Caffe编译不成功导致后面OpenPose编译不成功，问题不好排查，当终端出现RUN OK等绿色字样意味着编译成功了，便可以进行下一步</p>
+
+<h4 id="openpose编译">OpenPose编译<a href="#openpose编译" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+
+<p>首先安装Cmake GUI</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">sudo apt-get install cmake-gui</code></pre></div>
+<p>下载官方给的caffemodel</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">cd</span> models
+./getModels.sh
+<span class="nb">cd</span> ..</code></pre></div>
+<p>下载速度看网络情况，也可选择一下连接手动下载模型权重，放在对应的模型目录下</p>
+
+<pre><code>http://posefs1.perception.cs.cmu.edu/OpenPose/models/pose/body_25/pose_iter_584000.caffemodel
+http://posefs1.perception.cs.cmu.edu/OpenPose/models/pose/coco/pose_iter_440000.caffemodel
+http://posefs1.perception.cs.cmu.edu/OpenPose/models/pose/mpi/pose_iter_160000.caffemodel
+http://posefs1.perception.cs.cmu.edu/OpenPose/models/face/pose_iter_116000.caffemodel
+http://posefs1.perception.cs.cmu.edu/OpenPose/models/hand/pose_iter_102000.caffemodel
+</code></pre>
+
+<p>打开Cmake GUI对OpenPose进行编译，进入图形化界面后<code>where is the source code</code>与<code>Where to build the binaries</code>分别填写OpenPose项目目录和build目录</p>
+
+<p>然后在左下角的configure</p>
+
+<p><img src="/images/OpenPose3.jpg" alt="" /></p>
+
+<p>默认就这两个选项，点击Finish，完成之后选择</p>
+
+<p><img src="/images/OpenPose4.jpg" alt="" /></p>
+
+<p>这个时候要填写之前配置的caffe路径<code>Caffe_INCLUDE_DIRS</code>这个填写caffe目录下的include目录<code>/home/user/openpose/3rdparty/caffe/include</code></p>
+
+<p><code>caffe_LIBS</code>填写<code>home/user/openpose/3rdparty/caffe/build/lib/libcaffe.so</code>然后去掉最上面的BUILD_CAFFE选项，点击下方的Generate，结束</p>
+
+<p>编译OpenPose：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">cd</span> build
+sudo make -j8</code></pre></div>
+<p>可能会出现fatal error：caffe/proto/caffe.pd.h : No such file or diretory  解决方案：找到最初编译caffe的文件夹，使用命令行(生成caffe.pb.h，然后新建空文件夹移过去）</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">protoc src/caffe/proto/caffe.proto --cpp_out<span class="o">=</span>.
+mkdir include/caffe/proto
+mv src/caffe/proto/caffe.pb.h include/caffe/proto</code></pre></div>
+<p>接下来就可以编译成功了</p>
+
+<p>测试OpenPose</p>
+
+<p>测试视频：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># human pose</span>
+./build/examples/openpose/openpose.bin --video examples/media/video.avi
+<span class="c1"># human pose with face and hands</span>
+./build/examples/openpose/openpose.bin --video examples/media/video.avi --face --hand</code></pre></div>
+<p>摄像头测试：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># human pose</span>
+./build/examples/openpose/openpose.bin
+<span class="c1"># human pose with face and hands</span>
+./build/examples/openpose/openpose.bin --face --hand</code></pre></div>
+<p>最后成功显示</p>
+
+<p><img src="/images/OpenPose5.jpg" alt="" /></p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://wuhongyui.github.io/tags/untagged">untagged</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>468 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-08-13 21:01 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://wuhongyui.github.io/posts/fibonacci/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Find the nth term of the Fibonacci sequence</span>
+			</a>
+			<a class="prev-post" href="https://wuhongyui.github.io/posts/swiftnet/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Note for paper SwiftNet</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+</div>
+	</main>
+
+<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2021 <a href="https://wuhongyui.github.io/">拿了橘子跑</a> &#183; <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Wuen</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://wuhongyui.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+
+
+
+
+	<script src="https://wuhongyui.github.io/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js" integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin="anonymous"></script>
+	
+
+</body>
+
+</html>
