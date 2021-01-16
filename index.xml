@@ -7,10 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Thu, 14 Jan 2021 20:24:31 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 15 Jan 2021 20:41:57 +0800</lastBuildDate>
     
 	<atom:link href="https://wuhongyui.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Replace space</title>
+      <link>https://wuhongyui.github.io/posts/replace/</link>
+      <pubDate>Fri, 15 Jan 2021 20:41:57 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/replace/</guid>
+      <description>替换空格 请实现一个函数，将一个字符串中的每个空格替换成“%20”。例如，当字符串为We Are Happy.则经过替换之后的字符串为We%20Are%20Happy。
+描述方法： 这是一道考察字符串的题目。由于函数返回的是void，说明此题不能开辟新数组，需要在字符串内直接替换（in-place）可以通过遍历字符串的方式来找到空格进行替换。但要考虑空格只占一个字符的位置，而需要替换的&amp;rdquo;%20&amp;rdquo;需要三个字符的位置。因此需要增加两倍空格数量的空间来存储数据。通过定义两个指针来实现遍历替换操作，考虑遍历顺序：
+1）如果从左到右遍历，会发现遇到空格，替换会将原来的字符覆盖。
+2）如果从右到左遍历，遇到空格就填充&amp;rdquo;02%&amp;ldquo;，否则将原字符移动到后面指针的位置。
+ length为原字符串最后一个字符的位置，new_length为结果字符串的最后一个位置   如果str[length]不等于空格，就复制，然后指针分别左移一位。    如果str[length]等于空格，就填充“20%”   一直进行上述步骤，直到字符串遍历完毕  class Solution { public: void replaceSpace(char *str,int length) { if (str == nullptr || length &amp;lt;= 0) return; int cont = 0; for (int i = 0; i &amp;lt;= length; ++i ){ if (str[i] == &amp;#39; &amp;#39;) ++cont; } if (!cont) return; int new_length = length + cont * 2; for(int i = length; i &amp;gt;= 0; --i){ if (str[i] == &amp;#39; &amp;#39;){ str[new_length--] = &amp;#39;0&amp;#39;; str[new_length--] = &amp;#39;2&amp;#39;; str[new_length--] = &amp;#39;%&amp;#39;; } else{ str[new_length--] = str[i]; } } } };  复杂度分析 时间复杂度：O(length) 只遍历了一遍字符串 空间复杂度：O(1) 没有开辟空间</description>
+    </item>
     
     <item>
       <title>Find the nth term of the Fibonacci sequence</title>
@@ -172,28 +185,6 @@ NIVDIA Driver  sudo apt purge nvidia-*移除原有老驱动； sudo add-apt-repo
  添加环境变量，使用sudo gedit ~/.bashrcorsudo vim ~/.bashrc加入如下：
 export CUDA_HOME=/usr/local/cuda export PATH=$PATH:$CUDA_HOME/bin export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}  source ~/.bashrc之后使用nvcc -V查看是否安转成功；
   Cudnn 下载cudnn或者其他版本other version</description>
-    </item>
-    
-    <item>
-      <title>How to build blog by Hugo</title>
-      <link>https://wuhongyui.github.io/posts/buildblog/</link>
-      <pubDate>Sat, 21 Dec 2019 16:17:36 +0800</pubDate>
-      
-      <guid>https://wuhongyui.github.io/posts/buildblog/</guid>
-      <description>Hugo 简介 ​ Hugo是一个用Go语言编写的静态站点生成器，hugo的易操作性和其拥有大量的主题库使其备受技术博客博主喜爱。记录一些自己亲手搭建博客的经验之谈。本文操作基于macos 下
-如何安装Hugo 如果你是macOs 用户可以使用homebrew 来安装：
-brew install hugo 如果你是Ubuntu 或者其他linux 用户可以使用apt 来安装：
-sudo apt-get install hugo  如果是Windows 用户，使用scoop 快速安装：
-scoop install hugo  使用包管理工具，基本上可以实现一条代码快速安装，具体可以参考Hugo官网
-Hugo官网
-生成博客文件 自己选择合适的文件夹下使用终端输入命令：
-hugo new site myblog  此命令会在当前文件夹下建立一个名叫myblog的文件夹；
-接下来就是选择你喜爱的主题hugo主题可以随意挑一个自己喜爱的主题使用，也可以在github中搜索你想要的主题库，使用命令：
-cd themes git clone https://github.com/Track3/hermit.git themes/hermit  myblog/content文件夹是存放你博客文章的地方，在此新建.md文件
-hugo new posts/XXXX.md  可以在XXXX.md文件中使用markdown格式编写一些博客内容，使用命令：
-hugo server -t 主题名 -D  进行主题预览
-配置主题，打开myblog/config.toml每个主题有不同的配置：
-baseURL = &amp;quot;https://wuhongyui.github.io&amp;quot; languageCode = &amp;quot;en-us&amp;quot; defaultContentLanguage = &amp;quot;en&amp;quot; title = &amp;quot;拿了橘子跑&amp;quot; theme = &amp;quot;hermit&amp;quot; # enableGitInfo = true pygmentsCodefences = true pygmentsUseClasses = true # hasCJKLanguage = true # If Chinese/Japanese/Korean is your main content language, enable this to make wordCount works right.</description>
     </item>
     
   </channel>

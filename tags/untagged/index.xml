@@ -7,10 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Thu, 14 Jan 2021 20:24:31 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 15 Jan 2021 20:41:57 +0800</lastBuildDate>
     
 	<atom:link href="https://wuhongyui.github.io/tags/untagged/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Replace space</title>
+      <link>https://wuhongyui.github.io/posts/replace/</link>
+      <pubDate>Fri, 15 Jan 2021 20:41:57 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/replace/</guid>
+      <description>替换空格 请实现一个函数，将一个字符串中的每个空格替换成“%20”。例如，当字符串为We Are Happy.则经过替换之后的字符串为We%20Are%20Happy。
+描述方法： 这是一道考察字符串的题目。由于函数返回的是void，说明此题不能开辟新数组，需要在字符串内直接替换（in-place）可以通过遍历字符串的方式来找到空格进行替换。但要考虑空格只占一个字符的位置，而需要替换的&amp;rdquo;%20&amp;rdquo;需要三个字符的位置。因此需要增加两倍空格数量的空间来存储数据。通过定义两个指针来实现遍历替换操作，考虑遍历顺序：
+1）如果从左到右遍历，会发现遇到空格，替换会将原来的字符覆盖。
+2）如果从右到左遍历，遇到空格就填充&amp;rdquo;02%&amp;ldquo;，否则将原字符移动到后面指针的位置。
+ length为原字符串最后一个字符的位置，new_length为结果字符串的最后一个位置   如果str[length]不等于空格，就复制，然后指针分别左移一位。    如果str[length]等于空格，就填充“20%”   一直进行上述步骤，直到字符串遍历完毕  class Solution { public: void replaceSpace(char *str,int length) { if (str == nullptr || length &amp;lt;= 0) return; int cont = 0; for (int i = 0; i &amp;lt;= length; ++i ){ if (str[i] == &amp;#39; &amp;#39;) ++cont; } if (!cont) return; int new_length = length + cont * 2; for(int i = length; i &amp;gt;= 0; --i){ if (str[i] == &amp;#39; &amp;#39;){ str[new_length--] = &amp;#39;0&amp;#39;; str[new_length--] = &amp;#39;2&amp;#39;; str[new_length--] = &amp;#39;%&amp;#39;; } else{ str[new_length--] = str[i]; } } } };  复杂度分析 时间复杂度：O(length) 只遍历了一遍字符串 空间复杂度：O(1) 没有开辟空间</description>
+    </item>
     
     <item>
       <title>Find the nth term of the Fibonacci sequence</title>
