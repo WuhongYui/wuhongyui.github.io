@@ -7,10 +7,51 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Fri, 15 Jan 2021 20:41:57 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 11 Mar 2021 14:29:11 +0800</lastBuildDate>
     
 	<atom:link href="https://wuhongyui.github.io/tags/untagged/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>剑指offer练习JZ4-JZ6</title>
+      <link>https://wuhongyui.github.io/posts/excess_03_11/</link>
+      <pubDate>Thu, 11 Mar 2021 14:29:11 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/excess_03_11/</guid>
+      <description>重建二叉树 题目描述：
+输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。
+示例
+ 输入
+[1,2,3,4,5,6,7],[3,2,4,1,6,5,7]
+返回值
+{1,2,5,3,4,6,7}
+ 方法：递归算法 二叉树的遍历知识： 二叉树的前序遍历：根-&amp;gt;左-&amp;gt;右
+二叉树的中序遍历：左-&amp;gt;根-&amp;gt;右
+二叉树的后序遍历：左-&amp;gt;右-&amp;gt;根
+建立树的相关步骤： struct TreeNode{ int vall; TreeNode *left; TreeNode *right; TreeNode(int x):val(x), left(nullptr), right(nullptr){} }; //建树伪代码 TreeNode* build(1...){ if (2...) return nullptr; TreeNode *root = new TreeNode(3...); root-&amp;gt;left = build(4...); //递归建立左子树  rott-&amp;gt;right = build(5...); //递归建立右子树  return root; }  通过记住建树伪代码中的1到5步，就可以建立一颗二叉树。那么1到5分别要填入什么呢？
+假设：1. 数组vector 中的元素为树中的节点。
+ 如果数组为空，则返回nullptr 新创建一个根结点的值 左子树的数组元素 右子树的数组元素  本段递归代码的理解就是，不断的创建二叉树中的根节点。因为二叉树中的左右子树节点也可以视为新树的根节点，所以不断的递归调用创建根节点，就可以创建一颗二叉树。具体化的步骤代码：
+// 假设元素在数组v中，并且头结点的下标为 root_index, first &amp;lt; root_index &amp;lt; last, // 这里只是会的容易讲解 TreeNode* build(int first, int last) { if (first &amp;gt; last) return nullptr; TreeNode *root = new TreeNode(v[root_index]); root-&amp;gt;left = build(first, root_index - 1); root-&amp;gt;right = build(root_index + 1, last); return root; }  那么这个root_index哪里来？根据先验知识了解到树的前序遍历数组的第一个元素便为二叉树的根节点，而树的中序遍历数组在根节点元素的左边的所有元素是左子树的序列，在右边的所有元素是右子树的序列。</description>
+    </item>
+    
+    <item>
+      <title>Reverse</title>
+      <link>https://wuhongyui.github.io/posts/reverse/</link>
+      <pubDate>Mon, 18 Jan 2021 10:08:36 +0800</pubDate>
+      
+      <guid>https://wuhongyui.github.io/posts/reverse/</guid>
+      <description>从尾到头打印链表 输入一个链表，按链表从尾到头的顺序返回一个ArrayList。
+示例
+ 输入
+{67, 0, 24, 58}
+返回值
+[58, 0, 24, 58]
+ 方法一 直接用简单粗暴的std::reverse()方法直接将List颠倒。
+vector&amp;lt;int&amp;gt; printListFromTailToHead(ListNode* head){ vector&amp;lt;int&amp;gt; res; while(head){ res.push_back(head-&amp;gt;val); head = head-&amp;gt;next; } std::reverse(res.begin(), res.end()); return res; }  方法二 相对于一个数组取反过程，可以考虑使用入栈和出栈操作来实现，顺序读取链表元素存入栈，再将元素出栈存入数组中可以得到一个相反的ArryList，代码如下：
+class Solution{ public: vector&amp;lt;int&amp;gt; printListFromTailToHead(ListNode* head){ stack&amp;lt;int&amp;gt; s; vector&amp;lt;int&amp;gt; res; while(head){ s.push(head-&amp;gt;val); //将元素入栈  head = head-&amp;gt;next; } while(!a.empty()){ res.push_back(s.top); //读取栈顶元素存入vector  s.pop(); //弹出栈顶元素	 } } };  方法三 考虑到可以使用反转链表的操作来实现。反转链表的精髓是定义三个指针head，pre，next。首先准备一个pre结点初始指向nullptr，表示正在反转结点的前一个结点，再准备一个cur，表示当前正在反转的结点，cur初始化为head。最后在准备一个next，表示还未反转的下一个结点。
+使用如下示意图方便记忆，其中箭头表示等于：
+代码如下：</description>
+    </item>
     
     <item>
       <title>Replace space</title>
@@ -143,21 +184,6 @@ conda install pysocks  之后再使用 pip命令就会默认使用虚拟环境�
 在一些文献中，一些文章一些文章试图利用FCN的框架进行目标检测，例如DenseBox和UnitBox，具体地说，这些基于 FCN 的框架直接预测了特征图（feature maps）级别上每个空间位置上的一个 4D 向量加上一个类的类别。由下图(左图)所示，4D向量描述了一个边界框到该位置的四个边的相对偏移量，这些框架类似于用于语义分割的 FCNs，只是每个位置都需要回归一个 4D 连续向量。但是，为了处理不同大小的边界框，DenseBox 将训练图像调整为固定的比例。因此，DenseBox 必须对图像金字塔进行检测，这与 FCN 一次计算所有卷积的思想是相悖的。此外，更重要的是，这些方法主要用于特殊领域的目标检测，如场景文本检测或人脸检测，因为人们认为这些方法不适用于具有高度重叠边界框的一般对象检测。如图所示(右图)，高度重叠的边界框导致了训练过程中难以处理的模糊性：对于重叠区域中的像素，不清楚 w.r.t 应该回归到哪个边界框。
 
 在后续中，我们将进一步研究这个问题，并说明使用 FPN 可以在很大程度上消除这种模糊性。结果表明，该方法与传统的基于锚框的检测方法具有相当的检测精度。此外，我们注意到我们的方法可能会在远离目标对象中心的位置产生大量低质量的预测边界框。为了抑制这些低质量的检测，我们引入了一个新的 “ 中心度（center-ness）” 分支(只有一层)来预测一个像素到其相应边界框中心的偏移，如公式所定义。然后，该分数用于降低低质量检测边界框的权重，并将检测结果合并到NMS中。简单而有效的中心度分支允许基于 FCN 的检测器在完全相同的训练和测试设置下胜过基于锚框的检测器。 \( centerness* = \sqrt {\frac{min(l*, r*)}{max(l*, r*)}\times \frac{min(t*, b*)}{max(t*,b*)} } \) 这种新型检测器架构有一下几种优点：</description>
-    </item>
-    
-    <item>
-      <title>Ubuntu18.04 DeepLearning Environment Setup</title>
-      <link>https://wuhongyui.github.io/posts/ubuntu18.04/</link>
-      <pubDate>Mon, 30 Dec 2019 20:04:40 +0800</pubDate>
-      
-      <guid>https://wuhongyui.github.io/posts/ubuntu18.04/</guid>
-      <description>安装Ubuntu18.04后应该做的事 安装ubuntu18.04后，参考该博客进行相关的配置。
-NIVDIA Driver  sudo apt purge nvidia-*移除原有老驱动； sudo add-apt-repository ppa:graphics-drivers/ppa安装相关依赖文件； sudo apt update &amp;amp;&amp;amp; sudo apt upgrade ubuntu-drivers devices查看支持的驱动版本； sudo apt install nvidia-driver-440安装440版本驱动； 重启后sudo reboot检查安装nvidia-smiorwatch -n 0.1 nvidia-smi 使用sudo apt-mark hold nvidia-driver-440 来保证驱动不会自动更新； 进行以上步骤可能出现安装不成功的问题，一般在网络正常的情况下可以正常安装，也可以选择手动安装，进入官网根据显卡型号下载适配驱动Nvidia官网参考这里进行手动安装  CUDA 下载cuda_10.2.89_440.33.01_linux.run或者下载其他的版本other version
- 运行sudo sh cuda_10.2.89_440.33.01_linux.run
- 最好不要安装OpenGL相关的，选择不要安装NVIDIA Accelerate driver；
- 添加环境变量，使用sudo gedit ~/.bashrcorsudo vim ~/.bashrc加入如下：
-export CUDA_HOME=/usr/local/cuda export PATH=$PATH:$CUDA_HOME/bin export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}  source ~/.bashrc之后使用nvcc -V查看是否安转成功；
-  Cudnn 下载cudnn或者其他版本other version</description>
     </item>
     
   </channel>

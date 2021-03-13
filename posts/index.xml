@@ -6,8 +6,362 @@
 		<generator>Hugo -- gohugo.io</generator>
 		<language>en-us</language>
 		<copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-		<lastBuildDate>Fri, 15 Jan 2021 20:41:57 +0800</lastBuildDate>
+		<lastBuildDate>Thu, 11 Mar 2021 14:29:11 +0800</lastBuildDate>
 		<atom:link href="https://wuhongyui.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>剑指offer练习JZ4-JZ6</title>
+			<link>https://wuhongyui.github.io/posts/excess_03_11/</link>
+			<pubDate>Thu, 11 Mar 2021 14:29:11 +0800</pubDate>
+			
+			<guid>https://wuhongyui.github.io/posts/excess_03_11/</guid>
+			<description>重建二叉树 题目描述：
+输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。
+示例
+ 输入
+[1,2,3,4,5,6,7],[3,2,4,1,6,5,7]
+返回值
+{1,2,5,3,4,6,7}
+ 方法：递归算法 二叉树的遍历知识： 二叉树的前序遍历：根-&amp;gt;左-&amp;gt;右
+二叉树的中序遍历：左-&amp;gt;根-&amp;gt;右
+二叉树的后序遍历：左-&amp;gt;右-&amp;gt;根
+建立树的相关步骤： struct TreeNode{ int vall; TreeNode *left; TreeNode *right; TreeNode(int x):val(x), left(nullptr), right(nullptr){} }; //建树伪代码 TreeNode* build(1...){ if (2...) return nullptr; TreeNode *root = new TreeNode(3...); root-&amp;gt;left = build(4...); //递归建立左子树  rott-&amp;gt;right = build(5...); //递归建立右子树  return root; }  通过记住建树伪代码中的1到5步，就可以建立一颗二叉树。那么1到5分别要填入什么呢？
+假设：1. 数组vector 中的元素为树中的节点。
+ 如果数组为空，则返回nullptr 新创建一个根结点的值 左子树的数组元素 右子树的数组元素  本段递归代码的理解就是，不断的创建二叉树中的根节点。因为二叉树中的左右子树节点也可以视为新树的根节点，所以不断的递归调用创建根节点，就可以创建一颗二叉树。具体化的步骤代码：
+// 假设元素在数组v中，并且头结点的下标为 root_index, first &amp;lt; root_index &amp;lt; last, // 这里只是会的容易讲解 TreeNode* build(int first, int last) { if (first &amp;gt; last) return nullptr; TreeNode *root = new TreeNode(v[root_index]); root-&amp;gt;left = build(first, root_index - 1); root-&amp;gt;right = build(root_index + 1, last); return root; }  那么这个root_index哪里来？根据先验知识了解到树的前序遍历数组的第一个元素便为二叉树的根节点，而树的中序遍历数组在根节点元素的左边的所有元素是左子树的序列，在右边的所有元素是右子树的序列。</description>
+			<content type="html"><![CDATA[
+
+<h2 id="重建二叉树">重建二叉树</h2>
+
+<p>题目描述：</p>
+
+<p>输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。</p>
+
+<p>示例</p>
+
+<blockquote>
+<p>输入</p>
+
+<p>[1,2,3,4,5,6,7],[3,2,4,1,6,5,7]</p>
+
+<p>返回值</p>
+
+<p>{1,2,5,3,4,6,7}</p>
+</blockquote>
+
+<h3 id="方法-递归算法">方法：递归算法</h3>
+
+<h4 id="二叉树的遍历知识">二叉树的遍历知识：</h4>
+
+<p>二叉树的前序遍历：根-&gt;左-&gt;右</p>
+
+<p>二叉树的中序遍历：左-&gt;根-&gt;右</p>
+
+<p>二叉树的后序遍历：左-&gt;右-&gt;根</p>
+
+<h4 id="建立树的相关步骤">建立树的相关步骤：</h4>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="nc">TreeNode</span><span class="p">{</span>
+  <span class="kt">int</span> <span class="n">vall</span><span class="p">;</span>
+  <span class="n">TreeNode</span> <span class="o">*</span><span class="n">left</span><span class="p">;</span>
+  <span class="n">TreeNode</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span>
+  <span class="n">TreeNode</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span><span class="o">:</span><span class="n">val</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">left</span><span class="p">(</span><span class="k">nullptr</span><span class="p">),</span> <span class="n">right</span><span class="p">(</span><span class="k">nullptr</span><span class="p">){}</span>
+<span class="p">};</span>
+<span class="c1">//建树伪代码
+</span><span class="c1"></span><span class="n">TreeNode</span><span class="o">*</span> <span class="nf">build</span><span class="p">(</span><span class="mf">1.</span><span class="p">..){</span>
+  <span class="k">if</span> <span class="p">(</span><span class="mf">2.</span><span class="p">..)</span> <span class="k">return</span> <span class="k">nullptr</span><span class="p">;</span>
+  <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TreeNode</span><span class="p">(</span><span class="mf">3.</span><span class="p">..);</span>
+  <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="mf">4.</span><span class="p">..);</span> <span class="c1">//递归建立左子树
+</span><span class="c1"></span>  <span class="n">rott</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="mf">5.</span><span class="p">..);</span> <span class="c1">//递归建立右子树
+</span><span class="c1"></span>  <span class="k">return</span> <span class="n">root</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>通过记住建树伪代码中的1到5步，就可以建立一颗二叉树。那么1到5分别要填入什么呢？</p>
+
+<p>假设：1. 数组vector<int> 中的元素为树中的节点。</p>
+
+<ol>
+<li>如果数组为空，则返回nullptr</li>
+<li>新创建一个根结点的值</li>
+<li>左子树的数组元素</li>
+<li>右子树的数组元素</li>
+</ol>
+
+<p>本段递归代码的理解就是，不断的创建二叉树中的根节点。因为二叉树中的左右子树节点也可以视为新树的根节点，所以不断的递归调用创建根节点，就可以创建一颗二叉树。具体化的步骤代码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 假设元素在数组v中，并且头结点的下标为 root_index, first &lt; root_index &lt; last,
+</span><span class="c1">// 这里只是会的容易讲解
+</span><span class="c1"></span><span class="n">TreeNode</span><span class="o">*</span> <span class="nf">build</span><span class="p">(</span><span class="kt">int</span> <span class="n">first</span><span class="p">,</span> <span class="kt">int</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">first</span> <span class="o">&gt;</span> <span class="n">last</span><span class="p">)</span> <span class="k">return</span> <span class="k">nullptr</span><span class="p">;</span>
+    <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">root_index</span><span class="p">]);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">root_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="n">root_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">last</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">root</span><span class="p">;</span>
+<span class="p">}</span> 
+</code></pre></div>
+<p>那么这个root_index哪里来？根据先验知识了解到树的前序遍历数组的第一个元素便为二叉树的根节点，而树的中序遍历数组在根节点元素的左边的所有元素是左子树的序列，在右边的所有元素是右子树的序列。</p>
+
+<p>以本题例子为例：
+前序遍历序列： {1,2,4,7,3,5,6,8}
+中序遍历序列： {4,7,2,1,5,3,8,6}
+第一步：根结点为1
+第二步：根结点在中序遍历序列中下标为3的位置，那么[0&hellip;2]就为左子树，[4&hellip;7]就为右子树
+只不过现在build()参数中为2个数组，道理一样，维护2个数组的下标就行了。
+那么现在这道题就可以解决了。</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Solution</span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+		<span class="n">TreeNode</span><span class="o">*</span> <span class="n">reBuild</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">pre</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pre_left</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pre_right</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">vin</span><span class="p">,</span> <span class="kt">int</span> <span class="n">vin_left</span><span class="p">,</span> <span class="kt">int</span> <span class="n">vin_right</span><span class="p">){</span><span class="c1">//1. 需要建立树的数组
+</span><span class="c1"></span>      <span class="k">if</span><span class="p">(</span><span class="n">pre_left</span> <span class="o">&lt;</span> <span class="n">pre_right</span><span class="p">)</span> <span class="k">return</span> <span class="k">nullptr</span><span class="p">;</span> <span class="c1">//2. 数组判空
+</span><span class="c1"></span>      <span class="n">TreeNode</span><span class="o">*</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">pre</span><span class="p">[</span><span class="n">pre_left</span><span class="p">]);</span> <span class="c1">//3. 创建根节点
+</span><span class="c1"></span>      <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">vin_right</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">vin</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">pre</span><span class="p">[</span><span class="n">pre_left</span><span class="p">]){</span>   <span class="c1">// 找到中序遍历中的root_index
+</span><span class="c1"></span>          <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">reBuild</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">pre_left</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">pre_left</span><span class="o">+</span><span class="n">i</span><span class="o">-</span><span class="n">vin_left</span><span class="p">,</span> <span class="n">vin</span><span class="p">,</span> <span class="n">vin_left</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span><span class="c1">//4. 左子树
+</span><span class="c1"></span>          <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">reBuild</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">pre_left</span><span class="o">+</span><span class="n">i</span><span class="o">-</span><span class="n">vin_left</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">pre_right</span><span class="p">,</span> <span class="n">vin</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">vin_right</span><span class="p">);</span><span class="c1">//5. 右子树
+</span><span class="c1"></span>        <span class="p">}</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="n">root</span><span class="p">;</span>
+    <span class="p">}</span>  
+  	<span class="n">TreeNode</span><span class="o">*</span> <span class="nf">reConstructBinaryTree</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">pre</span><span class="p">,</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vin</span><span class="p">){</span>
+      <span class="k">return</span> <span class="n">reBuild</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pre</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vin</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">vin</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>其中递归左子树中，前序遍历的结尾为：pre_left + root_index - vin_left 的解释：</p>
+
+<p>root_index - vin_left为根结点左边有几个元素
+pre_left + root_index - vin_left 为从pre_left开始往后推这么多元素便是前序遍历的左子树序列。</p>
+
+<h2 id="用两个栈实现队列">用两个栈实现队列</h2>
+
+<h3 id="题目描述">题目描述</h3>
+
+<p>用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。</p>
+
+<h4 id="先验知识">先验知识</h4>
+
+<ol>
+<li>入栈的元素是先进后出；</li>
+<li>入队的元素是先进先出。</li>
+</ol>
+
+<p>因此使用两个栈就可以实现一个队列操作，先将元素压入stack1，再将元素出栈，将出栈元素依次入stack2，最后将元素出栈，便实现了队列效果。</p>
+
+<h4 id="方法思路">方法思路</h4>
+
+<p>push操作就只作用在stack1上，pop操作要分一下类：当stack2为空时，就将stack1中的元素转移到stack2中，然后对stack2进行pop操作；当stack2不为空时，直接pop</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Solution</span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  	<span class="kt">void</span> <span class="n">push</span><span class="p">(</span><span class="kt">int</span> <span class="n">node</span><span class="p">){</span>
+      <span class="n">stack1</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">node</span><span class="p">);</span>
+    <span class="p">}</span>
+  	<span class="kt">int</span> <span class="nf">pop</span><span class="p">(){</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">stack2</span><span class="p">.</span><span class="n">empty</span><span class="p">()){</span>
+        <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">stack1</span><span class="p">.</span><span class="n">empty</span><span class="p">()){</span>
+          <span class="n">stack2</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">stack1</span><span class="p">.</span><span class="n">pop</span><span class="p">());</span>
+          <span class="n">stack1</span><span class="p">.</span><span class="n">pop</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+      <span class="kt">int</span> <span class="n">res</span> <span class="o">=</span> <span class="n">stack2</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+      <span class="n">stack2</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+      <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="k">private</span><span class="o">:</span>
+  <span class="n">stack</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">stack1</span><span class="p">;</span>
+  <span class="n">stack</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">stack2</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="旋转数组的最小数字">旋转数组的最小数字</h2>
+
+<h3 id="题目描述-1">题目描述</h3>
+
+<p>把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。
+输入一个非递减排序的数组的一个旋转，输出旋转数组的最小元素。
+NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。</p>
+
+<p>示例</p>
+
+<blockquote>
+<p>输入</p>
+
+<p>[3,4,5,1,2]</p>
+
+<p>返回值</p>
+
+<p>1</p>
+</blockquote>
+
+<p>对于这种有序或部分有序的数组中查找某个元素，一般考虑使用二分法；或者说如果能够明确二分后，能够清楚的判断答案位于二分的某一侧，就可以使用二分法。</p>
+
+<p>这种二分查找难就难在，arr[mid]跟谁比。我们的目的是：当进行一次比较时，一定能够确定答案在mid的某一侧。一次比较为 arr[mid]跟谁比的问题。一般的比较原则有：</p>
+
+<ul>
+<li>如果有目标值target，那么直接让arr[mid]和target比较即可。</li>
+<li>如果没有目标值，一般可以考虑端点</li>
+</ul>
+
+<p>这里我们把target 看作是<strong>右端点</strong>，来进行分析，那就要分析以下三种情况，看是否可以达到上述的目标。</p>
+
+<ol>
+<li><p>情况1， arr[mid] &gt; target: <code>4, 5, 6, 1, 2, 3</code></p>
+
+<ul>
+<li>arr[mid] 为 6， target为右端点 3， <code>arr[mid] &gt; target</code>，说明[first &hellip; mid] 都是 &gt;= target 的，因为原始数组是非递减，所以可以确定答案为 [mid+1&hellip;last]区间，所以 <code>first = mid + 1</code></li>
+</ul></li>
+
+<li><p>情况2，arr[mid] &lt; target: <code>5, 6, 1, 2, 3, 4</code></p>
+
+<ul>
+<li>arr[mid]为1，target右端点为4，arr[mid] &lt; target，说明答案肯定不在[mid+1&hellip;last]，但是arr[mid] 有可能是答案，或者答案在arr[mid]之前，所以答案在[first, mid]区间，所以<code>last = mid</code>;</li>
+</ul></li>
+
+<li><p>情况3，arr[mid] == target:</p>
+
+<ul>
+<li><p>如果是 1 0 1 1 1， arr[mid] = target = 1, 显然答案在左边</p></li>
+
+<li><p>如果是 1 1 1 0 1, arr[mid] = target = 1, 显然答案在右边
+所以这种情况，不能确定答案在左边还是右边，那么就让last = last - 1;慢慢缩少区间，同时也不会错过答案。</p></li>
+</ul></li>
+</ol>
+
+<p>如图</p>
+
+<p><img src="https://gitee.com/honyiwu/picture/raw/master/PicGo/284295_1586505527388_8AA57A8D7696C64D17CA60F8FF0144D4.png" alt="img" /></p>
+
+<p>代码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Solution</span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="kt">int</span> <span class="n">minNumberInRotateArray</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">rotateArray</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">rotateArray</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">first</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">last</span> <span class="o">=</span> <span class="n">rotateArray</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">first</span> <span class="o">&lt;</span> <span class="n">last</span><span class="p">){</span> <span class="c1">// 剩下最后一个元素，即为答案
+</span><span class="c1"></span>      <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="n">floor</span><span class="p">((</span><span class="n">first</span> <span class="o">+</span> <span class="n">last</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">rotateArray</span><span class="p">[</span><span class="n">last</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rotateArray</span><span class="p">[</span><span class="n">mid</span><span class="p">]){</span> <span class="c1">// 情况1
+</span><span class="c1"></span>        	<span class="n">first</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">rotateArray</span><span class="p">[</span><span class="n">last</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rotateArray</span><span class="p">[</span><span class="n">mid</span><span class="p">]){</span><span class="c1">//情况2
+</span><span class="c1"></span>        	<span class="n">last</span> <span class="o">=</span> <span class="n">mid</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span><span class="p">{</span><span class="c1">//情况3
+</span><span class="c1"></span>        	<span class="o">--</span><span class="n">last</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">rotateArray</span><span class="p">[</span><span class="n">first</span><span class="p">];</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="复杂度分析">复杂度分析</h3>
+
+<p>时间复杂度：二分，所以为O(longN)， 但是如果是[1, 1, 1, 1],会退化到O(n)
+空间复杂度：没有开辟额外空间，为O(1)</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>Reverse</title>
+			<link>https://wuhongyui.github.io/posts/reverse/</link>
+			<pubDate>Mon, 18 Jan 2021 10:08:36 +0800</pubDate>
+			
+			<guid>https://wuhongyui.github.io/posts/reverse/</guid>
+			<description>从尾到头打印链表 输入一个链表，按链表从尾到头的顺序返回一个ArrayList。
+示例
+ 输入
+{67, 0, 24, 58}
+返回值
+[58, 0, 24, 58]
+ 方法一 直接用简单粗暴的std::reverse()方法直接将List颠倒。
+vector&amp;lt;int&amp;gt; printListFromTailToHead(ListNode* head){ vector&amp;lt;int&amp;gt; res; while(head){ res.push_back(head-&amp;gt;val); head = head-&amp;gt;next; } std::reverse(res.begin(), res.end()); return res; }  方法二 相对于一个数组取反过程，可以考虑使用入栈和出栈操作来实现，顺序读取链表元素存入栈，再将元素出栈存入数组中可以得到一个相反的ArryList，代码如下：
+class Solution{ public: vector&amp;lt;int&amp;gt; printListFromTailToHead(ListNode* head){ stack&amp;lt;int&amp;gt; s; vector&amp;lt;int&amp;gt; res; while(head){ s.push(head-&amp;gt;val); //将元素入栈  head = head-&amp;gt;next; } while(!a.empty()){ res.push_back(s.top); //读取栈顶元素存入vector  s.pop(); //弹出栈顶元素	 } } };  方法三 考虑到可以使用反转链表的操作来实现。反转链表的精髓是定义三个指针head，pre，next。首先准备一个pre结点初始指向nullptr，表示正在反转结点的前一个结点，再准备一个cur，表示当前正在反转的结点，cur初始化为head。最后在准备一个next，表示还未反转的下一个结点。
+使用如下示意图方便记忆，其中箭头表示等于：
+代码如下：</description>
+			<content type="html"><![CDATA[
+
+<h2 id="从尾到头打印链表">从尾到头打印链表</h2>
+
+<p>输入一个链表，按链表从尾到头的顺序返回一个ArrayList。</p>
+
+<p>示例</p>
+
+<blockquote>
+<p>输入</p>
+
+<p>{67, 0, 24, 58}</p>
+
+<p>返回值</p>
+
+<p>[58, 0, 24, 58]</p>
+</blockquote>
+
+<h4 id="方法一">方法一</h4>
+
+<p>直接用简单粗暴的std::reverse()方法直接将List颠倒。</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">printListFromTailToHead</span><span class="p">(</span><span class="n">ListNode</span><span class="o">*</span> <span class="n">head</span><span class="p">){</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">res</span><span class="p">;</span>
+  <span class="k">while</span><span class="p">(</span><span class="n">head</span><span class="p">){</span>
+    <span class="n">res</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">);</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">reverse</span><span class="p">(</span><span class="n">res</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">res</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+  <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="方法二">方法二</h4>
+
+<p>相对于一个数组取反过程，可以考虑使用入栈和出栈操作来实现，顺序读取链表元素存入栈，再将元素出栈存入数组中可以得到一个相反的ArryList，代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Solution</span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">printListFromTailToHead</span><span class="p">(</span><span class="n">ListNode</span><span class="o">*</span> <span class="n">head</span><span class="p">){</span>
+    <span class="n">stack</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">s</span><span class="p">;</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">res</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">head</span><span class="p">){</span>
+      <span class="n">s</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">);</span>    <span class="c1">//将元素入栈
+</span><span class="c1"></span>      <span class="n">head</span> <span class="o">=</span> <span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">a</span><span class="p">.</span><span class="n">empty</span><span class="p">()){</span>
+      <span class="n">res</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">top</span><span class="p">);</span> <span class="c1">//读取栈顶元素存入vector
+</span><span class="c1"></span>      <span class="n">s</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>              <span class="c1">//弹出栈顶元素					
+</span><span class="c1"></span>    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div>
+<h4 id="方法三">方法三</h4>
+
+<p>考虑到可以使用反转链表的操作来实现。反转链表的精髓是定义三个指针head，pre，next。首先准备一个pre结点初始指向nullptr，表示正在反转结点的前一个结点，再准备一个cur，表示当前正在反转的结点，cur初始化为head。最后在准备一个next，表示还未反转的下一个结点。</p>
+
+<p>使用如下示意图方便记忆，其中箭头表示等于：</p>
+
+<p><img src="https://gitee.com/honyiwu/picture/raw/master/PicGo/reverse.jpg" alt="reverse" style="zoom:50%;" /></p>
+
+<p>代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/**
+</span><span class="cm">*  struct ListNode {
+</span><span class="cm">*        int val;
+</span><span class="cm">*        struct ListNode *next;
+</span><span class="cm">*        ListNode(int x) :
+</span><span class="cm">*              val(x), next(NULL) {
+</span><span class="cm">*        }
+</span><span class="cm">*  };
+</span><span class="cm">*/</span>
+<span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">printListFromTailToHead</span><span class="p">(</span><span class="n">ListNode</span><span class="o">*</span> <span class="n">head</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ListNode</span><span class="o">*</span> <span class="n">pre</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+        <span class="n">ListNode</span><span class="o">*</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+        <span class="n">ListNode</span><span class="o">*</span> <span class="n">next</span><span class="o">=</span><span class="n">cur</span><span class="p">;</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">cur</span><span class="p">){</span>
+            <span class="n">next</span> <span class="o">=</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+            <span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">pre</span><span class="p">;</span>
+            <span class="n">pre</span> <span class="o">=</span> <span class="n">cur</span><span class="p">;</span>
+            <span class="n">cur</span> <span class="o">=</span> <span class="n">next</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">st</span><span class="p">;</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">pre</span><span class="p">){</span>
+            <span class="n">st</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">pre</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">);</span>
+            <span class="n">pre</span> <span class="o">=</span> <span class="n">pre</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">st</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div>]]></content>
+		</item>
 		
 		<item>
 			<title>Replace space</title>
